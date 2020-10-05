@@ -14,7 +14,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema pgms
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `pgms` DEFAULT CHARACTER SET utf8 ;
+-- CREATE SCHEMA IF NOT EXISTS `pgms` DEFAULT CHARACTER SET utf8 ;
 USE `pgms` ;
 
 -- -----------------------------------------------------
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `pgms`.`user` (
   `password` VARCHAR(1024) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL COMMENT '用户密码, 由于需要从Django/sqlite3中迁移数据库,因此需要符合原来的加密算法',
   `isActive` TINYINT NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE)
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC))
 ENGINE = InnoDB;
 
 
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `pgms`.`token` (
   `value` VARCHAR(1024) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL COMMENT '该用户的value值',
   `lastUpdate` DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'token更新的时间,根据这个判断用户的登录是否仍然保持有效',
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `uid_UNIQUE` (`uid` ASC) VISIBLE,
+  UNIQUE INDEX `uid_UNIQUE` (`uid` ASC) ,
   CONSTRAINT `token_uid_ref_user_id`
     FOREIGN KEY (`uid`)
     REFERENCES `pgms`.`user` (`id`)
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `pgms`.`student` (
   `sid` VARCHAR(16) NOT NULL,
   `email` VARCHAR(256) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  INDEX `student_uid_ref_user_id_idx` (`uid` ASC) VISIBLE,
+  INDEX `student_uid_ref_user_id_idx` (`uid` ASC) ,
   CONSTRAINT `student_uid_ref_user_id`
     FOREIGN KEY (`uid`)
     REFERENCES `pgms`.`user` (`id`)
@@ -76,9 +76,9 @@ CREATE TABLE IF NOT EXISTS `pgms`.`teacher` (
   `name` VARCHAR(16) NOT NULL,
   `email` VARCHAR(256) NULL DEFAULT '',
   `personal_page` VARCHAR(256) NULL DEFAULT '',
-  `research_area` TEXT NULL DEFAULT '',
+  `research_area` TEXT NULL,
   PRIMARY KEY (`id`),
-  INDEX `teacher_id_ref_user_uid_idx` (`uid` ASC) VISIBLE,
+  INDEX `teacher_id_ref_user_uid_idx` (`uid` ASC) ,
   CONSTRAINT `teacher_uid_ref_user_id`
     FOREIGN KEY (`uid`)
     REFERENCES `pgms`.`user` (`id`)
@@ -93,9 +93,9 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `pgms`.`student_teacher` (
   `sid` INT NOT NULL,
   `tid` INT NOT NULL,
-  INDEX `student_teacher_sid_ref_student_id_idx` (`sid` ASC) VISIBLE,
-  INDEX `student_teacher_tid_ref_teacher_id_idx` (`tid` ASC) VISIBLE,
-  UNIQUE INDEX `sid_UNIQUE` (`sid` ASC) VISIBLE,
+  INDEX `student_teacher_sid_ref_student_id_idx` (`sid` ASC) ,
+  INDEX `student_teacher_tid_ref_teacher_id_idx` (`tid` ASC) ,
+  UNIQUE INDEX `sid_UNIQUE` (`sid` ASC) ,
   CONSTRAINT `student_teacher_sid_ref_student_id`
     FOREIGN KEY (`sid`)
     REFERENCES `pgms`.`student` (`id`)
@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `pgms`.`enrol` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `description` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `description_UNIQUE` (`description` ASC) VISIBLE)
+  UNIQUE INDEX `description_UNIQUE` (`description` ASC) )
 ENGINE = InnoDB;
 
 
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `pgms`.`degree` (
   `enrol` INT NOT NULL,
   `description` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `degree_enrol_ref_enrol_id_idx` (`enrol` ASC) VISIBLE,
+  INDEX `degree_enrol_ref_enrol_id_idx` (`enrol` ASC) ,
   CONSTRAINT `degree_enrol_ref_enrol_id`
     FOREIGN KEY (`enrol`)
     REFERENCES `pgms`.`enrol` (`id`)
@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS `pgms`.`file` (
   `port` VARCHAR(8) NOT NULL,
   `ffid` VARCHAR(64) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `fid_UNIQUE` (`ffid` ASC) VISIBLE)
+  UNIQUE INDEX `fid_UNIQUE` (`ffid` ASC) )
 ENGINE = InnoDB;
 
 
@@ -180,10 +180,10 @@ CREATE TABLE IF NOT EXISTS `pgms`.`bistudent` (
   `image` INT NOT NULL COMMENT '头像所在文件',
   `selected_teachers` VARCHAR(256) NOT NULL DEFAULT '[]' COMMENT '一个含有teacher_id的数组, 按序代表学生选择的志愿顺序',
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `uid_UNIQUE` (`uid` ASC) VISIBLE,
-  INDEX `bistudent_source_ref_source_id_idx` (`source` ASC) VISIBLE,
-  INDEX `bistudent_degree_ref_degree_id_idx` (`degree` ASC) VISIBLE,
-  INDEX `bistudent_image_ref_file_id_idx` (`image` ASC) VISIBLE,
+  UNIQUE INDEX `uid_UNIQUE` (`uid` ASC) ,
+  INDEX `bistudent_source_ref_source_id_idx` (`source` ASC) ,
+  INDEX `bistudent_degree_ref_degree_id_idx` (`degree` ASC) ,
+  INDEX `bistudent_image_ref_file_id_idx` (`image` ASC) ,
   CONSTRAINT `bistudent_source_ref_source_id`
     FOREIGN KEY (`source`)
     REFERENCES `pgms`.`source` (`id`)
@@ -215,8 +215,8 @@ CREATE TABLE IF NOT EXISTS `pgms`.`bistudentfile` (
   `bisid` INT NOT NULL,
   `fid` INT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `fid_UNIQUE` (`fid` ASC) VISIBLE,
-  INDEX `bistudent_file_ref_bistudent_id_idx` (`bisid` ASC) VISIBLE,
+  UNIQUE INDEX `fid_UNIQUE` (`fid` ASC) ,
+  INDEX `bistudent_file_ref_bistudent_id_idx` (`bisid` ASC) ,
   CONSTRAINT `bistudent_file_ref_bistudent_id`
     FOREIGN KEY (`bisid`)
     REFERENCES `pgms`.`bistudent` (`id`)
@@ -238,7 +238,7 @@ CREATE TABLE IF NOT EXISTS `pgms`.`position` (
   `description` VARCHAR(45) NOT NULL DEFAULT '',
   `device` VARCHAR(45) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `device_UNIQUE` (`device` ASC) VISIBLE)
+  UNIQUE INDEX `device_UNIQUE` (`device` ASC) )
 ENGINE = InnoDB;
 
 
@@ -251,8 +251,8 @@ CREATE TABLE IF NOT EXISTS `pgms`.`record` (
   `sid` INT NOT NULL,
   `pid` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `record_sid_ref_student_id_idx` (`sid` ASC) VISIBLE,
-  INDEX `record_pid_ref_position_id_idx` (`pid` ASC) VISIBLE,
+  INDEX `record_sid_ref_student_id_idx` (`sid` ASC) ,
+  INDEX `record_pid_ref_position_id_idx` (`pid` ASC) ,
   CONSTRAINT `record_sid_ref_student_id`
     FOREIGN KEY (`sid`)
     REFERENCES `pgms`.`student` (`id`)
@@ -272,8 +272,8 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `pgms`.`record_position` (
   `rid` INT NOT NULL,
   `pid` INT NOT NULL,
-  INDEX `record_position_ref_record_id_idx` (`rid` ASC) VISIBLE,
-  INDEX `record_position_ref_position_id_idx` (`pid` ASC) VISIBLE,
+  INDEX `record_position_ref_record_id_idx` (`rid` ASC) ,
+  INDEX `record_position_ref_position_id_idx` (`pid` ASC) ,
   CONSTRAINT `record_position_ref_record_id`
     FOREIGN KEY (`rid`)
     REFERENCES `pgms`.`record` (`id`)
@@ -293,7 +293,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `pgms`.`lecture` (
   `id` INT NOT NULL,
   `title` VARCHAR(45) NOT NULL,
-  `content` TEXT NULL DEFAULT '',
+  `content` TEXT NULL,
   `start` DATETIME NOT NULL,
   `end` DATETIME NOT NULL,
   PRIMARY KEY (`id`))
@@ -306,8 +306,8 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `pgms`.`lecture_position` (
   `rid` INT NOT NULL,
   `pid` INT NOT NULL,
-  INDEX `lecture_position_rid_ref_lecture_id_idx` (`rid` ASC) VISIBLE,
-  INDEX `lecture_position_pid_ref_position_id_idx` (`pid` ASC) VISIBLE,
+  INDEX `lecture_position_rid_ref_lecture_id_idx` (`rid` ASC) ,
+  INDEX `lecture_position_pid_ref_position_id_idx` (`pid` ASC) ,
   CONSTRAINT `lecture_position_rid_ref_lecture_id`
     FOREIGN KEY (`rid`)
     REFERENCES `pgms`.`lecture` (`id`)
@@ -330,7 +330,7 @@ CREATE TABLE IF NOT EXISTS `pgms`.`admin` (
   `type` ENUM("admin", "attend", "bichoice") NOT NULL,
   `name` VARCHAR(16) NULL,
   PRIMARY KEY (`id`),
-  INDEX `admin_uid_ref_user_id_idx` (`uid` ASC) VISIBLE,
+  INDEX `admin_uid_ref_user_id_idx` (`uid` ASC) ,
   CONSTRAINT `admin_uid_ref_user_id`
     FOREIGN KEY (`uid`)
     REFERENCES `pgms`.`user` (`id`)
@@ -347,12 +347,12 @@ CREATE TABLE IF NOT EXISTS `pgms`.`logger` (
   `ip` VARCHAR(45) NOT NULL,
   `url` VARCHAR(1024) NOT NULL,
   `uid` INT NULL,
-  `url_description` TEXT NOT NULL DEFAULT '',
+  `url_description` TEXT NOT NULL,
   `response` INT NOT NULL,
   `usetype` ENUM('student, teacher, admin, bistudent') NULL,
   `loggercol` VARCHAR(45) NULL,
   PRIMARY KEY (`id`),
-  INDEX `logger_uid_ref_user_id_idx` (`uid` ASC) VISIBLE,
+  INDEX `logger_uid_ref_user_id_idx` (`uid` ASC) ,
   CONSTRAINT `logger_uid_ref_user_id`
     FOREIGN KEY (`uid`)
     REFERENCES `pgms`.`user` (`id`)
@@ -366,11 +366,11 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `pgms`.`settings` (
   `key` VARCHAR(256) NOT NULL,
-  `value` JSON NOT NULL DEFAULT '{"value": 0}',
+  `value` JSON NOT NULL,
   `lastUpdate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `lastUpdateAdmin` INT NOT NULL,
   PRIMARY KEY (`key`),
-  INDEX `settings_admin_ref_admin_id_idx` (`lastUpdateAdmin` ASC) VISIBLE,
+  INDEX `settings_admin_ref_admin_id_idx` (`lastUpdateAdmin` ASC) ,
   CONSTRAINT `settings_admin_ref_admin_id`
     FOREIGN KEY (`lastUpdateAdmin`)
     REFERENCES `pgms`.`admin` (`id`)

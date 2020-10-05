@@ -1,0 +1,11 @@
+{
+  "test": {
+    "driver": "mysql",
+    "user": "root",
+    "password": "OPENtextfile+123",
+    "port": 3306,
+    "database": "pgms",
+    "host": "124.70.215.24",
+    "multipleStatements": true
+  }
+}
