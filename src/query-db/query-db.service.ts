@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import * as database from '../../database.json';
 import * as mysql from 'mysql2/promise';
 
@@ -28,6 +28,7 @@ export class QueryDbService {
     });
   }
 
+  private logger: Logger = new Logger(Logger.name);
   private selectedPool: mysql.Pool = null;
   private executePool: mysql.Pool = null;
 
@@ -39,7 +40,7 @@ export class QueryDbService {
         return (await this.executePool.query(sql, params))[0];
       }
     } catch(err) {
-      console.log(err);
+      this.logger.log(err);
       throw new HttpException("数据库查询出错", 500);
     }
   }
