@@ -50,7 +50,7 @@ export class UserController {
     } else {
       // set cookie:
       res.setHeader("token", loginResult.token);
-      return loginResult.body;
+      res.json(loginResult.body);
     }
   }
 }

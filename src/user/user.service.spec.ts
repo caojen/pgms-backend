@@ -17,4 +17,8 @@ describe('UserService', () => {
   it('err username or password', async () => {
     expect(await service.userLogin("username", "password")).toBe(false);
   });
+
+  it('should pass', async() => {
+    expect(await service.userLogin("admin", "123456")).not.toBe(false);
+  })
 });

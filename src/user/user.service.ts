@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { EndeService } from 'src/ende/ende.service';
 import { QueryDbService } from 'src/query-db/query-db.service';
 
@@ -15,9 +15,20 @@ export class UserService {
    * @param uid 
    */
   async getUserBasicInfo(uid: number) {
-    return {
-      test: 'ok'
-    }
+    const userSql = `
+      SELECT username
+      FROM user
+      where id=?;
+    `;
+    const username = (await this.dbService.queryDb(userSql, [uid]))[0]['username'];
+    const res = {
+      uid,
+      username
+    };
+
+    // Add more models here.
+
+    return res;
   }
 
   /**
@@ -33,23 +44,35 @@ export class UserService {
     `;
 
     const res = await this.dbService.queryDb(sql, [username]);
-    const uid: number = res[0];
-    const hash: string = res[1];
-    if(EndeService.verify(password, hash)) {
-      // password is valid
-      const token: string = EndeService.createNewToken();
-      const updateToken = `
-        insert into token(uid, value)
-        values(?, ?)
-        on duplicate key update value=?;
-      `;
-      await this.dbService.queryDb(updateToken, [uid, token, token]);
-      return {
-        token,
-        body: await this.getUserBasicInfo(uid),
-      };
-    } else {
+
+    if(res?.length === 1) {
+      const uid: number = res[0]['id'];
+      const hash: string = res[0]['password'];
+      const verify = EndeService.verify(password, hash);
+
+      if(verify) {
+        // password is valid
+        const token: string = EndeService.createNewToken();
+        const updateToken = `
+          insert into token(uid, value)
+          values(?, ?)
+          on duplicate key update value=?;
+        `;
+        await this.dbService.queryDb(updateToken, [uid, token, token]);
+
+        return {
+          token,
+          body: await this.getUserBasicInfo(uid),
+        };
+      } else {
+        return false;
+      }
+    } else if(res?.length === 0) {
       return false;
+    } else {
+      throw new HttpException({
+        msg: '数据库查询错误',
+      }, 500);
     }
   }
 }

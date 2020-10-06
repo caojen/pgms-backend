@@ -35,9 +35,9 @@ export class QueryDbService {
   async queryDb(sql: string, params: any[]) {
     try {
       if(sql.trim().substr(0, 6).toLocaleLowerCase() === 'select') {
-        return (await this.selectedPool.query(sql, params))[0];
+        return (await this.selectedPool.query(sql, params))[0] as any[];
       } else {
-        return (await this.executePool.query(sql, params))[0];
+        return (await this.executePool.query(sql, params))[0] as any[];
       }
     } catch(err) {
       this.logger.log(err);
