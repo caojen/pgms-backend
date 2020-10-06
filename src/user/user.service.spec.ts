@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { EndeService } from 'src/ende/ende.service';
+import { QueryDbService } from 'src/query-db/query-db.service';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
@@ -6,13 +8,13 @@ describe('UserService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UserService],
+      providers: [UserService, EndeService, QueryDbService],
     }).compile();
 
     service = module.get<UserService>(UserService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('err username or password', async () => {
+    expect(await service.userLogin("username", "password")).toBe(false);
   });
 });
