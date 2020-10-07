@@ -1,18 +1,20 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { Cron, NestSchedule } from 'nest-schedule';
 import { QueryDbService } from 'src/query-db/query-db.service';
 import * as strftime from 'strftime';
 import * as requestAsync from 'request-promise-native';
 
 @Injectable()
-export class AutoscriptService {
+export class AutoscriptService extends NestSchedule {
   constructor(
     private readonly dbQuery: QueryDbService
-  ) {}
+  ) {
+    super()
+  }
 
   private readonly logger = new Logger(AutoscriptService.name);
 
-  // @Cron('*/10 * * * *')
+  @Cron('*/10 * * * *')
   async fetchRecords() {
     const current = new Date(Date.now());
 
@@ -25,8 +27,6 @@ export class AutoscriptService {
     `;
 
     const record = await this.dbQuery.queryDb(recordSql, []);
-    console.log(record);
-    this.logger.log(record);
 
     // TODO: send get and save the records
     let lastDate: Date;
@@ -94,7 +94,7 @@ export class AutoscriptService {
         }
       }
 
-      // console.log(affectedRows);
+      this.logger.log(`auto affected rows: ${affectedRows}`)
     }
 
   }
