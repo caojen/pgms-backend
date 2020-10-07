@@ -4,9 +4,10 @@ import { AppService } from './app.service';
 import { QueryDbModule } from './query-db/query-db.module';
 import { UserModule } from './user/user.module';
 import { EndeModule } from './ende/ende.module';
+import { StudentModule } from './student/student.module';
 
 @Module({
-  imports: [QueryDbModule, UserModule, EndeModule],
+  imports: [QueryDbModule, UserModule, EndeModule, StudentModule],
   controllers: [AppController],
   providers: [AppService],
 })

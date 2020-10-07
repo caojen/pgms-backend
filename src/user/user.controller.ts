@@ -23,11 +23,10 @@ export class UserController {
    *    "uid": 1,
    *    "username": "18542100",
    *    "student": {
+   *      "id": 5
    *      "name": "jack",
-   *      "student_id": "18542100",
-   *      "teacher": {
-   *          "name": "yangyonghong"
-   *      }
+   *      "sid": "18542100",
+   *      "email": "ab@qq.com"
    *    }
    *  }
    * @apiError LoginFailed Username not exists, or password error
@@ -87,11 +86,10 @@ export class UserController {
    *    "uid": 1,
    *    "username": "18542100",
    *    "student": {
+   *      "id": 5
    *      "name": "jack",
-   *      "student_id": "18542100",
-   *      "teacher": {
-   *          "name": "yangyonghong"
-   *      }
+   *      "sid": "18542100",
+   *      "email": "ab@qq.com"
    *    }
    *  }
    */

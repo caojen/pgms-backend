@@ -21,12 +21,33 @@ export class UserService {
       where id=?;
     `;
     const username = (await this.dbService.queryDb(userSql, [uid]))[0]?.username;
-    const res = {
+    let res: any = {
       uid,
       username
     };
 
     // Add more models here.
+
+    {
+      // to test if user is a student
+      const studentSql = `
+        SELECT id, name, sid, email
+        FROM student
+        WHERE uid=?;
+      `
+      const query = (await this.dbService.queryDb(studentSql, [uid]))[0];
+      if(!!query) {
+        res = {
+          ...res,
+          student: {
+            id: query.id,
+            name: query.name,
+            sid: query.sid,
+            email: query.email,
+          },
+        };
+      }
+    }
 
     return res;
   }

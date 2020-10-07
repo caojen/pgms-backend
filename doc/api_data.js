@@ -1,6 +1,30 @@
 define({ "api": [
   {
     "type": "get",
+    "url": "/student/teacher",
+    "title": "StudentGetTeacher",
+    "name": "StudentGetTeacher",
+    "group": "Student",
+    "permission": [
+      {
+        "name": "Logined Student"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "success-reponse",
+          "content": "{\n    \"name\": \"teacher\",\n    \"email\": \"abc@mail.qq.com\",\n    \"personal_page\": \"abc\",\n    \"research_area\": \"edf\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/student/student.controller.ts",
+    "groupTitle": "Student"
+  },
+  {
+    "type": "get",
     "url": "/user/status",
     "title": "CurrentUserStatus",
     "name": "GetUserStatus",
@@ -14,7 +38,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response",
-          "content": "HTTP/1.1 200 OK\n{\n  \"uid\": 1,\n  \"username\": \"18542100\",\n  \"student\": {\n    \"name\": \"jack\",\n    \"student_id\": \"18542100\",\n    \"teacher\": {\n        \"name\": \"yangyonghong\"\n    }\n  }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n  \"uid\": 1,\n  \"username\": \"18542100\",\n  \"student\": {\n    \"id\": 5\n    \"name\": \"jack\",\n    \"sid\": \"18542100\",\n    \"email\": \"ab@qq.com\"\n  }\n}",
           "type": "json"
         }
       ]
@@ -57,7 +81,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response",
-          "content": "HTTP/1.1 200 OK\n{\n  \"uid\": 1,\n  \"username\": \"18542100\",\n  \"student\": {\n    \"name\": \"jack\",\n    \"student_id\": \"18542100\",\n    \"teacher\": {\n        \"name\": \"yangyonghong\"\n    }\n  }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n  \"uid\": 1,\n  \"username\": \"18542100\",\n  \"student\": {\n    \"id\": 5\n    \"name\": \"jack\",\n    \"sid\": \"18542100\",\n    \"email\": \"ab@qq.com\"\n  }\n}",
           "type": "json"
         }
       ]
