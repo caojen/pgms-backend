@@ -43,6 +43,7 @@ export class StudentService {
   }
 
   /**
+   * Get records of student. If one record matches one lecture, return the lecture meanwhile, else, return default.
    * 
    * @param id student.sid
    * @param pageSize the page size of presented form
