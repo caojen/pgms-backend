@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, HttpException, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { EndeService } from 'src/ende/ende.service';
 import { LoginRequired } from './user.guard';
@@ -50,7 +50,7 @@ export class UserController {
       }, 403);
     } else {
       // set cookie:
-      res.setHeader("token", loginResult.token);
+      res.setHeader("Set-Cookie", `token=${loginResult.token}; path=/`);
       res.json(loginResult.body);
     }
   }
@@ -73,5 +73,32 @@ export class UserController {
     return {
       msg: '操作成功'
     }
+  }
+
+
+  /**
+   * @api {get} /user/status
+   * @apiName GetUserStatus
+   * @apiGroup User
+   * @apiPermission Logined
+   * @apiSuccessExample {json} Success-Response
+   *  HTTP/1.1 200 OK
+   *  {
+   *    "uid": 1,
+   *    "username": "18542100",
+   *    "student": {
+   *      "name": "jack",
+   *      "student_id": "18542100",
+   *      "teacher": {
+   *          "name": "yangyonghong"
+   *      }
+   *    }
+   *  }
+   */
+  @Get('status')
+  @UseGuards(LoginRequired)
+  async getCurrentUser(@Req() req) {
+    const uid = req.user.uid;
+    return await this.userService.getUserBasicInfo(uid);
   }
 }

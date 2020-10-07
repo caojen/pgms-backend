@@ -83,7 +83,7 @@ export class UserService {
   async getUidByToken(token: string): Promise<number | null> {
     const sql = `
       SELECT user.id as id
-      FROM token LEFT JOIN user
+      FROM token JOIN user on token.uid = user.id
       WHERE token.value=?;
     `;
     const res = await this.dbService.queryDb(sql, [token]);
