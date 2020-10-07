@@ -20,7 +20,7 @@ export class UserService {
       FROM user
       where id=?;
     `;
-    const username = (await this.dbService.queryDb(userSql, [uid]))[0]['username'];
+    const username = (await this.dbService.queryDb(userSql, [uid]))[0]?.username;
     const res = {
       uid,
       username
@@ -46,8 +46,8 @@ export class UserService {
     const res = await this.dbService.queryDb(sql, [username]);
 
     if(res?.length === 1) {
-      const uid: number = res[0]['id'];
-      const hash: string = res[0]['password'];
+      const uid: number = res[0]?.id;
+      const hash: string = res[0]?.password;
       const verify = EndeService.verify(password, hash);
 
       if(verify) {
@@ -74,5 +74,32 @@ export class UserService {
         msg: '数据库查询错误',
       }, 500);
     }
+  }
+
+  /**
+   * base on given token, return the uid or null if not exists
+   * @param token 
+   */
+  async getUidByToken(token: string): Promise<number | null> {
+    const sql = `
+      SELECT user.id as id
+      FROM token LEFT JOIN user
+      WHERE token.value=?;
+    `;
+    const res = await this.dbService.queryDb(sql, [token]);
+    if(res.length === 0) {
+      return null;
+    } else {
+      return res[0]?.id;
+    }
+  }
+
+  async userLogout(uid: number) {
+    const sql = `
+      UPDATE token
+      SET value=''
+      WHERE uid=?;
+    `;
+    await this.dbService.queryDb(sql, [uid]);
   }
 }

@@ -1,6 +1,7 @@
-import { Body, Controller, HttpException, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, HttpException, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { EndeService } from 'src/ende/ende.service';
+import { LoginRequired } from './user.guard';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -16,7 +17,7 @@ export class UserController {
    * @api {post} /user/login
    * @apiName UserLogin
    * @apiGroup User
-   * @apiSuccessExample {json} Success-Response:
+   * @apiSuccessExample {json} Success-Response
    *  HTTP/1.1 200 OK
    *  {
    *    "uid": 1,
@@ -51,6 +52,26 @@ export class UserController {
       // set cookie:
       res.setHeader("token", loginResult.token);
       res.json(loginResult.body);
+    }
+  }
+
+  /**
+   * @api {delete} /user/logout
+   * @apiName UserLogout
+   * @apiGroup User
+   * @apiPermission Logined
+   * @apiSuccessExample {json} Success-Response
+   * {
+   *    "msg": "操作成功"
+   * }
+   */
+  @Delete('logout')
+  @UseGuards(LoginRequired)
+  async userLogout(@Req() req) {
+    const uid = req.user.uid;
+    await this.userService.userLogout(uid);
+    return {
+      msg: '操作成功'
     }
   }
 }

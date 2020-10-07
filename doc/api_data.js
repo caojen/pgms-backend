@@ -8,7 +8,7 @@ define({ "api": [
     "success": {
       "examples": [
         {
-          "title": "Success-Response:",
+          "title": "Success-Response",
           "content": "HTTP/1.1 200 OK\n{\n  \"uid\": 1,\n  \"username\": \"18542100\",\n  \"student\": {\n    \"name\": \"jack\",\n    \"student_id\": \"18542100\",\n    \"teacher\": {\n        \"name\": \"yangyonghong\"\n    }\n  }\n}",
           "type": "json"
         }
@@ -31,6 +31,30 @@ define({ "api": [
           }
         ]
       }
+    },
+    "version": "0.0.0",
+    "filename": "src/user/user.controller.ts",
+    "groupTitle": "User"
+  },
+  {
+    "type": "delete",
+    "url": "/user/logout",
+    "title": "",
+    "name": "UserLogout",
+    "group": "User",
+    "permission": [
+      {
+        "name": "Logined"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n   \"msg\": \"操作成功\"\n}",
+          "type": "json"
+        }
+      ]
     },
     "version": "0.0.0",
     "filename": "src/user/user.controller.ts",
