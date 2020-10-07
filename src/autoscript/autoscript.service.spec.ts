@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { QueryDbService } from 'src/query-db/query-db.service';
 import { AutoscriptService } from './autoscript.service';
 
 describe('AutoscriptService', () => {
@@ -6,14 +7,14 @@ describe('AutoscriptService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AutoscriptService],
+      providers: [AutoscriptService, QueryDbService],
     }).compile();
 
     service = module.get<AutoscriptService>(AutoscriptService);
   });
 
-  it('should be defined', () => {
+  it('should be defined', async () => {
     // expect(service).toBeDefined();
-    const a = 1;
+    await service.fetchRecords();
   });
 });
