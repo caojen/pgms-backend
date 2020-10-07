@@ -1,6 +1,4 @@
-import { Body, Controller, Get, HttpException, Param, Put, Query, Req, UseGuards } from '@nestjs/common';
-import { query } from 'express';
-import { off } from 'process';
+import { Body, Controller, Get, HttpException, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { LoginRequired } from 'src/user/user.guard';
 import { StudentPermission } from './student.guard';
 import { StudentService } from './student.service';
