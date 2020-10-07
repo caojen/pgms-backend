@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Param, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { query } from 'express';
+import { off } from 'process';
 import { LoginRequired } from 'src/user/user.guard';
 import { StudentPermission } from './student.guard';
 import { StudentService } from './student.service';
@@ -50,5 +52,46 @@ export class StudentController {
     return {
       msg: '修改成功'
     };
+  }
+
+  /**
+   * @api {get} /student/records GetStudentAllRecords
+   * @apiName GetStudentAllRecords
+   * @apiParam (query string) {int} pageSize
+   * @apiParam (query String) {int} offset
+   * @apiGroup Student
+   * @apiPermission Logined Student
+   * @apiSuccessExample {json} Success-Response
+   * {
+   *    "total": 1,
+   *    "records": [
+   *    {
+   *         "id": 1,
+   *         "rtime": "2020-10-07T15:08:46.000Z",
+   *         "position": "testposition",
+   *         "detail": {
+   *             "title": "lecture1",
+   *             "content": "content1",
+   *             "start": "2020-10-07T15:07:00.000Z",
+   *             "end": "2020-10-09T15:07:00.000Z"
+   *         }
+   *     }
+   * ]
+   * }
+   * 
+   */
+  @Get('records')
+  @UseGuards(LoginRequired, StudentPermission)
+  async getRecords(@Req() req, @Query() query: {pageSize: number, offset: number}) {
+    const sid = req.user.student.id;
+    const pageSize = query.pageSize;
+    const offset = query.offset;
+    if(isNaN(pageSize) || isNaN(offset)) {
+      throw new HttpException({
+        msg: '参数错误'
+      }, 406);
+    }
+
+    return await this.studentService.getRecords(sid, pageSize, offset);
   }
 }

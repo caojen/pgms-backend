@@ -1,5 +1,51 @@
 [
   {
+    "type": "get",
+    "url": "/student/records",
+    "title": "GetStudentAllRecords",
+    "name": "GetStudentAllRecords",
+    "parameter": {
+      "fields": {
+        "query string": [
+          {
+            "group": "query string",
+            "type": "int",
+            "optional": false,
+            "field": "pageSize",
+            "description": ""
+          }
+        ],
+        "query String": [
+          {
+            "group": "query String",
+            "type": "int",
+            "optional": false,
+            "field": "offset",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "group": "Student",
+    "permission": [
+      {
+        "name": "Logined Student"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n   \"total\": 1,\n   \"records\": [\n   {\n        \"id\": 1,\n        \"rtime\": \"2020-10-07T15:08:46.000Z\",\n        \"position\": \"testposition\",\n        \"detail\": {\n            \"title\": \"lecture1\",\n            \"content\": \"content1\",\n            \"start\": \"2020-10-07T15:07:00.000Z\",\n            \"end\": \"2020-10-09T15:07:00.000Z\"\n        }\n    }\n]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/student/student.controller.ts",
+    "groupTitle": "Student"
+  },
+  {
     "type": "put",
     "url": "/student/email",
     "title": "StudentChangeEmail",
