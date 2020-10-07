@@ -28,7 +28,7 @@ export class QueryDbService {
     });
   }
 
-  private logger: Logger = new Logger(Logger.name);
+  private logger: Logger = new Logger(QueryDbService.name);
   private selectedPool: mysql.Pool = null;
   private executePool: mysql.Pool = null;
 
