@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpException, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, Post, Put, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { EndeService } from 'src/ende/ende.service';
 import { LoginRequired } from './user.guard';
@@ -14,7 +14,7 @@ export class UserController {
   ) {}
 
   /**
-   * @api {post} /user/login
+   * @api {post} /user/login UserLogin
    * @apiName UserLogin
    * @apiGroup User
    * @apiSuccessExample {json} Success-Response
@@ -56,7 +56,7 @@ export class UserController {
   }
 
   /**
-   * @api {delete} /user/logout
+   * @api {delete} /user/logout UserLogout
    * @apiName UserLogout
    * @apiGroup User
    * @apiPermission Logined
@@ -77,7 +77,7 @@ export class UserController {
 
 
   /**
-   * @api {get} /user/status
+   * @api {get} /user/status CurrentUserStatus
    * @apiName GetUserStatus
    * @apiGroup User
    * @apiPermission Logined
@@ -100,5 +100,23 @@ export class UserController {
   async getCurrentUser(@Req() req) {
     const uid = req.user.uid;
     return await this.userService.getUserBasicInfo(uid);
+  }
+
+
+  /**
+   * @api {put} /user/password ChangePassword
+   * @apiName UserChangePassword
+   * @apiGroup User
+   * @apiPermission Logined
+   * @apiSuccessExample {json} Success-Response
+   * {
+   *    "msg": "修改密码成功"
+   * }
+   */
+  @Put('password')
+  @UseGuards(LoginRequired)
+  async changePassword(@Req() req, @Body() body: {oldpassword: string, newpassword: string}) {
+    const uid = req.user.uid;
+    return await this.userService.changePasswordForUser(uid, body.oldpassword, body.newpassword);
   }
 }

@@ -2,7 +2,7 @@ define({ "api": [
   {
     "type": "get",
     "url": "/user/status",
-    "title": "",
+    "title": "CurrentUserStatus",
     "name": "GetUserStatus",
     "group": "User",
     "permission": [
@@ -24,9 +24,33 @@ define({ "api": [
     "groupTitle": "User"
   },
   {
+    "type": "put",
+    "url": "/user/password",
+    "title": "ChangePassword",
+    "name": "UserChangePassword",
+    "group": "User",
+    "permission": [
+      {
+        "name": "Logined"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n   \"msg\": \"修改密码成功\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/user/user.controller.ts",
+    "groupTitle": "User"
+  },
+  {
     "type": "post",
     "url": "/user/login",
-    "title": "",
+    "title": "UserLogin",
     "name": "UserLogin",
     "group": "User",
     "success": {
@@ -63,7 +87,7 @@ define({ "api": [
   {
     "type": "delete",
     "url": "/user/logout",
-    "title": "",
+    "title": "UserLogout",
     "name": "UserLogout",
     "group": "User",
     "permission": [

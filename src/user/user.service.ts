@@ -94,6 +94,10 @@ export class UserService {
     }
   }
 
+  /**
+   * User Logout
+   * @param uid 
+   */
   async userLogout(uid: number) {
     const sql = `
       UPDATE token
@@ -101,5 +105,39 @@ export class UserService {
       WHERE uid=?;
     `;
     await this.dbService.queryDb(sql, [uid]);
+    return true;
+  }
+
+  async changePasswordForUser(uid: number, oldpassword: string, newpassword) {
+    const NEED_CHECK_OLD_PASSWORD = true;
+
+    if(NEED_CHECK_OLD_PASSWORD) {
+      // need to check old password here...
+      const selectPassword = `
+        SELECT password
+        FROM user
+        WHERE user.id=?;
+      `;
+      const currentPasswordHash = (await this.dbService.queryDb(selectPassword, [uid]))[0]?.password;
+      const verify = EndeService.verify(oldpassword, currentPasswordHash);
+      if(!verify) {
+        throw new HttpException({
+          msg: '原密码不正确'
+        }, 403);
+      }
+    }
+
+    const epassword = EndeService.encodeToDatabase(newpassword);
+
+    const updatePassword = `
+      UPDATE user
+      SET password=?
+      WHERE user.id=?;
+    `;
+
+    await this.dbService.queryDb(updatePassword, [epassword, uid]);
+    return {
+      msg: '修改密码成功'
+    };
   }
 }

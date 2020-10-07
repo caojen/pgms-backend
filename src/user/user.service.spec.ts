@@ -19,6 +19,14 @@ describe('UserService', () => {
   });
 
   it('should pass', async() => {
-    expect(await service.userLogin("admin", "123456")).not.toBe(false);
+    expect(await service.userLogin("admin", "123456")).not.toBe(true);
+  })
+
+  it('should pass', async() => {
+    expect(await service.userLogin("admin", "123456789")).not.toBe(false);
+  })
+
+  it('should pass', async() => {
+    expect(await service.userLogout(1)).toBe(true);
   })
 });
