@@ -1,5 +1,29 @@
 define({ "api": [
   {
+    "type": "put",
+    "url": "/student/email",
+    "title": "StudentChangeEmail",
+    "name": "StudentChangeEmail",
+    "group": "Student",
+    "permission": [
+      {
+        "name": "Logined User"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n   \"msg\": \"操作成功\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/student/student.controller.ts",
+    "groupTitle": "Student"
+  },
+  {
     "type": "get",
     "url": "/student/teacher",
     "title": "StudentGetTeacher",
