@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { query } from 'express';
 import { QueryDbService } from 'src/query-db/query-db.service';
 
 @Injectable()
