@@ -62,6 +62,7 @@ export class StudentService {
       SELECT record.id AS id, record.time AS rtime, position.description AS position, position.id AS pid
       FROM record LEFT JOIN position on record.pid=position.id
       WHERE record.sid=?
+      ORDER BY record.time DESC
       Limit ?, ?;
     `;
 
@@ -79,7 +80,6 @@ export class StudentService {
       const record = queryRecord[index];
 
       const queryLecture = await this.dbQuery.queryDb(selectedLectureSql, [record.rtime, record.rtime, record.pid]);
-      console.log(queryLecture);
       if(queryLecture.length > 0) {
         // note: only one lecture can appear at one position at one time
         const lecture = queryLecture[0];
