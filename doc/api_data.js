@@ -95,6 +95,30 @@ define({ "api": [
   },
   {
     "type": "get",
+    "url": "/teacher/students",
+    "title": "GetAllStudents",
+    "name": "GetAllStudents",
+    "permission": [
+      {
+        "name": "Logined Teacher"
+      }
+    ],
+    "group": "Teacher",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n     {\n         \"id\": 1,\n         \"name\": \"admin\",\n         \"email\": \"efbffcbc@mail2.sysu.edu.cn\",\n         \"latestRecordTime\": \"2020-10-07T15:08:46.000Z\"\n     }\n ]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/teacher/teacher.controller.ts",
+    "groupTitle": "Teacher"
+  },
+  {
+    "type": "get",
     "url": "/user/status",
     "title": "CurrentUserStatus",
     "name": "GetUserStatus",

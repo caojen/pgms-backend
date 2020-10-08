@@ -6,9 +6,10 @@ import { UserModule } from './user/user.module';
 import { EndeModule } from './ende/ende.module';
 import { StudentModule } from './student/student.module';
 import { AutoscriptModule } from './autoscript/autoscript.module';
+import { TeacherModule } from './teacher/teacher.module';
 
 @Module({
-  imports: [QueryDbModule, UserModule, EndeModule, StudentModule, AutoscriptModule],
+  imports: [QueryDbModule, UserModule, EndeModule, StudentModule, AutoscriptModule, TeacherModule],
   controllers: [AppController],
   providers: [AppService],
 })

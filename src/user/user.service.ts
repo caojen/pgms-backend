@@ -34,7 +34,7 @@ export class UserService {
         SELECT id, name, sid, email
         FROM student
         WHERE uid=?;
-      `
+      `;
       const query = (await this.dbService.queryDb(studentSql, [uid]))[0];
       if(!!query) {
         res = {
@@ -45,6 +45,25 @@ export class UserService {
             sid: query.sid,
             email: query.email,
           },
+        };
+      }
+    }
+
+    {
+      // to test if user is a teacher
+      const teacherSql = `
+        SELECT id, name, personal_page, research_area
+        FROM teacher
+        WHERE uid=?;
+      `;
+
+      const query = (await this.dbService.queryDb(teacherSql, [uid]))[0];
+      if(!!query) {
+        res = {
+          ...res,
+          teacher: {
+            ...query,
+          }
         };
       }
     }
