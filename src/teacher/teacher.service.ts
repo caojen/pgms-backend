@@ -1,5 +1,4 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { off } from 'process';
 import { QueryDbService } from 'src/query-db/query-db.service';
 import { StudentService } from 'src/student/student.service';
 
