@@ -9,16 +9,12 @@ define({ "api": [
         "query string": [
           {
             "group": "query string",
-            "type": "int",
             "optional": false,
             "field": "pageSize",
             "description": ""
-          }
-        ],
-        "query String": [
+          },
           {
-            "group": "query String",
-            "type": "int",
+            "group": "query string",
             "optional": false,
             "field": "offset",
             "description": ""
@@ -109,6 +105,48 @@ define({ "api": [
         {
           "title": "Success-Response",
           "content": "[\n     {\n         \"id\": 1,\n         \"name\": \"admin\",\n         \"email\": \"efbffcbc@mail2.sysu.edu.cn\",\n         \"latestRecordTime\": \"2020-10-07T15:08:46.000Z\"\n     }\n ]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/teacher/teacher.controller.ts",
+    "groupTitle": "Teacher"
+  },
+  {
+    "type": "get",
+    "url": "/teacher/student/:id",
+    "title": "GetStudentRecords",
+    "name": "GetStudentRecords",
+    "group": "Teacher",
+    "parameter": {
+      "fields": {
+        "query string": [
+          {
+            "group": "query string",
+            "optional": false,
+            "field": "pageSize",
+            "description": ""
+          },
+          {
+            "group": "query string",
+            "optional": false,
+            "field": "offset",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "Logined Teacher HasStudent"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n      \"total\": 2,\n      \"records\": [\n          {\n              \"id\": 1,\n              \"rtime\": \"2020-10-07T15:08:46.000Z\",\n              \"position\": \"testposition\",\n              \"detail\": {\n                  \"title\": \"lecture1\",\n                  \"content\": \"content1\",\n                  \"start\": \"2020-10-07T15:07:00.000Z\",\n                  \"end\": \"2020-10-09T15:07:00.000Z\"\n              }\n          },\n          {\n              \"id\": 2,\n              \"rtime\": \"1999-05-24T16:25:00.000Z\",\n              \"position\": \"testposition\",\n              \"detail\": {\n                  \"title\": \"日常考勤\"\n              }\n          }\n      ]\n  }",
           "type": "json"
         }
       ]

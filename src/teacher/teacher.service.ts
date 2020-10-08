@@ -1,11 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
+import { off } from 'process';
 import { QueryDbService } from 'src/query-db/query-db.service';
+import { StudentService } from 'src/student/student.service';
 
 @Injectable()
 export class TeacherService {
 
   constructor(
-    private readonly dbQuery: QueryDbService
+    private readonly dbQuery: QueryDbService,
+    private readonly studentService: StudentService
   ) {}
 
   /**
@@ -42,5 +45,30 @@ export class TeacherService {
         latestRecordTime: student.latestRecordTime
       };
     });
+  }
+
+  /**
+   * @permission student should be one of teacher's students
+   * @param id teacher.id
+   * @param sid student.id
+   */
+  async getAllRecordsOfOneStudent(id: number, sid: number, pageSize: number, offset: number) {
+    // to test if teacher has this student
+    
+    const hasStudentSql = `
+      SELECT 1
+      FROM teacher INNER JOIN student_teacher ON teacher.id=student_teacher.tid
+      WHERE teacher.id=? AND student_teacher.sid=?;
+    `
+
+    const result = await this.dbQuery.queryDb(hasStudentSql, [id, sid]);
+    if(result.length > 0) {
+      // call student's getRecords:
+      return await this.studentService.getRecords(sid, pageSize, offset);
+    }
+
+    throw new HttpException({
+      msg: '该老师没有这个学生'
+    }, 406);
   }
 }

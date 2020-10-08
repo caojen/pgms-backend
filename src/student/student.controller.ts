@@ -55,8 +55,8 @@ export class StudentController {
   /**
    * @api {get} /student/records GetStudentAllRecords
    * @apiName GetStudentAllRecords
-   * @apiParam (query string) {int} pageSize
-   * @apiParam (query String) {int} offset
+   * @apiParam (query string) pageSize
+   * @apiParam (query string) offset
    * @apiGroup Student
    * @apiPermission Logined Student
    * @apiSuccessExample {json} Success-Response
