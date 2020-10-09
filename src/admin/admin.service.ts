@@ -121,10 +121,10 @@ export class AdminService {
     const sql = `
       INSERT INTO settings('key', value, lastUpdateAdmin)
       VALUES(?, ?, ?)
-      ON DUPLICATE KEY UPDATE value=?;
+      ON DUPLICATE KEY UPDATE value=?, lastUpdateAdmin=?;
     `;
 
-    await this.dbQuery.queryDb(sql, [key, value, id, value]);
+    await this.dbQuery.queryDb(sql, [key, value, id, value, id]);
 
     return {
       msg: '操作成功'
