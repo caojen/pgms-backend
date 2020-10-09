@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, Param, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Param, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { LoginRequired } from 'src/user/user.guard';
 import { TeacherPermission } from './teacher.guard';
 import { TeacherService } from './teacher.service';
@@ -83,5 +83,25 @@ export class TeacherController {
     }
 
     return await this.teacherService.getAllRecordsOfOneStudent(tid, sid, pageSize, offset);
+  }
+
+
+  /**
+   * @api {put} /teacher/info TeacherUpdateInformation
+   * @apiName TeacherUpdateInformation
+   * @apiGroup Teacher
+   * @apiPermission Logined Teacher
+   * @apiSuccessExample {json} Success-Response
+   * { "msg": "操作成功" }
+   */
+  @Put('info')
+  @UseGuards(LoginRequired, TeacherPermission)
+  async updateMyInfo(@Req() req, @Body() body: {
+    email: string,
+    personal_page: string,
+    research_area: string
+  }) {
+    const tid = req.user.teacher.id;
+    return await this.teacherService.updateTeacherInfo(tid, body);
   }
 }

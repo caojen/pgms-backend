@@ -156,6 +156,30 @@
     "groupTitle": "Teacher"
   },
   {
+    "type": "put",
+    "url": "/teacher/info",
+    "title": "TeacherUpdateInformation",
+    "name": "TeacherUpdateInformation",
+    "group": "Teacher",
+    "permission": [
+      {
+        "name": "Logined Teacher"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{ \"msg\": \"操作成功\" }",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/teacher/teacher.controller.ts",
+    "groupTitle": "Teacher"
+  },
+  {
     "type": "get",
     "url": "/user/status",
     "title": "CurrentUserStatus",

@@ -70,4 +70,24 @@ export class TeacherService {
       msg: '该老师没有这个学生'
     }, 406);
   }
+  
+  /**
+   * 
+   * @param id teacher.id
+   * @param \{email, personal_page, research_area\}
+   */
+  async updateTeacherInfo(id: number, {email, personal_page, research_area}) {
+    const sql = `
+      UPDATE teacher
+      SET teacher.email=?, personal_page=?, research_area=?
+      WHERE teacher.id=?;
+    `;
+
+    await this.dbQuery.queryDb(sql, [email, personal_page, research_area, id]);
+
+    return {
+      msg: '操作成功'
+    };
+  }
+
 }

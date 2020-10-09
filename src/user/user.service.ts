@@ -52,7 +52,7 @@ export class UserService {
     {
       // to test if user is a teacher
       const teacherSql = `
-        SELECT id, name, personal_page, research_area
+        SELECT id, name, personal_page, research_area, email
         FROM teacher
         WHERE uid=?;
       `;
