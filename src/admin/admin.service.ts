@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { QueryDbService } from 'src/query-db/query-db.service';
 import { StudentService } from 'src/student/student.service';
 
@@ -264,5 +264,26 @@ export class AdminService {
     return {
       msg: '操作成功'
     };
+  }
+
+  async insertOnePosition(description: string, device: string) {
+    const sql = `
+      INSERT INTO position (description, device)
+      VALUES (?, ?);
+    `;
+
+    try {
+      await this.dbQuery.queryDb(sql, [description, device]);
+
+      return {
+        msg: '创建成功'
+      }
+
+    } catch (err) {
+      throw new HttpException({
+        msg: '创建失败',
+        err
+      }, 406);
+    }
   }
 }

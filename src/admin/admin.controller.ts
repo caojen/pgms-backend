@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Req, HttpException, UseGuards, Param, Put, Body } from '@nestjs/common';
+import { Controller, Get, Query, Req, HttpException, UseGuards, Param, Put, Body, Post } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { LoginRequired } from 'src/user/user.guard';
 import { AttendAdminPermission } from './admin.guard';
@@ -233,6 +233,14 @@ export class AdminController {
     const { description, device } = body;
     
     return await this.adminService.changeOnePosition(pid, description, device);
+  }
+
+  @Post('attend/position')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async insertOnePosition(@Body() body: {description: string, device: string}) {
+    const { description, device } = body;
+
+    return await this.adminService.insertOnePosition(description, device);
   }
 
 }
