@@ -176,4 +176,26 @@ export class AdminController {
     const { tid } = param;
     return await this.adminService.getOneTeacherInfo(tid);
   }
+
+  /**
+   * @api {get} /admin/attend/lectures GetAllLectures
+   * @apiName GetAllLectures
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiParam (query string) {int} pageSize
+   * @apiParam (query string) {int} offset
+   */
+  @Get('attend/lectures')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async getAllLectures(@Query() query: {pageSize: number, offset: number}) {
+    const {pageSize, offset} = query;
+    if(isNaN(pageSize) || isNaN(offset)) {
+      throw new HttpException({
+        msg: '参数错误'
+      }, 406);
+    }
+
+    return await this.adminService.getAllLectures(pageSize, offset);
+  }
+
 }

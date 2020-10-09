@@ -25,6 +25,41 @@
   },
   {
     "type": "get",
+    "url": "/admin/attend/lectures",
+    "title": "GetAllLectures",
+    "name": "GetAllLectures",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "query string": [
+          {
+            "group": "query string",
+            "type": "int",
+            "optional": false,
+            "field": "pageSize",
+            "description": ""
+          },
+          {
+            "group": "query string",
+            "type": "int",
+            "optional": false,
+            "field": "offset",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "get",
     "url": "/admin/attend/teachers",
     "title": "GetAllTeachers",
     "name": "GetAllTeachers",

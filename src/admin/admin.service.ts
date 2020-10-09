@@ -187,4 +187,50 @@ export class AdminService {
       }),
     };
   }
+
+  /**
+   * 
+   * @param pageSize 
+   * @param offset 
+   */
+  async getAllLectures(pageSize: number, offset: number) {
+    const countSql = `
+      SELECT count(1) AS count
+      FROM lecture;
+    `;
+
+    const querySql = `
+      SELECT id, title, content, start, end
+      FROM lecture
+      LIMIT ?, ?;
+    `;
+
+    const count = (await this.dbQuery.queryDb(countSql, []))[0].count;
+    const lectures = await this.dbQuery.queryDb(querySql, [pageSize * offset, pageSize * 1]);
+
+    const positionSql = `
+      SELECT position.description AS description, position.device AS device, position.id AS pid
+      FROM lecture
+        LEFT JOIN lecture_position ON lecture.id = lecture_position.lid
+        LEFT JOIN position ON position.id = lecture_position.pid
+      WHERE lecture.id=?;
+    `;
+
+    for(const index in lectures) {
+      const lecture = lectures[index];
+      const positions = await this.dbQuery.queryDb(positionSql, [lecture.id]);
+      lecture.positions = positions.map(position => {
+        return {
+          id: position.pid,
+          description: position.description,
+          device: position.device,
+        };
+      });
+    }
+
+    return {
+      count,
+      lectures
+    }
+  }
 }
