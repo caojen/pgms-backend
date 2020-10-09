@@ -25,6 +25,30 @@ define({ "api": [
   },
   {
     "type": "get",
+    "url": "/admin/attend/student/:sid",
+    "title": "GetStudentInfo",
+    "name": "GetStudentInfo",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin,"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"id\": 1,\n  \"name\": \"admin\",\n  \"email\": \"mail@qq.com\",\n  \"student_id\": \"18342005\",\n  \"teacher\": {\n    \"id\": 1,\n    \"name\": \"teachername\",\n    \"temail\": \"mail2@qq.com\",\n    \"personal_page\": \"www.baidu.com\",\n    \"research_area\": \"are, ee, test\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "get",
     "url": "/student/records",
     "title": "GetStudentAllRecords",
     "name": "GetStudentAllRecords",
