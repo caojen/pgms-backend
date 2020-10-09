@@ -346,6 +346,23 @@ export class AdminService {
 
     return {
       msg: '操作已完成'
-    }
+    };
+  }
+
+  /**
+   * 
+   * @param id lecture.id
+   */
+  async deleteOneLecture(id: number) {
+    const sql = `
+      DELETE FROM lecture
+      WHERE id=?;
+    `;
+
+    await this.dbQuery.queryDb(sql, [id]);
+
+    return {
+      msg: '操作已完成'
+    };
   }
 }

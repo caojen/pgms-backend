@@ -295,4 +295,21 @@ export class AdminController {
     return await this.adminService.addOneLecture(body);
   }
 
+  /**
+   * @api {delete} /admin/attend/lecture/:lid DeleteOneLectue
+   * @apiName DeleteOneLectue
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+{
+    "msg": "操作已完成"
+}
+   */
+  @Delete('attend/lecture/:lid')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async deleteOneLecture(@Param() param: {lid: number}) {
+    const {lid} = param;
+    return await this.adminService.deleteOneLecture(lid);
+  }
+
 }
