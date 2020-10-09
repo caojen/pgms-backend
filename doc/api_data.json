@@ -114,6 +114,21 @@
     "groupTitle": "AttendAdmin"
   },
   {
+    "type": "put",
+    "url": "/admin/attend/setting",
+    "title": "UpdateOrInsertSetting",
+    "name": "UpdateOrInsertSetting",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
     "type": "get",
     "url": "/student/records",
     "title": "GetStudentAllRecords",

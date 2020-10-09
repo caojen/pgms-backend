@@ -110,4 +110,24 @@ export class AdminService {
       }
     });
   }
+
+  /**
+   * 
+   * @param id admin.id
+   * @param key 
+   * @param value 
+   */
+  async updateOrInsertSetting(id: number, key: string, value: string | number) {
+    const sql = `
+      INSERT INTO settings('key', value, lastUpdateAdmin)
+      VALUES(?, ?, ?)
+      ON DUPLICATE KEY UPDATE value=?;
+    `;
+
+    await this.dbQuery.queryDb(sql, [key, value, id, value]);
+
+    return {
+      msg: '操作成功'
+    };
+  }
 }

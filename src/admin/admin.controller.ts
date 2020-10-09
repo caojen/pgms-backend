@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Req, HttpException, UseGuards, Param } from '@nestjs/common';
+import { Controller, Get, Query, Req, HttpException, UseGuards, Param, Put, Body } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { LoginRequired } from 'src/user/user.guard';
 import { AttendAdminPermission } from './admin.guard';
@@ -130,5 +130,19 @@ export class AdminController {
   @UseGuards(LoginRequired, AttendAdminPermission)
   async getSettings() {
     return await this.adminService.getSettings();
+  }
+
+  /**
+   * @api {put} /admin/attend/setting UpdateOrInsertSetting
+   * @apiName UpdateOrInsertSetting
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   */
+  @Put('attend/setting')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async updateOrInsertSetting(@Req() req, @Body() body: {key: string, value: string | number}) {
+    const id = req.user.admin.id;
+    const {key, value} = body;
+    return await this.adminService.updateOrInsertSetting(id, key, value);
   }
 }
