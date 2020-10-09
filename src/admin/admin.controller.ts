@@ -217,4 +217,22 @@ export class AdminController {
     return await this.adminService.getAllPositions();
   }
 
+  /**
+   * @api {put} /admin/attend/position/:pid ChangeOnePosition
+   * @apiName ChangeOnePosition
+   * @apiGroup AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+{
+    "msg": "操作成功"
+}
+   */
+  @Put('attend/position/:pid')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async changeOnePosition(@Param() param: {pid: number}, @Body() body: {description: string, device: string}) {
+    const { pid }= param;
+    const { description, device } = body;
+    
+    return await this.adminService.changeOnePosition(pid, description, device);
+  }
+
 }

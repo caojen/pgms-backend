@@ -1,5 +1,24 @@
 [
   {
+    "type": "put",
+    "url": "/admin/attend/position/:pid",
+    "title": "ChangeOnePosition",
+    "name": "ChangeOnePosition",
+    "group": "AttendAdmin",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n    \"msg\": \"操作成功\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
     "type": "get",
     "url": "/admin/attend/students",
     "title": "GetAllAttendStudents",

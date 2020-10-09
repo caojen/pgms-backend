@@ -245,4 +245,24 @@ export class AdminService {
 
     return await this.dbQuery.queryDb(sql, []);
   }
+
+  /**
+   * 
+   * @param id position.id
+   * @param description 
+   * @param device 
+   */
+  async changeOnePosition(id: number, description: string, device: string) {
+    const sql = `
+      UPDATE position
+      SET description=?, device=?
+      WHERE id=?;
+    `;
+
+    await this.dbQuery.queryDb(sql, [description, device, id]);
+
+    return {
+      msg: '操作成功'
+    };
+  }
 }
