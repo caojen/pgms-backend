@@ -268,7 +268,7 @@ export class AdminService {
 
   async insertOnePosition(description: string, device: string) {
     const sql = `
-      INSERT INTO position (description, device)
+      INSERT INTO \`position\` (description, device)
       VALUES (?, ?);
     `;
 

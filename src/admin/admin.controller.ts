@@ -202,6 +202,7 @@ export class AdminController {
    * @api {get} /admin/attend/positions GetAllPositions
    * @apiName GetAllPositions
    * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
    * @apiSuccessExample {json} Success-Response
 [
     {
@@ -221,6 +222,7 @@ export class AdminController {
    * @api {put} /admin/attend/position/:pid ChangeOnePosition
    * @apiName ChangeOnePosition
    * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
    * @apiSuccessExample {json} Success-Response
 {
     "msg": "操作成功"
@@ -235,6 +237,16 @@ export class AdminController {
     return await this.adminService.changeOnePosition(pid, description, device);
   }
 
+    /**
+   * @api {put} /admin/attend/position AddOnePosition
+   * @apiName AddOnePosition
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+{
+    "msg": "操作成功"
+}
+   */
   @Post('attend/position')
   @UseGuards(LoginRequired, AttendAdminPermission)
   async insertOnePosition(@Body() body: {description: string, device: string}) {

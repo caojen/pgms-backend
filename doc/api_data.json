@@ -1,10 +1,39 @@
 [
   {
     "type": "put",
+    "url": "/admin/attend/position",
+    "title": "AddOnePosition",
+    "name": "AddOnePosition",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n    \"msg\": \"操作成功\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "put",
     "url": "/admin/attend/position/:pid",
     "title": "ChangeOnePosition",
     "name": "ChangeOnePosition",
     "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
     "success": {
       "examples": [
         {
@@ -83,6 +112,11 @@
     "title": "GetAllPositions",
     "name": "GetAllPositions",
     "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
     "success": {
       "examples": [
         {
