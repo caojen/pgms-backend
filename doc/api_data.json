@@ -60,6 +60,25 @@
   },
   {
     "type": "get",
+    "url": "/admin/attend/positions",
+    "title": "GetAllPositions",
+    "name": "GetAllPositions",
+    "group": "AttendAdmin",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n    {\n        \"id\": 1,\n        \"description\": \"testposition\",\n        \"device\": \"device1\"\n    }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "get",
     "url": "/admin/attend/teachers",
     "title": "GetAllTeachers",
     "name": "GetAllTeachers",

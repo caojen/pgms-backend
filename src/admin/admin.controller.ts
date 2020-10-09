@@ -198,4 +198,23 @@ export class AdminController {
     return await this.adminService.getAllLectures(pageSize, offset);
   }
 
+  /**
+   * @api {get} /admin/attend/positions GetAllPositions
+   * @apiName GetAllPositions
+   * @apiGroup AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+[
+    {
+        "id": 1,
+        "description": "testposition",
+        "device": "device1"
+    }
+]
+   */
+  @Get('attend/positions')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async getAllPositions() {
+    return await this.adminService.getAllPositions();
+  }
+
 }

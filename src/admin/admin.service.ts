@@ -233,4 +233,16 @@ export class AdminService {
       lectures
     }
   }
+
+  /**
+   * return all positions
+   */
+  async getAllPositions() {
+    const sql = `
+      SELECT *
+      FROM position;
+    `;
+
+    return await this.dbQuery.queryDb(sql, []);
+  }
 }
