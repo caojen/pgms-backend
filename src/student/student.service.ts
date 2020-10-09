@@ -70,7 +70,7 @@ export class StudentService {
 
     const selectedLectureSql = `
       SELECT lecture.title AS title, lecture.content AS content, lecture.start AS start, lecture.end AS end
-      FROM lecture INNER JOIN lecture_position ON lecture.id=lecture_position.rid
+      FROM lecture INNER JOIN lecture_position ON lecture.id=lecture_position.lid
       WHERE lecture.start <= ?
         AND lecture.end >= ?
         AND lecture_position.pid = ?;

@@ -48,6 +48,30 @@ define({ "api": [
     "groupTitle": "AttendAdmin"
   },
   {
+    "type": "post",
+    "url": "/admin/attend/lecture/:lid/student/:sid/:pid",
+    "title": "AddRecordForStudent",
+    "name": "AddRecordForStudent",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n    \"msg\": \"操作已完成\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
     "type": "put",
     "url": "/admin/attend/position/:pid",
     "title": "ChangeOnePosition",

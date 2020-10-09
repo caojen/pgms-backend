@@ -336,4 +336,22 @@ export class AdminController {
     return await this.adminService.updateOneLecture(lid, body);
   }
 
+  /**
+   * @api {post} /admin/attend/lecture/:lid/student/:sid/:pid AddRecordForStudent
+   * @apiName AddRecordForStudent
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+{
+    "msg": "操作已完成"
+}
+   */
+  @Post('attend/lecture/:lid/student/:sid/:pid')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async addRecordForStudent(@Param() param: {lid: number, sid: number, pid:number}) {
+    const {lid, sid, pid} = param;
+
+    return await this.adminService.addRecordForStudent(lid, sid, pid);
+  }
+
 }

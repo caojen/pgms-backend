@@ -413,4 +413,40 @@ export class AdminService {
       msg: '操作已完成'
     };
   }
+
+  /**
+   * 
+   * @param id lecture.id
+   * @param sid student.id
+   * @param pid position.id
+   */
+  async addRecordForStudent(id: number, sid: number, pid: number) {
+    // need to check if there is a position of lecture
+    const findSql = `
+      SELECT lecture.start
+      FROM lecture INNER JOIN lecture_position on lecture.id=lecture_position.lid
+      WHERE lecture.id=? and lecture_position.pid=?;
+    `;
+
+    const findResult = await this.dbQuery.queryDb(findSql, [id, pid]);
+    if(findResult.length === 0) {
+      throw new HttpException({
+        msg: '该Lecture不存在此地点'
+      }, 406);
+    }
+
+    const start = findResult[0].start;
+
+    // insert:
+    const insertSql = `
+      INSERT INTO record(time, sid, pid)
+      VALUES(?, ?, ?);
+    `;
+
+    await this.dbQuery.queryDb(insertSql, [start, sid, pid]);
+
+    return {
+      msg: '操作已成功'
+    };
+  }
 }
