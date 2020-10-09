@@ -94,7 +94,7 @@ export class AutoscriptService extends NestSchedule {
         }
       }
 
-      this.logger.log(`auto affected rows: ${affectedRows}`)
+      this.logger.log(`auto affected rows: ${affectedRows}, ${startTime}, ${endTime}`)
     }
 
   }
