@@ -7,9 +7,10 @@ import { EndeModule } from './ende/ende.module';
 import { StudentModule } from './student/student.module';
 import { AutoscriptModule } from './autoscript/autoscript.module';
 import { TeacherModule } from './teacher/teacher.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
-  imports: [QueryDbModule, UserModule, EndeModule, StudentModule, AutoscriptModule, TeacherModule],
+  imports: [QueryDbModule, UserModule, EndeModule, StudentModule, AutoscriptModule, TeacherModule, AdminModule],
   controllers: [AppController],
   providers: [AppService],
 })
