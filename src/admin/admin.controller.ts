@@ -273,4 +273,26 @@ export class AdminController {
     return await this.adminService.deleteOnePosition(pid);
   }
 
+  /**
+   * @api {post} /admin/attend/lecture AddOneLectue
+   * @apiName AddOneLectue
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+{
+    "msg": "操作已完成"
+}
+   */
+  @Post('attend/lecture')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async addOneLecture(@Body() body: {
+    title: string,
+    content: string,
+    position: number[],
+    start: Date,
+    end: Date
+  }) {
+    return await this.adminService.addOneLecture(body);
+  }
+
 }

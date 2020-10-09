@@ -211,8 +211,8 @@ export class AdminService {
     const positionSql = `
       SELECT position.description AS description, position.device AS device, position.id AS pid
       FROM lecture
-        LEFT JOIN lecture_position ON lecture.id = lecture_position.lid
-        LEFT JOIN position ON position.id = lecture_position.pid
+        INNER JOIN lecture_position ON lecture.id = lecture_position.lid
+        INNER JOIN position ON position.id = lecture_position.pid
       WHERE lecture.id=?;
     `;
 
@@ -303,6 +303,47 @@ export class AdminService {
     `;
 
     await this.dbQuery.queryDb(sql, [id]);
+    return {
+      msg: '操作已完成'
+    }
+  }
+
+  /**
+   * 
+   * @param body 
+   */
+  async addOneLecture(body: {
+    title: string,
+    content: string,
+    position: number[],
+    start: Date,
+    end: Date
+  }) {
+    const insertSql = `
+      INSERT INTO lecture(title, content, start, end)
+      VALUES(?, ?, ?, ?);
+    `;
+
+    const insertId = ((await this.dbQuery.queryDb(insertSql, [
+      body.title,
+      body.content,
+      body.start,
+      body.end
+    ])) as any).insertId;
+
+    const insertPositionSql = `
+      INSERT INTO lecture_position(lid, pid)
+      VALUES(?, ?);
+    `;
+
+    for(const value of body.position) {
+      try {
+        await this.dbQuery.queryDb(insertPositionSql, [insertId, value])
+      } catch(err) {
+        // ignore error here...
+      }
+    }
+
     return {
       msg: '操作已完成'
     }
