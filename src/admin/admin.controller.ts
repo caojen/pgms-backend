@@ -9,6 +9,23 @@ export class AdminController {
     private readonly adminService: AdminService
   ) {}
 
+  /**
+   * @api {get} /admin/attend/students GetAllAttendStudents
+   * @apiName GetAllAttendStudents
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+   * {
+   *  "id:" 1,
+   *  "name": "jack",
+   *  "student_id": "18342005",
+   *  "email": "jack@qq.com",
+   *  "user": {
+   *    "id": 1,
+   *    "username": "18342005"
+   *  }
+   * }
+   */
   @Get('attend/students')
   @UseGuards(LoginRequired, AttendAdminPermission)
   async getAllAttendStudents(@Query() query: {

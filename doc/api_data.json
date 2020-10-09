@@ -1,6 +1,30 @@
 [
   {
     "type": "get",
+    "url": "/admin/attend/students",
+    "title": "GetAllAttendStudents",
+    "name": "GetAllAttendStudents",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n \"id:\" 1,\n \"name\": \"jack\",\n \"student_id\": \"18342005\",\n \"email\": \"jack@qq.com\",\n \"user\": {\n   \"id\": 1,\n   \"username\": \"18342005\"\n }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "get",
     "url": "/student/records",
     "title": "GetStudentAllRecords",
     "name": "GetStudentAllRecords",
