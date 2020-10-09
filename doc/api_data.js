@@ -324,6 +324,30 @@ define({ "api": [
   },
   {
     "type": "put",
+    "url": "/admin/attend/lecture/:lid",
+    "title": "UpdateOneLecture",
+    "name": "UpdateOneLecture",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n    \"msg\": \"操作已完成\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "put",
     "url": "/admin/attend/setting",
     "title": "UpdateOrInsertSetting",
     "name": "UpdateOrInsertSetting",

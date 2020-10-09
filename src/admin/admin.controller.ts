@@ -288,7 +288,7 @@ export class AdminController {
   async addOneLecture(@Body() body: {
     title: string,
     content: string,
-    position: number[],
+    positions: number[],
     start: Date,
     end: Date
   }) {
@@ -310,6 +310,30 @@ export class AdminController {
   async deleteOneLecture(@Param() param: {lid: number}) {
     const {lid} = param;
     return await this.adminService.deleteOneLecture(lid);
+  }
+
+
+  /**
+   * @api {put} /admin/attend/lecture/:lid UpdateOneLecture
+   * @apiName UpdateOneLecture
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+{
+    "msg": "操作已完成"
+}
+   */
+  @Put('attend/lecture/:lid')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async updateOneLecture(@Param() param: {lid: number}, @Body() body: {
+    title: string,
+    content: string,
+    positions: number[],
+    start: Date,
+    end: Date
+  }) {
+    const {lid} = param;
+    return await this.adminService.updateOneLecture(lid, body);
   }
 
 }

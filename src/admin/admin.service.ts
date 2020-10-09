@@ -315,7 +315,7 @@ export class AdminService {
   async addOneLecture(body: {
     title: string,
     content: string,
-    position: number[],
+    positions: number[],
     start: Date,
     end: Date
   }) {
@@ -336,7 +336,7 @@ export class AdminService {
       VALUES(?, ?);
     `;
 
-    for(const value of body.position) {
+    for(const value of body.positions) {
       try {
         await this.dbQuery.queryDb(insertPositionSql, [insertId, value])
       } catch(err) {
@@ -360,6 +360,54 @@ export class AdminService {
     `;
 
     await this.dbQuery.queryDb(sql, [id]);
+
+    return {
+      msg: '操作已完成'
+    };
+  }
+
+  async updateOneLecture(id: number, body: {
+    title: string,
+    content: string,
+    positions: number[],
+    start: Date,
+    end: Date
+  }) {
+    // update itself
+    const updateSql = `
+      UPDATE lecture
+      SET title=?, content=?, start=?, end=?
+      WHERE id=?;
+    `;
+
+    await this.dbQuery.queryDb(updateSql, [
+      body.title,
+      body.content,
+      body.start,
+      body.end,
+      id
+    ]);
+
+    // delete all old positions:
+    const deleteSql = `
+      DELETE FROM lecture_position
+      WHERE lid=?;
+    `;
+
+    await this.dbQuery.queryDb(deleteSql, [id]);
+
+    // insert:
+    const insertPositionSql = `
+      INSERT INTO lecture_position(lid, pid)
+      VALUES(?, ?);
+    `;
+    for(const value of body.positions) {
+      try {
+        await this.dbQuery.queryDb(insertPositionSql, [id, value])
+      } catch(err) {
+        // ignore error here...
+      }
+    }
 
     return {
       msg: '操作已完成'
