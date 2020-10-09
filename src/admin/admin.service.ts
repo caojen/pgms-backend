@@ -115,11 +115,11 @@ export class AdminService {
    * 
    * @param id admin.id
    * @param key 
-   * @param value 
+   * @param value a json formatted like: {value: 15}
    */
-  async updateOrInsertSetting(id: number, key: string, value: string | number) {
+  async updateOrInsertSetting(id: number, key: string, value: string) {
     const sql = `
-      INSERT INTO settings('key', value, lastUpdateAdmin)
+      INSERT INTO settings(\`key\`, value, lastUpdateAdmin)
       VALUES(?, ?, ?)
       ON DUPLICATE KEY UPDATE value=?, lastUpdateAdmin=?;
     `;
@@ -128,6 +128,63 @@ export class AdminService {
 
     return {
       msg: '操作成功'
+    };
+  }
+
+  /**
+   * 
+   * @param pageSize 
+   * @param offset 
+   */
+  async getAllTeachers(pageSize: number, offset: number) {
+    const sql = `
+      SELECT id, name, email, personal_page, research_area
+      FROM teacher
+      ORDER BY id
+      LIMIT ?, ?;
+    `;
+
+    const query = await this.dbQuery.queryDb(sql, [pageSize*offset, pageSize*1]);
+    const countSql = `
+      SELECT count(1) AS count
+      FROM teacher;
+    `;
+    const count = (await this.dbQuery.queryDb(countSql, []))[0].count;
+    return {
+      count,
+      teachers: query
+    };
+  }
+
+  /**
+   * 
+   * @param id teacher.id
+   */
+  async getOneTeacherInfo(id: number) {
+    const sql = `
+      SELECT name, email, personal_page, research_area
+      FROM teacher
+      WHERE id=?;
+    `;
+
+    const queryStudentsSql = `
+      SELECT student.id AS sid, student.name AS name, student.sid AS student_id, student.email AS email
+      FROM student_teacher LEFT JOIN student ON student_teacher.sid=student.id
+      WHERE tid=?;
+    `
+
+    const basic = (await this.dbQuery.queryDb(sql, [id]))[0];
+    const students = await this.dbQuery.queryDb(queryStudentsSql, [id]);
+    return {
+      ...basic,
+      students: students.map(student => {
+        return {
+          id: student.sid,
+          name: student.name,
+          student_id: student.student_id,
+          email: student.email
+        };
+      }),
     };
   }
 }

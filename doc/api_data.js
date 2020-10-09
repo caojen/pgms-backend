@@ -25,6 +25,36 @@ define({ "api": [
   },
   {
     "type": "get",
+    "url": "/admin/attend/teachers",
+    "title": "GetAllTeachers",
+    "name": "GetAllTeachers",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "get",
+    "url": "/admin/attend/teacher/:tid",
+    "title": "GetOneTeacherInfo",
+    "name": "GetOneTeacherInfo",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "get",
     "url": "/admin/attend/settings",
     "title": "GetSettings",
     "name": "GetSettings",

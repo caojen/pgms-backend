@@ -140,9 +140,40 @@ export class AdminController {
    */
   @Put('attend/setting')
   @UseGuards(LoginRequired, AttendAdminPermission)
-  async updateOrInsertSetting(@Req() req, @Body() body: {key: string, value: string | number}) {
+  async updateOrInsertSetting(@Req() req, @Body() body: {key: string, value: string}) {
     const id = req.user.admin.id;
     const {key, value} = body;
     return await this.adminService.updateOrInsertSetting(id, key, value);
+  }
+
+  /**
+   * @api {get} /admin/attend/teachers GetAllTeachers
+   * @apiName GetAllTeachers
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   */
+  @Get('attend/teachers')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async getAllTeachers(@Query() query: {pageSize: number, offset: number}) {
+    const { pageSize, offset } = query;
+    if(isNaN(pageSize) || isNaN(offset)) {
+      throw new HttpException({
+        msg: '参数错误'
+      }, 406);
+    }
+    return await this.adminService.getAllTeachers(pageSize, offset);
+  }
+
+  /**
+   * @api {get} /admin/attend/teacher/:tid GetOneTeacherInfo
+   * @apiName GetOneTeacherInfo
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   */
+  @Get('attend/teacher/:tid')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async getOneTeacherInfo(@Param() param: {tid: number}) {
+    const { tid } = param;
+    return await this.adminService.getOneTeacherInfo(tid);
   }
 }
