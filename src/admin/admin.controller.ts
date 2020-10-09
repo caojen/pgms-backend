@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Req, HttpException, UseGuards, Param, Put, Body, Post } from '@nestjs/common';
+import { Controller, Get, Query, Req, HttpException, UseGuards, Param, Put, Body, Post, Delete } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { LoginRequired } from 'src/user/user.guard';
 import { AttendAdminPermission } from './admin.guard';
@@ -238,7 +238,7 @@ export class AdminController {
   }
 
     /**
-   * @api {put} /admin/attend/position AddOnePosition
+   * @api {post} /admin/attend/position AddOnePosition
    * @apiName AddOnePosition
    * @apiGroup AttendAdmin
    * @apiPermission Logined AttendAdmin
@@ -253,6 +253,24 @@ export class AdminController {
     const { description, device } = body;
 
     return await this.adminService.insertOnePosition(description, device);
+  }
+
+    /**
+   * @api {delete} /admin/attend/position DeleteOnePosition
+   * @apiName DeleteOnePosition
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+{
+    "msg": "操作已完成"
+}
+   */
+  @Delete('attend/position/:pid')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async deleteOnePosition(@Param() param: {pid: number}) {
+    const { pid } = param;
+
+    return await this.adminService.deleteOnePosition(pid);
   }
 
 }

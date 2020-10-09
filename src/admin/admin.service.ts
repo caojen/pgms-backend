@@ -266,6 +266,11 @@ export class AdminService {
     };
   }
 
+  /**
+   * 
+   * @param description 
+   * @param device 
+   */
   async insertOnePosition(description: string, device: string) {
     const sql = `
       INSERT INTO \`position\` (description, device)
@@ -284,6 +289,22 @@ export class AdminService {
         msg: '创建失败',
         err
       }, 406);
+    }
+  }
+
+  /**
+   * 
+   * @param id position.id
+   */
+  async deleteOnePosition(id: number) {
+    const sql = `
+      DELETE FROM \`position\`
+      WHERE id=?;
+    `;
+
+    await this.dbQuery.queryDb(sql, [id]);
+    return {
+      msg: '操作已完成'
     }
   }
 }

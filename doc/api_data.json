@@ -1,6 +1,6 @@
 [
   {
-    "type": "put",
+    "type": "post",
     "url": "/admin/attend/position",
     "title": "AddOnePosition",
     "name": "AddOnePosition",
@@ -39,6 +39,30 @@
         {
           "title": "Success-Response",
           "content": "{\n    \"msg\": \"操作成功\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "delete",
+    "url": "/admin/attend/position",
+    "title": "DeleteOnePosition",
+    "name": "DeleteOnePosition",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n    \"msg\": \"操作已完成\"\n}",
           "type": "json"
         }
       ]
