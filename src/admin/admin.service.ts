@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { QueryDbService } from 'src/query-db/query-db.service';
+import { StudentService } from 'src/student/student.service';
 
 @Injectable()
 export class AdminService {
   constructor(
-    private readonly dbQuery: QueryDbService
+    private readonly dbQuery: QueryDbService,
+    private readonly studentService: StudentService,
   ) {}
 
   async getAllAttendStudents(pageSize: number, offset: number) {
@@ -72,5 +74,16 @@ export class AdminService {
         research_area: result.research_area
       }
     };
+  }
+
+
+  /**
+   * 
+   * @param id student.id
+   * @param pageSize 
+   * @param offset 
+   */
+  async getStudentRecords(id: number, pageSize: number, offset: number) {
+    return this.studentService.getRecords(id, pageSize, offset);
   }
 }

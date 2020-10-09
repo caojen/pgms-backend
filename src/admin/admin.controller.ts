@@ -68,4 +68,43 @@ export class AdminController {
   async getOneStudentInfo(@Param() param: {sid: number}) {
     return await this.adminService.getStudentInfo(param.sid);
   }
+
+  /**
+   * @api {get} /admin/attend/student/:sid/records GetStudentRecords
+   * @apiName GetStudentRecords 
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiParam (query string) pageSize
+   * @apiParam (query string) offset
+   * @apiSuccessExample {json} Success-Response
+   * {
+   *    "total": 1,
+   *    "records": [
+   *    {
+   *         "id": 1,
+   *         "rtime": "2020-10-07T15:08:46.000Z",
+   *         "position": "testposition",
+   *         "detail": {
+   *             "title": "lecture1",
+   *             "content": "content1",
+   *             "start": "2020-10-07T15:07:00.000Z",
+   *             "end": "2020-10-09T15:07:00.000Z"
+   *         }
+   *     }
+   * ]
+   * }
+   */
+  @Get('attend/student/:sid/records')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async getStudentRecords(@Param() param: {sid: number}, @Query() query: {pageSize: number, offset: number}) {
+    const { sid } = param;
+    const { pageSize, offset } = query;
+    if(isNaN(pageSize) || isNaN(offset)) {
+      throw new HttpException({
+        msg: '参数错误'
+      }, 406);
+    }
+
+    return await this.adminService.getStudentRecords(sid, pageSize, offset);
+  }
 }
