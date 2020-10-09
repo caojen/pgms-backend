@@ -68,6 +68,24 @@ export class UserService {
       }
     }
 
+    {
+      // to test if user is a admin
+      const adminSql = `
+        SELECT id, name, type
+        FROM admin
+        WHERE uid=?;
+      `;
+      const query = (await this.dbService.queryDb(adminSql, [uid]))[0];
+      if(!!query) {
+        res = {
+          ...res,
+          admin: {
+            ...query,
+          },
+        };
+      }
+    }
+
     return res;
   }
 
