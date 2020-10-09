@@ -107,4 +107,28 @@ export class AdminController {
 
     return await this.adminService.getStudentRecords(sid, pageSize, offset);
   }
+
+  /**
+   * @api {get} /admin/attend/settings GetSettings
+   * @apiName GetSettings
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+   * [
+   *  {
+   *    "key": "setting_key",
+   *    "value": "setting_val, may be string, array, or number",
+   *    "lastUpdateTime": "2020-09-01 11:15:00",
+   *    "lastUpdateAdmin": {
+   *      "name": "adminname",
+   *      "type": "admintype"
+   *    }
+   *  }
+   * ]
+   */
+  @Get('attend/settings')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async getSettings() {
+    return await this.adminService.getSettings();
+  }
 }

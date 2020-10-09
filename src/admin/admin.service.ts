@@ -86,4 +86,28 @@ export class AdminService {
   async getStudentRecords(id: number, pageSize: number, offset: number) {
     return this.studentService.getRecords(id, pageSize, offset);
   }
+
+  /**
+   * get all settings from table setting
+   */
+  async getSettings() {
+    const sql = `
+      SELECT 'key', value, lastUpdate, lastUpdateAdmin,
+        name, type
+      FROM settings LEFT JOIN admin ON settings.lastUpdateAdmin=admin.id;
+    `;
+
+    const query = await this.dbQuery.queryDb(sql, []);
+    return query.map(result => {
+      return {
+        key: result.key,
+        value: result.value,
+        lastUpdateTime: result.lastUpdate,
+        lastUpdateAdmin: {
+          name: result.name,
+          type: result.type
+        }
+      }
+    });
+  }
 }

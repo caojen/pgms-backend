@@ -25,6 +25,30 @@
   },
   {
     "type": "get",
+    "url": "/admin/attend/settings",
+    "title": "GetSettings",
+    "name": "GetSettings",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n {\n   \"key\": \"setting_key\",\n   \"value\": \"setting_val, may be string, array, or number\",\n   \"lastUpdateTime\": \"2020-09-01 11:15:00\",\n   \"lastUpdateAdmin\": {\n     \"name\": \"adminname\",\n     \"type\": \"admintype\"\n   }\n }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "get",
     "url": "/admin/attend/student/:sid",
     "title": "GetStudentInfo",
     "name": "GetStudentInfo",
