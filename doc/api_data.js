@@ -216,6 +216,30 @@ define({ "api": [
     "groupTitle": "AttendAdmin"
   },
   {
+    "type": "delete",
+    "url": "/admin/attend/teacher/:tid",
+    "title": "DeleteOneTeacher",
+    "name": "DeleteOneTeacher",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n    \"msg\": \"操作已完成\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
     "type": "get",
     "url": "/admin/attend/students",
     "title": "GetAllAttendStudents",
@@ -471,6 +495,54 @@ define({ "api": [
     "url": "/admin/attend/student/:sid",
     "title": "UpdateOneStudentInfo",
     "name": "UpdateOneStudentInfo",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n    \"msg\": \"操作已完成\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "put",
+    "url": "/admin/attend/teacher/:tid",
+    "title": "UpdateOneTeacher",
+    "name": "UpdateOneTeacher",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n    \"msg\": \"操作已完成\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "put",
+    "url": "/admin/attend/student/:sid/teacher/:tid",
+    "title": "UpdateOneTeacher",
+    "name": "UpdateOneTeacher",
     "group": "AttendAdmin",
     "permission": [
       {
