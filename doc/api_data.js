@@ -144,6 +144,21 @@ define({ "api": [
     "groupTitle": "AttendAdmin"
   },
   {
+    "type": "put",
+    "url": "/admin/attend/:uid/password",
+    "title": "ChangePassword",
+    "name": "ChangePassword",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "group": "AttendAdmin",
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
     "type": "delete",
     "url": "/admin/attend/lecture/:lid",
     "title": "DeleteOneLectue",

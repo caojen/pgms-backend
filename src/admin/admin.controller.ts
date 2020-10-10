@@ -579,6 +579,12 @@ export class AdminController {
     return await this.adminService.addStudents(body);
   }
 
+  /**
+   * @api {put} /admin/attend/:uid/password ChangePassword
+   * @apiName ChangePassword
+   * @apiPermission Logined AttendAdmin
+   * @apiGroup AttendAdmin
+   */
   @Put('attend/:uid/password')
   @UseGuards(LoginRequired, AttendAdminPermission)
   async changePasswordForUser(@Param() param: {uid: number}, @Body() body: {password: string}) {
