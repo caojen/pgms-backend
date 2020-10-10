@@ -2,6 +2,7 @@ import { Controller, Get, Query, Req, HttpException, UseGuards, Param, Put, Body
 import { AdminService } from './admin.service';
 import { LoginRequired } from 'src/user/user.guard';
 import { AttendAdminPermission } from './admin.guard';
+import { EndeService } from 'src/ende/ende.service';
 
 @Controller('admin')
 export class AdminController {
@@ -355,8 +356,8 @@ export class AdminController {
   }
 
   /**
-   * @api {delete} /admin/attend/:rid DeleteRecord
-   * @apiName DeleteRecord
+   * @api {delete} /admin/attend/:rid DeleteOneRecord
+   * @apiName DeleteOneRecord
    * @apiGroup AttendAdmin
    * @apiPermission Logined AttendAdmin
    * @apiSuccessExample {json} Success-Response
@@ -371,4 +372,148 @@ export class AdminController {
     return await this.adminService.deleteRecord(rid);
   }
 
+  /**
+   * @api {post} /admin/attend/student AddOneStudent
+   * @apiName AddOneStudent
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+   * { "msg": "操作成功" }
+   */
+  @Post('attend/student')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async addOneStudent(@Body() body: {
+    username: string,
+    password: string,
+    name: string,
+    email: string,
+    teacher: number,
+    student_id: string
+  }) {
+    if(!!body.password) {
+      body.password = EndeService.decodeFromHttp(body.password);
+    }
+
+    return await this.adminService.addOneStudent(body);
+  }
+
+  /**
+   * @api {delete} /admin/attend/student/:sid DeleteOneStudent
+   * @apiName DeleteOneStudent
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+{
+    "msg": "操作已完成"
+}
+   */
+  @Delete('attend/student/:sid')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async deleteOneStudent(@Param() param: {sid: number}) {
+    const { sid } = param;
+    return await this.adminService.deleteOneStudent(sid);
+  }
+
+  /**
+   * @api {put} /admin/attend/student/:sid UpdateOneStudentInfo
+   * @apiName UpdateOneStudentInfo
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+{
+    "msg": "操作已完成"
+}
+   */
+  @Put('attend/student/:sid')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async updateOneStudentInfo(@Param() param: {sid: number}, @Body() body: {
+    email: string,
+    student_id: string,
+    name: string,
+  }) {
+    const { sid } = param;
+    return await this.adminService.updateOneStudentInfo(sid, body);
+  }
+
+  /**
+   * @api {post} /admin/attend/teacher InsertOneTeacher
+   * @apiName InsertOneTeacher
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+{
+    "msg": "操作已完成"
+}
+   */
+  @Post('attend/teacher')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async insertOneTeacher(@Body() body: {
+    username: string,
+    password: string,
+    name: string,
+    email: string,
+    personal_page: string,
+    research_area: string,
+  }) {
+    if(!!body.password) {
+      body.password = EndeService.decodeFromHttp(body.password);
+    }
+    return await this.adminService.addOneTeacher(body);
+  }
+
+  /**
+   * @api {delete} /admin/attend/teacher/:tid DeleteOneTeacher
+   * @apiName DeleteOneTeacher
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+{
+    "msg": "操作已完成"
+}
+   */
+  @Delete('attend/teacher/:tid')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async deleteOneTeacher(@Param() param: {tid: number}) {
+    const { tid } = param;
+    return await this.adminService.deleteOneTeacher(tid);
+  }
+
+  /**
+   * @api {put} /admin/attend/teacher/:tid UpdateOneTeacher
+   * @apiName UpdateOneTeacher
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+{
+    "msg": "操作已完成"
+}
+   */
+  @Put('attend/teacher/:tid')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async updateOneTeacher(@Param() param: {tid: number}, @Body() body: {
+    name: string,
+    research_area: string,
+    personal_page: string,
+    email: string,
+  }) {
+    const { tid } = param;
+    return await this.adminService.updateOneTeacher(tid, body);
+  }
+
+  /**
+   * @api {put} /admin/attend/student/:sid/teacher/:tid UpdateOneTeacher
+   * @apiName UpdateOneTeacher
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+{
+    "msg": "操作已完成"
+}
+   */
+  @Put('attend/student/:sid/teacher/:tid')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async addOrChangeTeacherForStudent(@Param() param: {sid: number, tid: number}) {
+    const {sid, tid} = param;
+    return await this.adminService.addOrChangeTeacherForStudent(sid, tid);
+  }
 }

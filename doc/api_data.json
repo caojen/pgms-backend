@@ -49,6 +49,30 @@
   },
   {
     "type": "post",
+    "url": "/admin/attend/student",
+    "title": "AddOneStudent",
+    "name": "AddOneStudent",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{ \"msg\": \"操作成功\" }",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "post",
     "url": "/admin/attend/lecture/:lid/student/:sid/:pid",
     "title": "AddRecordForStudent",
     "name": "AddRecordForStudent",
@@ -146,8 +170,32 @@
   {
     "type": "delete",
     "url": "/admin/attend/:rid",
-    "title": "DeleteRecord",
-    "name": "DeleteRecord",
+    "title": "DeleteOneRecord",
+    "name": "DeleteOneRecord",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n    \"msg\": \"操作已完成\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "delete",
+    "url": "/admin/attend/student/:sid",
+    "title": "DeleteOneStudent",
+    "name": "DeleteOneStudent",
     "group": "AttendAdmin",
     "permission": [
       {
@@ -371,10 +419,58 @@
     "groupTitle": "AttendAdmin"
   },
   {
+    "type": "post",
+    "url": "/admin/attend/teacher",
+    "title": "InsertOneTeacher",
+    "name": "InsertOneTeacher",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n    \"msg\": \"操作已完成\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
     "type": "put",
     "url": "/admin/attend/lecture/:lid",
     "title": "UpdateOneLecture",
     "name": "UpdateOneLecture",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n    \"msg\": \"操作已完成\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "put",
+    "url": "/admin/attend/student/:sid",
+    "title": "UpdateOneStudentInfo",
+    "name": "UpdateOneStudentInfo",
     "group": "AttendAdmin",
     "permission": [
       {

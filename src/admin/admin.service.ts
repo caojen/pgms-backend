@@ -1,4 +1,5 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Injectable, UseFilters } from '@nestjs/common';
+import { EndeService } from 'src/ende/ende.service';
 import { QueryDbService } from 'src/query-db/query-db.service';
 import { StudentService } from 'src/student/student.service';
 
@@ -468,6 +469,253 @@ export class AdminService {
     await this.dbQuery.queryDb(sql, [id]);
     return {
       msg: '操作已完成'
+    };
+  }
+
+  async addOneStudent(body: {
+    username: string,
+    password: string,
+    name: string,
+    email: string,
+    teacher: number,
+    student_id: string,
+  }) {
+    const {username, password, name, email, teacher, student_id} = body;
+    // test if username exists:
+    const selectSql = `
+      SELECT 1
+      FROM user
+      WHERE username=?;
+    `;
+    if(!username) {
+      throw new HttpException({
+        msg: '需要提供用户名'
+      }, 406);
+    }
+    const select = await this.dbQuery.queryDb(selectSql, [username]);
+    if(select.length = 0) {
+      // create user:
+      if(!password) {
+        throw new HttpException({
+          msg: '需要提供密码'
+        }, 406);
+      }
+      const epassword = EndeService.encodeToDatabase(password);
+      const insertUserSql = `
+        INSERT INTO user(username, password)
+        VALUES(?, ?);
+      `;
+      await this.dbQuery.queryDb(insertUserSql, [username, epassword]);
+    }
+
+    // reget the user.id:
+    const selectIdSql = `
+      SELECT id
+      FROM user
+      WHERE username=?;
+    `;
+    const uid = (await this.dbQuery.queryDb(selectIdSql, [username]))[0].id;
+    // test if student with uid exists:
+    const existsSql = `
+      SELECT 1
+      FROM student
+      WHERE uid=?;
+    `;
+    const exists = await this.dbQuery.queryDb(existsSql, [uid]);
+    if(exists.length > 0) {
+      throw new HttpException({
+        msg: '该学生已存在'
+      }, 406);
+    }
+
+    const insertStudentSql = `
+      INSERT INTO student(uid, name, sid, email)
+      VALUES(?, ?, ?, ?);
+    `;
+
+    const sid = 
+      ((await this.dbQuery.queryDb(insertStudentSql, [uid, name, student_id, email])) as any).insertId;
+    
+
+    // add teacher if needed:
+    if(!!teacher) {
+      try {
+        const bindSql = `
+          INSERT INTO student_teacher(sid, tid)
+          VALUES(?, ?);
+        `;
+        await this.dbQuery.queryDb(bindSql, [sid, teacher]);
+      } catch(err) {
+        throw new HttpException({
+          msg: '学生已创建, 但绑定老师失败',
+          err,
+        }, 406);
+      }
+    }
+
+    return {
+      msg: '操作成功'
+    };
+  }
+
+  /**
+   * 
+   * @param id student.id
+   */
+  async deleteOneStudent(id: number) {
+    const deleteSql = `
+      DELETE FROM student
+      WHERE id=?;
+    `;
+    await this.dbQuery.queryDb(deleteSql, [id]);
+
+    return {
+      msg: '操作成功'
+    };
+  }
+
+  /**
+   * 
+   * @param id student.id
+   * @param body 
+   */
+  async updateOneStudentInfo(id: number, body: {
+    email: string,
+    student_id: string,
+    name: string
+  }) {
+    const {email, student_id, name} = body;
+    const sql = `
+      UPDATE student
+      SET email=?, sid=?, name=?
+      WHERE id=?;
+    `;
+    await this.dbQuery.queryDb(sql, [email, student_id, name, id]);
+    return {
+      msg: '操作已完成'
+    };
+  }
+
+  async addOneTeacher(body: {
+    username: string,
+    password: string,
+    name: string,
+    email: string,
+    personal_page: string,
+    research_area: string,
+  }) {
+
+    const {username, password, name, email, personal_page, research_area}
+      = body;
+
+    if(!username) {
+      throw new HttpException({
+        msg: '需要提供用户名'
+      }, 406);
+    }
+
+    // test if username exists:
+    const selectSql = `
+      SELECT 1
+      FROM user
+      WHERE username=?;
+    `;
+
+    const selectResult = await this.dbQuery.queryDb(selectSql, [username]);
+    if(selectResult.length === 0) {
+      // create user:
+      const createUserSql = `
+        INSERT INTO user(username, password)
+        VALUES(?, ?);
+      `;
+      const epassword = EndeService.encodeToDatabase(password);
+      await this.dbQuery.queryDb(createUserSql, [username, epassword]);
+    }
+
+    // get uid
+    const getUidSql = `
+      SELECT id
+      FROM user
+      WHERE username=?;
+    `;
+    const uid = (await this.dbQuery.queryDb(getUidSql, [username]))[0].id;
+    // test if teacher exists:
+    const existsSql = `
+      SELECT 1
+      FROM teacher
+      WHERE uid=?;
+    `;
+    const exists = await this.dbQuery.queryDb(existsSql, [uid]);
+    if(exists.length > 0) {
+      throw new HttpException({
+        msg: '老师已存在'
+      }, 406);
+    }
+    const insertSql = `
+      INSERT INTO teacher(uid, name, email, personal_page, research_area)
+      VALUES(?, ?, ?, ?, ?);
+    `;
+    await this.dbQuery.queryDb(insertSql, [uid, name, email, personal_page, research_area]);
+    return {
+      msg: '操作成功'
+    };
+  }
+
+  /**
+   * 
+   * @param id teacher.id
+   */
+  async deleteOneTeacher(id: number) {
+    const deleteSql = `
+      DELETE FROM teacher
+      WHERE id=?;
+    `;
+    await this.dbQuery.queryDb(deleteSql, [id]);
+    return {
+      msg: '操作成功'
+    };
+  }
+
+  /**
+   * 
+   * @param id teacher.id
+   * @param body 
+   */
+  async updateOneTeacher(id: number, body: {
+    name: string,
+    research_area: string,
+    personal_page: string,
+    email: string,
+  }) {
+    const updateSql = `
+      UPDATE teacher
+      SET name=?, research_area=?, personal_page=?, email=?
+      WHERE id=?;
+    `;
+
+    const {name, research_area, personal_page, email} = body;
+
+    await this.dbQuery.queryDb(updateSql, [name, research_area, personal_page, email]);
+
+    return {
+      msg: '操作成功'
+    };
+  }
+
+  /**
+   * 
+   * @param sid student.id
+   * @param tid teacher.id
+   */
+  async addOrChangeTeacherForStudent(sid: number, tid: number) {
+    const sql = `
+      INSERT INTO student_teacher(sid, tid)
+      VALUES(?, ?)
+      ON DUPLICATE KEY UPDATE tid=?;
+    `;
+    await this.dbQuery.queryDb(sql, [sid, tid, tid]);
+    return {
+      msg: '操作成功'
     };
   }
 }
