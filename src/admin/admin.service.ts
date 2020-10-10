@@ -165,9 +165,10 @@ export class AdminService {
    */
   async getOneTeacherInfo(id: number) {
     const sql = `
-      SELECT name, email, personal_page, research_area
-      FROM teacher
-      WHERE id=?;
+      SELECT name, email, personal_page, research_area,
+        user.id AS uid, user.username AS username
+      FROM teacher LEFT JOIN user ON teacher.uid=user.id
+      WHERE teacher.id=?;
     `;
 
     const queryStudentsSql = `
