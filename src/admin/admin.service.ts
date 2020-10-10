@@ -1,4 +1,4 @@
-import { HttpException, Injectable, UseFilters } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { EndeService } from 'src/ende/ende.service';
 import { QueryDbService } from 'src/query-db/query-db.service';
 import { StudentService } from 'src/student/student.service';
