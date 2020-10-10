@@ -166,8 +166,8 @@ export class UserService {
     return true;
   }
 
-  async changePasswordForUser(uid: number, oldpassword: string, newpassword) {
-    const NEED_CHECK_OLD_PASSWORD = true;
+  async changePasswordForUser(uid: number, oldpassword: string, newpassword: string) {
+    const NEED_CHECK_OLD_PASSWORD = false;
 
     if(NEED_CHECK_OLD_PASSWORD) {
       // need to check old password here...

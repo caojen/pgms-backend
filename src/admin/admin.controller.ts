@@ -578,4 +578,14 @@ export class AdminController {
     }
     return await this.adminService.addStudents(body);
   }
+
+  @Put('attend/:uid/password')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async changePasswordForUser(@Param() param: {uid: number}, @Body() body: {password: string}) {
+
+    const {uid} = param;
+    const password = EndeService.decodeFromHttp(body.password);
+    return await this.adminService.changePassword(uid, password);
+
+  }
 }

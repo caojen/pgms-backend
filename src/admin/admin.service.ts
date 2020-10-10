@@ -2,12 +2,14 @@ import { HttpException, Injectable, UseFilters } from '@nestjs/common';
 import { EndeService } from 'src/ende/ende.service';
 import { QueryDbService } from 'src/query-db/query-db.service';
 import { StudentService } from 'src/student/student.service';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AdminService {
   constructor(
     private readonly dbQuery: QueryDbService,
     private readonly studentService: StudentService,
+    private readonly userService: UserService,
   ) {}
 
   async getAllAttendStudents(pageSize: number, offset: number) {
@@ -771,5 +773,14 @@ export class AdminService {
       affected: newStudents,
       errors
     };
+  }
+
+  /**
+   * 
+   * @param id user.id
+   * @param password plaintext
+   */
+  async changePassword(id: number, password: string) {
+    return this.userService.changePasswordForUser(id, "", password);
   }
 }
