@@ -354,4 +354,21 @@ export class AdminController {
     return await this.adminService.addRecordForStudent(lid, sid, pid);
   }
 
+  /**
+   * @api {delete} /admin/attend/:rid DeleteRecord
+   * @apiName DeleteRecord
+   * @apiGroup AttendAdmin
+   * @apiPermission Logined AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+{
+    "msg": "操作已完成"
+}
+   */
+  @Delete('attend/record/:rid')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async deleteRecord(@Param() param: {rid: number}) {
+    const { rid } = param;
+    return await this.adminService.deleteRecord(rid);
+  }
+
 }

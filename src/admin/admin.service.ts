@@ -449,4 +449,20 @@ export class AdminService {
       msg: '操作已成功'
     };
   }
+
+  /**
+   * 
+   * @param id record.id 
+   */
+  async deleteRecord(id: number) {
+    const sql = `
+      DELETE FROM record
+      WHERE id=?;
+    `;
+
+    await this.dbQuery.queryDb(sql, [id]);
+    return {
+      msg: '操作已完成'
+    };
+  }
 }
