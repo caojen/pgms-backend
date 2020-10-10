@@ -493,7 +493,7 @@ export class AdminService {
       }, 406);
     }
     const select = await this.dbQuery.queryDb(selectSql, [username]);
-    if(select.length = 0) {
+    if(select.length === 0) {
       // create user:
       if(!password) {
         throw new HttpException({
@@ -623,6 +623,11 @@ export class AdminService {
 
     const selectResult = await this.dbQuery.queryDb(selectSql, [username]);
     if(selectResult.length === 0) {
+      if(!password) {
+        throw new HttpException({
+          msg: '需要提供密码'
+        }, 406);
+      }
       // create user:
       const createUserSql = `
         INSERT INTO user(username, password)
@@ -695,7 +700,7 @@ export class AdminService {
 
     const {name, research_area, personal_page, email} = body;
 
-    await this.dbQuery.queryDb(updateSql, [name, research_area, personal_page, email]);
+    await this.dbQuery.queryDb(updateSql, [name, research_area, personal_page, email, id]);
 
     return {
       msg: '操作成功'
