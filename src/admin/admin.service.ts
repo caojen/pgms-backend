@@ -366,6 +366,11 @@ export class AdminService {
     };
   }
 
+  /**
+   * 
+   * @param id lecture.id
+   * @param body 
+   */
   async updateOneLecture(id: number, body: {
     title: string,
     content: string,
