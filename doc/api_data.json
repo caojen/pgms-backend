@@ -1,6 +1,30 @@
 [
   {
     "type": "post",
+    "url": "/admin/attend/students",
+    "title": "AddManyStudents",
+    "name": "AddManyStudents",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "group": "AttendAdmin",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n    \"msg\": \"操作成功\",\n    \"affected\": 1,\n    \"errors\": [\n        {\n            \"username\": \"abc\",\n            \"password\": \"def\",\n            \"name\": \"abc\",\n            \"email\": \"email@qq.com\",\n            \"student_id\": \"asdf\",\n            \"teacher_username\": \"asdf\",\n            \"err\": \"不存在此老师\"\n        },\n        {\n            \"username\": \"abc\",\n            \"password\": \"def\",\n            \"name\": \"abc\",\n            \"email\": \"email@qq.com\",\n            \"student_id\": \"asdf\",\n            \"teacher_username\": \"asdf\",\n            \"err\": \"不存在此老师\"\n        },\n        {\n            \"username\": \"abc\",\n            \"password\": \"def\",\n            \"name\": \"abc\",\n            \"email\": \"email@qq.com\",\n            \"student_id\": \"asdf\",\n            \"teacher_username\": \"teacher\",\n            \"err\": {\n                \"response\": {\n                    \"msg\": \"该学生已存在\"\n                },\n                \"status\": 406,\n                \"message\": \"Http Exception\"\n            }\n        }\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "post",
     "url": "/admin/attend/lecture",
     "title": "AddOneLectue",
     "name": "AddOneLectue",

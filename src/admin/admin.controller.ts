@@ -516,4 +516,66 @@ export class AdminController {
     const {sid, tid} = param;
     return await this.adminService.addOrChangeTeacherForStudent(sid, tid);
   }
+
+  /**
+   * @api {post} /admin/attend/students AddManyStudents
+   * @apiName AddManyStudents
+   * @apiPermission Logined AttendAdmin
+   * @apiGroup AttendAdmin
+   * @apiSuccessExample {json} Success-Response
+{
+    "msg": "操作成功",
+    "affected": 1,
+    "errors": [
+        {
+            "username": "abc",
+            "password": "def",
+            "name": "abc",
+            "email": "email@qq.com",
+            "student_id": "asdf",
+            "teacher_username": "asdf",
+            "err": "不存在此老师"
+        },
+        {
+            "username": "abc",
+            "password": "def",
+            "name": "abc",
+            "email": "email@qq.com",
+            "student_id": "asdf",
+            "teacher_username": "asdf",
+            "err": "不存在此老师"
+        },
+        {
+            "username": "abc",
+            "password": "def",
+            "name": "abc",
+            "email": "email@qq.com",
+            "student_id": "asdf",
+            "teacher_username": "teacher",
+            "err": {
+                "response": {
+                    "msg": "该学生已存在"
+                },
+                "status": 406,
+                "message": "Http Exception"
+            }
+        }
+    ]
+}
+   */
+  @Post('attend/students')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async addStudents(@Body() body: {
+    username: string,
+    password: string,
+    name: string,
+    email: string,
+    student_id: string,
+    teacher_username: string
+  }[]) {
+    for(const index in body) {
+      body[index].password = EndeService.decodeFromHttp(body[index].password);
+    }
+    return await this.adminService.addStudents(body);
+  }
 }

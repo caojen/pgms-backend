@@ -723,4 +723,53 @@ export class AdminService {
       msg: '操作成功'
     };
   }
+
+  async addStudents(body: {
+    username: string,
+    password: string,
+    name: string,
+    email: string,
+    student_id: string,
+    teacher_username: string
+  }[]) {
+    const errors = [];
+    let newStudents = 0;
+
+    const findTidSql = `
+      SELECT teacher.id AS id
+      FROM teacher INNER JOIN user
+      WHERE user.username=?;
+    `
+    for(const index in body) {
+      // query teacher.id
+      const value = body[index];
+      const tid = (await this.dbQuery.queryDb(findTidSql, [value.teacher_username]))[0]?.id;
+      if(!tid) {
+        errors.push({
+          ...value,
+          err: '不存在此老师'
+        });
+      } else {
+        try {
+          await this.addOneStudent({
+            ...value,
+            teacher: tid
+          });
+
+          newStudents += 1;
+        } catch (err) {
+          errors.push({
+            ...value,
+            err
+          });
+        }
+      }
+    }
+
+    return {
+      msg: '操作成功',
+      affected: newStudents,
+      errors
+    };
+  }
 }
