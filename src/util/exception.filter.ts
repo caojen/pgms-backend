@@ -1,9 +1,11 @@
 import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
 import { Response, Request } from 'express';
 import * as database from '../../database.json';
+import * as global from "../../config.json";
 import * as mysql from 'mysql2/promise';
+import { getUserType } from './global.funtions';
 
-const config = database.test;
+const config = database[global.env];
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -39,7 +41,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const method = request.method;
     const status = exception.status;
     const responseText = JSON.stringify(exception.response);
-    const userType = this.getUserType(user);
+    const userType = getUserType(user);
 
     // write to database:
     const sql = `
@@ -51,18 +53,5 @@ export class HttpExceptionFilter implements ExceptionFilter {
     response
       .status(exception.status)
       .json(exception.response);
-  }
-
-  getUserType(user: any) {
-    if(!user) {
-      return null;
-    } else {
-      const enums = ['student', 'teacher', 'admin', 'bistuent'];
-      for(const item in enums) {
-        if(!!user[enums[item]]) {
-          return enums[item];
-        }
-      }
-    }
   }
 }

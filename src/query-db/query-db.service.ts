@@ -1,12 +1,13 @@
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import * as database from '../../database.json';
+import * as global from '../../config.json';
 import * as mysql from 'mysql2/promise';
 
 @Injectable()
 export class QueryDbService {
 
   constructor() {
-    const config = database.test;
+    const config = database[global.env];
     this.selectedPool = mysql.createPool({
       host: config.host,
       user: config.user,

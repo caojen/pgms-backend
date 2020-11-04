@@ -6,9 +6,11 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Logger } fr
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import * as database from '../../database.json';
+import * as global from "../../config.json";
 import * as mysql from 'mysql2/promise';
+import { getUserType } from './global.funtions';
 
-const config = database.test;
+const config = database[global.env];
 
 @Injectable()
 export class RequestInterceptor implements NestInterceptor {
@@ -40,7 +42,7 @@ export class RequestInterceptor implements NestInterceptor {
     const url = request.url;
     const responseText = '';
     const status = 200;
-    const userType = this.getUserType(user);
+    const userType = getUserType(user);
 
     return next
       .handle()
@@ -53,18 +55,5 @@ export class RequestInterceptor implements NestInterceptor {
           this.queryDb(sql, [ip, url, uid, responseText, status, userType, method]);
         }),
       );
-  }
-
-  getUserType(user: any) {
-    if(!user) {
-      return null;
-    } else {
-      const enums = ['student', 'teacher', 'admin', 'bistuent'];
-      for(const item in enums) {
-        if(!!user[enums[item]]) {
-          return enums[item];
-        }
-      }
-    }
   }
 }
