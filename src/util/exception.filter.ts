@@ -26,20 +26,43 @@ export class HttpExceptionFilter implements ExceptionFilter {
     return (await this.executePool.query(sql, params))[0] as any[];
   }
 
+  // catch exception, will throw to here...
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
     const user = request["user"];
-    const username = user ? user.username : "NOT LOGIN";
+    const uid = user ? user.uid : null;
     const ip = request.socket.remoteAddress;
     const url = request.url;
+    const method = request.method;
     const status = exception.status;
-    const responseText = exception.response;
+    const responseText = JSON.stringify(exception.response);
+    const userType = this.getUserType(user);
+
+    // write to database:
+    const sql = `
+      INSERT INTO logger (ip, url, uid, response_body, response_status, usertype, method)
+      VALUES (?, ?, ?, ?, ?, ?, ?);
+    `;
+    this.queryDb(sql, [ip, url, uid, responseText, status, userType, method]);
 
     response
       .status(exception.status)
       .json(exception.response);
+  }
+
+  getUserType(user: any) {
+    if(!user) {
+      return null;
+    } else {
+      const enums = ['student', 'teacher', 'admin', 'bistuent'];
+      for(const item in enums) {
+        if(!!user[enums[item]]) {
+          return enums[item];
+        }
+      }
+    }
   }
 }
