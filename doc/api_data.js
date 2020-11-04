@@ -159,6 +159,36 @@ define({ "api": [
     "groupTitle": "AttendAdmin"
   },
   {
+    "type": "put",
+    "url": "/admin/attend/student/:sid/password",
+    "title": "ChangePasswordForStudent",
+    "name": "ChangePasswordForStudent",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "group": "AttendAdmin",
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "put",
+    "url": "/admin/attend/teacher/:tid/password",
+    "title": "ChangePasswordForTeacher",
+    "name": "ChangePasswordForTeacher",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "group": "AttendAdmin",
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
     "type": "delete",
     "url": "/admin/attend/lecture/:lid",
     "title": "DeleteOneLectue",
@@ -555,7 +585,7 @@ define({ "api": [
   },
   {
     "type": "put",
-    "url": "/admin/attend/teacher/:tid",
+    "url": "/admin/attend/student/:sid/teacher/:tid",
     "title": "UpdateOneTeacher",
     "name": "UpdateOneTeacher",
     "group": "AttendAdmin",
@@ -579,7 +609,7 @@ define({ "api": [
   },
   {
     "type": "put",
-    "url": "/admin/attend/student/:sid/teacher/:tid",
+    "url": "/admin/attend/teacher/:tid",
     "title": "UpdateOneTeacher",
     "name": "UpdateOneTeacher",
     "group": "AttendAdmin",

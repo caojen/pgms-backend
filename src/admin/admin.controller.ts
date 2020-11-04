@@ -3,6 +3,7 @@ import { AdminService } from './admin.service';
 import { LoginRequired } from 'src/user/user.guard';
 import { AttendAdminPermission } from './admin.guard';
 import { EndeService } from 'src/ende/ende.service';
+import { put } from 'request-promise-native';
 
 @Controller('admin')
 export class AdminController {
@@ -593,5 +594,33 @@ export class AdminController {
     const password = EndeService.decodeFromHttp(body.password);
     return await this.adminService.changePassword(uid, password);
 
+  }
+
+  /**
+   * @api {put} /admin/attend/student/:sid/password ChangePasswordForStudent
+   * @apiName ChangePasswordForStudent
+   * @apiPermission Logined AttendAdmin
+   * @apiGroup AttendAdmin
+   */
+  @Put('attend/student/:sid/password')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async changePasswordForStudent(@Param() param: {sid: number}, @Body() body: {password: string}) {
+    const {sid} = param;
+    const password = EndeService.decodeFromHttp(body.password);
+    return await this.adminService.changePasswordForStudent(sid, password);
+  }
+
+  /**
+   * @api {put} /admin/attend/teacher/:tid/password ChangePasswordForTeacher
+   * @apiName ChangePasswordForTeacher
+   * @apiPermission Logined AttendAdmin
+   * @apiGroup AttendAdmin
+   */
+  @Put('attend/teacher/:tid/password')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async changePasswordForTeacher(@Param() param: {tid: number}, @Body() body: {password: string}) {
+    const {tid} = param;
+    const password = EndeService.decodeFromHttp(body.password);
+    return await this.adminService.changePasswordForTeacher(tid, password);
   }
 }

@@ -782,6 +782,52 @@ export class AdminService {
    * @param password plaintext
    */
   async changePassword(id: number, password: string) {
-    return this.userService.changePasswordForUser(id, "", password);
+    return await this.userService.changePasswordForUser(id, '', password);
+  }
+
+  /**
+   * 
+   * @param id student.id
+   * @param password plaintext
+   */
+  async changePasswordForStudent(id: number, password: string) {
+    const sql = `
+      SELECT user.id AS id
+      FROM student INNER JOIN user ON student.uid=user.id
+      WHERE student.id=?;
+    `;
+
+    const uid = (await this.dbQuery.queryDb(sql, [id]))[0].id;
+    if(!uid) {
+      throw new HttpException({
+        msg: '不存在此学生'
+      }, 406);
+    }
+
+    return await this.userService.changePasswordForUser(uid, '', password);
+  }
+
+  /**
+   * 
+   * @param id teacher.id
+   * @param password plaintext
+   */
+  async changePasswordForTeacher(id: number, password: string) {
+    const sql = `
+      SELECT user.id AS id
+      FROM teacher INNER JOIN user ON teacher.uid=user.id
+      WHERE teacher.id=?;
+    `;
+
+    const tid = (await this.dbQuery.queryDb(sql, [id]))[0].id;
+    if(!tid) {
+      throw new HttpException({
+        msg: '不存在此学生'
+      }, 406);
+    }
+
+    return await this.userService.changePasswordForUser(tid, '', password);
+
+
   }
 }
