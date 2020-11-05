@@ -86,6 +86,36 @@ export class UserService {
       }
     }
 
+    {
+      // if user is student, then it will not be bistudent
+      if(!res['student']) {
+        // to test if user is bistudent
+        const bistudentSql = `
+          SELECT bistudent.id as id, name, recommended, score,
+            graduation_university, graduation_major, graduation_university,
+            household_register, ethnic, phone, gender, email,
+            source.description as source_des,
+            degree.description as degree_des,
+            enrol.description as enrol_des,
+            image, selected_teachers
+          FROM bistudent
+            JOIN source ON bistudent.source = source.id
+            JOIN degree ON bistudent.degree = degree.id
+            JOIN enrol ON degree.enrol = enrol.id
+          WHERE uid=?;
+        `;
+        const query = (await this.dbService.queryDb(bistudentSql, [uid]))[0];
+        if(!!query) {
+          res = {
+            ...res,
+            bistudent: {
+              ...query
+            },
+          };
+        }
+      }
+    }
+
     return res;
   }
 
