@@ -502,8 +502,8 @@ export class AdminController {
   }
 
   /**
-   * @api {put} /admin/attend/student/:sid/teacher/:tid UpdateOneTeacher
-   * @apiName UpdateOneTeacher
+   * @api {put} /admin/attend/student/:sid/teacher/:tid UpdateTeacherForStudent
+   * @apiName UpdateTeacherForStudent
    * @apiGroup AttendAdmin
    * @apiPermission Logined AttendAdmin
    * @apiSuccessExample {json} Success-Response

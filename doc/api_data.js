@@ -585,30 +585,6 @@ define({ "api": [
   },
   {
     "type": "put",
-    "url": "/admin/attend/student/:sid/teacher/:tid",
-    "title": "UpdateOneTeacher",
-    "name": "UpdateOneTeacher",
-    "group": "AttendAdmin",
-    "permission": [
-      {
-        "name": "Logined AttendAdmin"
-      }
-    ],
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response",
-          "content": "{\n    \"msg\": \"操作已完成\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "version": "0.0.0",
-    "filename": "src/admin/admin.controller.ts",
-    "groupTitle": "AttendAdmin"
-  },
-  {
-    "type": "put",
     "url": "/admin/attend/teacher/:tid",
     "title": "UpdateOneTeacher",
     "name": "UpdateOneTeacher",
@@ -642,6 +618,30 @@ define({ "api": [
         "name": "Logined AttendAdmin"
       }
     ],
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "AttendAdmin"
+  },
+  {
+    "type": "put",
+    "url": "/admin/attend/student/:sid/teacher/:tid",
+    "title": "UpdateTeacherForStudent",
+    "name": "UpdateTeacherForStudent",
+    "group": "AttendAdmin",
+    "permission": [
+      {
+        "name": "Logined AttendAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n    \"msg\": \"操作已完成\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "version": "0.0.0",
     "filename": "src/admin/admin.controller.ts",
     "groupTitle": "AttendAdmin"
