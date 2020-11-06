@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpException, Param, Post, Put, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { LoginRequired } from 'src/user/user.guard';
-import { BistudentPermission } from './bistudent.guard';
+import { BistudentPermission, canSelect } from './bistudent.guard';
 import { BistudentService } from './bistudent.service';
 import * as mime from 'mime-types';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -109,7 +109,7 @@ export class BistudentController {
     }
    */
   @Put('teacher/:tid')
-  @UseGuards(LoginRequired, BistudentPermission)
+  @UseGuards(LoginRequired, BistudentPermission, canSelect)
   async selectOneTeacher(@Req() request, @Param() param: {tid: string}) {
     const bid = request.user.bistudent.id;
     const tid = parseInt(param.tid);
@@ -128,7 +128,7 @@ export class BistudentController {
     }
    */
   @Delete('teacher/:tid')
-  @UseGuards(LoginRequired, BistudentPermission)
+  @UseGuards(LoginRequired, BistudentPermission, canSelect)
   async deleteOneTeacher(@Req() request, @Param() param: {tid: string}) {
     const bid = request.user.bistudent.id;
     const tid = parseInt(param.tid);
