@@ -647,6 +647,261 @@ define({ "api": [
     "groupTitle": "AttendAdmin"
   },
   {
+    "type": "delete",
+    "url": "/bistudent/file/:fid",
+    "title": "DeleteFile",
+    "name": "DeleteFile",
+    "group": "Bistudent",
+    "permission": [
+      {
+        "name": "Logined Bistudent"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  msg: '删除文件成功',\n  fid: 1\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/bistudent/bistudent.controller.ts",
+    "groupTitle": "Bistudent"
+  },
+  {
+    "type": "delete",
+    "url": "/bistudent/teacher/:tid",
+    "title": "DeleteOneTeacher",
+    "name": "DeleteOneTeacher",
+    "group": "Bistudent",
+    "permission": [
+      {
+        "name": "Logined Bistudent"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  msg: '取消选择成功'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/bistudent/bistudent.controller.ts",
+    "groupTitle": "Bistudent"
+  },
+  {
+    "type": "get",
+    "url": "/bistudent/teachers/all",
+    "title": "GetAllTeachers",
+    "name": "GetAllTeachers",
+    "group": "Bistudent",
+    "permission": [
+      {
+        "name": "Logined Bistudent"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  msg: '修改信息成功'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/bistudent/bistudent.controller.ts",
+    "groupTitle": "Bistudent"
+  },
+  {
+    "type": "put",
+    "url": "/bistudent",
+    "title": "GetBiChoiceInfo",
+    "name": "GetBiChoiceInfo",
+    "group": "Bistudent",
+    "permission": [
+      {
+        "name": "Logined Bistudent"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"begin_time\": \"{\\\"value\\\":\\\"2020-11-6 23:16:00\\\"}\",\n  \"current_stage\": \"{\\\"value\\\":-1}\",\n  \"end_time\": \"{\\\"value\\\":\\\"2020-11-8 23:16:00\\\"}\",\n  \"stage_count\": \"{\\\"value\\\":3}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/bistudent/bistudent.controller.ts",
+    "groupTitle": "Bistudent"
+  },
+  {
+    "type": "get",
+    "url": "/bistudent/info",
+    "title": "GetBistudentInfo",
+    "name": "GetBistudentInfo",
+    "group": "Bistudent",
+    "permission": [
+      {
+        "name": "Logined Bistudent"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"id\": 1,\n  \"name\": \"biname\",\n  \"recommended\": 0,\n  \"score\": 396,\n  \"graduation_university\": \"university\",\n  \"graduation_major\": \"abc\",\n  \"household_register\": \"ddd\",\n  \"ethnic\": \"ethnic\",\n  \"phone\": \"newphone\",\n  \"gender\": \"x\",\n  \"email\": \"email@qq.com\",\n  \"source_des\": \"985\",\n  \"degree_des\": \"degree1\",\n  \"enrol_des\": \"enrol1\",\n  \"image\": 1,\n  \"selected_teachers\": \"[]\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/bistudent/bistudent.controller.ts",
+    "groupTitle": "Bistudent"
+  },
+  {
+    "type": "get",
+    "url": "/bistudent/files",
+    "title": "GetFileList",
+    "name": "GetFileList",
+    "group": "Bistudent",
+    "permission": [
+      {
+        "name": "Logined Bistudent"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n  {\n    \"filename\": \"abc\",\n    \"fid\": 1\n  }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/bistudent/bistudent.controller.ts",
+    "groupTitle": "Bistudent"
+  },
+  {
+    "type": "get",
+    "url": "/bistudent/file/:fid",
+    "title": "GetOneFile",
+    "name": "GetOneFile",
+    "group": "Bistudent",
+    "permission": [
+      {
+        "name": "Logined Bistudent"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "src/bistudent/bistudent.controller.ts",
+    "groupTitle": "Bistudent"
+  },
+  {
+    "type": "post",
+    "url": "/bistudent/file",
+    "title": "PostNewFile",
+    "name": "PostNewFile",
+    "group": "Bistudent",
+    "permission": [
+      {
+        "name": "Logined Bistudent"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  msg: '提交文件成功',\n  fid: 1\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/bistudent/bistudent.controller.ts",
+    "groupTitle": "Bistudent"
+  },
+  {
+    "type": "put",
+    "url": "/bistudent/teacher/:tid",
+    "title": "SelectOneTeacher",
+    "name": "SelectOneTeacher",
+    "group": "Bistudent",
+    "permission": [
+      {
+        "name": "Logined Bistudent"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  msg: '选择成功'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/bistudent/bistudent.controller.ts",
+    "groupTitle": "Bistudent"
+  },
+  {
+    "type": "put",
+    "url": "/bistudent/info",
+    "title": "UpdateBistudentInfo",
+    "name": "UpdateBistudentInfo",
+    "group": "Bistudent",
+    "permission": [
+      {
+        "name": "Logined Bistudent"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  msg: '修改信息成功'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/bistudent/bistudent.controller.ts",
+    "groupTitle": "Bistudent"
+  },
+  {
+    "type": "post",
+    "url": "/bistudent/image",
+    "title": "UpdateImage",
+    "name": "UpdateImage",
+    "group": "Bistudent",
+    "permission": [
+      {
+        "name": "Logined Bistudent"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  msg: '修改头像成功',\n  fid: 1\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/bistudent/bistudent.controller.ts",
+    "groupTitle": "Bistudent"
+  },
+  {
     "type": "get",
     "url": "/student/records",
     "title": "GetStudentAllRecords",
