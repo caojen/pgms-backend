@@ -1,4 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { FileService } from 'src/file/file.service';
 import { QueryDbService } from 'src/query-db/query-db.service';
 
 @Injectable()
@@ -184,5 +185,106 @@ export class BistudentService {
       msg: '取消选择成功',
       selected_teachers
     };
+  }
+
+  async getFile(id: number, imageId: number, fid: number) {
+    const selectSql = `
+      SELECT port, ffid
+      FROM file
+      WHERE id=?;
+    `;
+    // 首先查看是否为头像:
+    if(fid === imageId) {
+      const file = (await this.dbQuery.queryDb(selectSql, [fid]))[0];
+      return await FileService.getFile(file.port, file.ffid);
+    } else {
+      // 如果不是头像, 还需要进行鉴权:
+      const sql = `
+        SELECT 1
+        FROM bistudentfile
+        WHERE bisid=?
+          AND fid=?;
+      `;
+      const query = await this.dbQuery.queryDb(sql, [id, fid]);
+      if(query.length === 0) {
+        // 不存在此文件:
+        throw new HttpException({
+          msg: '不存在此文件'
+        }, 403);
+      } else {
+        const file = (await this.dbQuery.queryDb(selectSql, [fid]))[0];
+        return await FileService.getFile(file.port, file.ffid);
+      }
+    }
+  }
+
+  async postFile(id: number, file: {originalname: string, buffer: Buffer}) {
+    const [port, ffid] = await FileService.postFile(file.originalname, file.buffer);
+
+    const insertFileSql = `
+      INSERT INTO file(port, ffid)
+      VALUES(?, ?);
+    `;
+
+    const result = await this.dbQuery.queryDb(insertFileSql, [port, ffid]);
+    const fid = (result as any).insertId;
+
+    const insertBisFileSql = `
+      INSERT INTO bistudentfile(bisid, fid, filename)
+      VALUES(?, ?, ?);
+    `;
+
+    await this.dbQuery.queryDb(insertBisFileSql, [id, fid, file.originalname]);
+
+    return {
+      msg: '提交成功',
+      fid,
+    };
+  }
+
+  async postImage(id: number, file: {originalname: string, buffer: Buffer}) {
+    const [port, ffid] = await FileService.postFile(file.originalname, file.buffer);
+    const insertFileSql = `
+      INSERT INTO file(port, ffid)
+      VALUES(?, ?);
+    `;
+
+    const result = await this.dbQuery.queryDb(insertFileSql, [port, ffid]);
+    const fid = (result as any).insertId;
+
+    const updateSql = `
+      UPDATE bistudent
+      SET image = ?
+      WHERE id = ?;
+    `;
+    await this.dbQuery.queryDb(updateSql, [fid, id]);
+    return {
+      msg: '提交成功',
+      fid,
+    };
+  }
+
+  async deleteFile(id: number, fid: number) {
+    const deleteSql = `
+      DELETE FROM bistudentfile
+      WHERE bisid=?
+        AND fid=?;
+    `;
+
+    await this.dbQuery.queryDb(deleteSql, [id, fid]);
+    return {
+      msg: '删除成功'
+    };
+  }
+
+  async getFileList(id: number) {
+    const selectSql = `
+      SELECT filename, fid
+      FROM bistudentfile
+      WHERE bisid=?;
+    `;
+
+    const files = await this.dbQuery.queryDb(selectSql, [id]);
+    return files;
   }
 }

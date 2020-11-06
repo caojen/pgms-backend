@@ -1,0 +1,1 @@
+alter table bistudentfile add column filename varchar(1024) not null default '';
