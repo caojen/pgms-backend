@@ -3,7 +3,6 @@ import { AdminService } from './admin.service';
 import { LoginRequired } from 'src/user/user.guard';
 import { AttendAdminPermission } from './admin.guard';
 import { EndeService } from 'src/ende/ende.service';
-import { put } from 'request-promise-native';
 
 @Controller('admin')
 export class AdminController {
