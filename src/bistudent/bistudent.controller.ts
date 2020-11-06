@@ -4,7 +4,6 @@ import { BistudentPermission } from './bistudent.guard';
 import { BistudentService } from './bistudent.service';
 import * as mime from 'mime-types';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { request } from 'http';
 
 @Controller('bistudent')
 export class BistudentController {
