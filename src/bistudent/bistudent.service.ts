@@ -151,8 +151,7 @@ export class BistudentService {
     await this.dbQuery.queryDb(updateSql, [JSON.stringify(selected_teachers), bid]);
     return {
       msg: '选择成功',
-      tid,
-      length,
+      selected_teachers
     };
   }
 
@@ -239,6 +238,7 @@ export class BistudentService {
     return {
       msg: '提交成功',
       fid,
+      filename: file.originalname,
     };
   }
 
