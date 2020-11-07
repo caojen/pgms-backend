@@ -742,4 +742,43 @@ export class AdminController {
     return await this.adminService.deleteEnrol(id);
   }
 
+  /**
+   * @api {get} /admin/bichoice/degrees GetDegrees
+   * @apiName GetDegrees
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    [
+      "degree_id": 1,
+      "degree_description": "",
+      "enrol_id": 5,
+      "enrol_description": ""
+    ]
+   */
+  @Get('bichoice/degrees')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getDegrees() {
+    return await this.adminService.getDegrees();
+  }
+
+  @Post('bichoice/degree')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async addNewDegree(@Body() body: {
+    description: string,
+    enrol_id: number
+  }) {
+    return await this.adminService.addNewDegree(body.description, body.enrol_id);
+  }
+
+  @Put('bichoice/degree/:id')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async changeDegreeDescription(@Param() param: {id: number}, @Body() body: {description: string}) {
+    return await this.adminService.changeDegreeDescription(param.id, body.description);
+  }
+
+  @Delete('bichoice/degree/:id')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async deleteDegree(@Param() param: {id: number}) {
+    return await this.adminService.deleteDegree(param.id);
+  }
 }

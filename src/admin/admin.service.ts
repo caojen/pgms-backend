@@ -893,4 +893,75 @@ export class AdminService {
       msg: '双选已经开始, 无法删除Enrol'
     }, 406);
   }
+
+  async getDegrees() {
+    const sql = `
+      SELECT degree.id AS degree_id, degree.description AS degree_description,
+        enrol.id AS enrol_id, enrol.description AS enrol_description
+      FROM degree
+        JOIN enrol ON degree.enrol = enrol.id;
+    `;
+
+    return await this.dbQuery.queryDb(sql, []);
+  }
+
+  async addNewDegree(description: string, eid: number) {
+    const insertSql = `
+      INSERT INTO degree(enrol, description)
+      VALUES(?, ?);
+    `;
+
+    const result: any = await this.dbQuery.queryDb(insertSql, [eid, description]);
+    const insertId = result.insertId;
+
+    const sql = `
+      SELECT degree.id AS degree_id, degree.description AS degree_description,
+        enrol.id AS enrol_id, enrol.description AS enrol_description
+      FROM degree
+        JOIN enrol ON degree.enrol = enrol.id
+      WHERE degree.id=?;
+    `;
+
+    return (await this.dbQuery.queryDb(sql, [insertId]))[0];
+  }
+
+  async changeDegreeDescription(id: number, description: string) {
+    const updateSql = `
+      UPDATE degree
+      SET description=?
+      WHERE id=?;
+    `;
+
+    await this.dbQuery.queryDb(updateSql, [description, id]);
+
+    const sql = `
+      SELECT degree.id AS degree_id, degree.description AS degree_description,
+        enrol.id AS enrol_id, enrol.description AS enrol_description
+      FROM degree
+        JOIN enrol ON degree.enrol = enrol.id
+      WHERE degree.id=?;
+    `;
+
+    return (await this.dbQuery.queryDb(sql, [id]))[0];
+  }
+
+  async deleteDegree(id: number) {
+    const config = await getConfigs(["current_stage", "stage_count"]);
+    const current_stage = config.current_stage.value;
+    if(current_stage === -1) {
+      const deleteSql = `
+        DELETE FROM degree
+        WHERE id=?;
+      `;
+      await this.dbQuery.queryDb(deleteSql, [id]);
+      return {
+        msg: '删除成功'
+      };
+    }
+
+    throw new HttpException({
+      msg: '双选已经开始, 无法删除Degree'
+    }, 406);
+
+  }
 }
