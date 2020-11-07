@@ -35,6 +35,7 @@ export class BistudentService {
   }
 
   async getInfo(id: number) {
+    try{
     const bistudentSql = `
       SELECT bistudent.id as id, name, recommended, score,
         graduation_university, graduation_major, graduation_university,
@@ -51,6 +52,9 @@ export class BistudentService {
     `;
     const query = (await this.dbQuery.queryDb(bistudentSql, [id]))[0];
     return query;
+    }catch(e) {
+      console.log(e);
+    }
   }
 
   async updateInfo(id: number, {phone, email}) {
@@ -81,7 +85,7 @@ export class BistudentService {
       FROM degree
       WHERE id=?;
     `;
-    const enrol_id = (await this.dbQuery.queryDb(enrolSql, [id]))[0].enrol;
+    const enrol_id = (await this.dbQuery.queryDb(enrolSql, [degree_id]))[0].enrol;
 
     const teachersSql = `
       SELECT id, name, email, personal_page, research_area, bichoice_config

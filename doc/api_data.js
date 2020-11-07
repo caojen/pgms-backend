@@ -647,6 +647,381 @@ define({ "api": [
     "groupTitle": "AttendAdmin"
   },
   {
+    "type": "post",
+    "url": "/admin/bichoice/degree",
+    "title": "AddNewDegree",
+    "name": "AddNewDegree",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n  \"degree_id\": 1,\n  \"degree_description\": \"\",\n  \"enrol_id\": 5,\n  \"enrol_description\": \"\"\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "post",
+    "url": "/admin/bichoice/enrol",
+    "title": "AddNewEnrol",
+    "name": "AddNewEnrol",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"msg\": \"操作成功\",\n  \"id\": 3,\n  \"description\": \"enrol3\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "put",
+    "url": "/admin/bichoice/bistudent/:id",
+    "title": "ChangeBistudentInfo",
+    "name": "ChangeBistudentInfo",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"msg\": \"修改成功\",\n  \"bistudent\": {}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "put",
+    "url": "/admin/bichoice/degree/:id",
+    "title": "ChangeDegreeDescription",
+    "name": "ChangeDegreeDescription",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n  \"degree_id\": 1,\n  \"degree_description\": \"\",\n  \"enrol_id\": 5,\n  \"enrol_description\": \"\"\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "put",
+    "url": "/admin/bichoice/enrol/:id",
+    "title": "ChangeEnrolDescription",
+    "name": "ChangeEnrolDescription",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"msg\": \"操作成功\",\n  \"id\": 3,\n  \"description\": \"enrol3\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "delete",
+    "url": "/admin/bichoice/degree/:id",
+    "title": "DeleteDegree",
+    "name": "DeleteDegree",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n  \"degree_id\": 1,\n  \"degree_description\": \"\",\n  \"enrol_id\": 5,\n  \"enrol_description\": \"\"\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "delete",
+    "url": "/admin/bichoice/enrol/:id",
+    "title": "DeleteOneEnrol",
+    "name": "DeleteOneEnrol",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"msg\": \"操作成功\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "delete",
+    "url": "/admin/bichoice/bistudent/:id/teacher/:tid",
+    "title": "DeleteTeacherForStudent",
+    "name": "DeleteTeacherForStudent",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"msg\": \"取消选择成功\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "get",
+    "url": "/admin/bichoice/bistudents",
+    "title": "GetAllBistudents",
+    "name": "GetAllBistudents",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n  {}\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "get",
+    "url": "/admin/bichoice/bistudent/:id/teachers",
+    "title": "GetBistudentCanSelectTeachers",
+    "name": "GetBistudentCanSelectTeachers",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"msg\": \"修改成功\",\n  \"bistudent\": {}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "get",
+    "url": "/admin/bichoice/bistudent/:id/teachers/selected",
+    "title": "GetBistudentSelectedTeachers",
+    "name": "GetBistudentSelectedTeachers",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[1,2,3]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "get",
+    "url": "/admin/bichoice/degrees",
+    "title": "GetDegrees",
+    "name": "GetDegrees",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n  \"degree_id\": 1,\n  \"degree_description\": \"\",\n  \"enrol_id\": 5,\n  \"enrol_description\": \"\"\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "get",
+    "url": "/admin/bichoice/enrols",
+    "title": "GetEnrols",
+    "name": "GetEnrols",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n  {\n      \"id\": 1,\n      \"description\": \"enrol\"\n  },\n  {\n      \"id\": 2,\n      \"description\": \"enrol2\"\n  }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "get",
+    "url": "/admin/bichoice/settings",
+    "title": "GetSettings",
+    "name": "GetSettings",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n {\n   \"key\": \"setting_key\",\n   \"value\": \"setting_val, may be string, array, or number\",\n   \"lastUpdateTime\": \"2020-09-01 11:15:00\",\n   \"lastUpdateAdmin\": {\n     \"name\": \"adminname\",\n     \"type\": \"admintype\"\n   }\n }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "put",
+    "url": "/admin/bichoice/bistudent/:id/teacher/:tid",
+    "title": "SelectTeacherForStudent",
+    "name": "SelectTeacherForStudent",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"msg\": \"选择成功\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "get",
+    "url": "/admin/bichoice/setting",
+    "title": "UpdateOrInsertSetting",
+    "name": "UpdateOrInsertSetting",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
     "type": "delete",
     "url": "/bistudent/file/:fid",
     "title": "DeleteFile",

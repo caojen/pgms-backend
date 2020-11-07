@@ -798,8 +798,9 @@ export class AdminController {
    */
   @Put('bichoice/degree/:id')
   @UseGuards(LoginRequired, BiChoiceAdminPermission)
-  async changeDegreeDescription(@Param() param: {id: number}, @Body() body: {description: string}) {
-    return await this.adminService.changeDegreeDescription(param.id, body.description);
+  async changeDegreeDescription(@Param() param: {id: string}, @Body() body: {description: string}) {
+    const id = parseInt(param.id);
+    return await this.adminService.changeDegreeDescription(id, body.description);
   }
 
   /**
@@ -924,5 +925,41 @@ export class AdminController {
   @UseGuards(LoginRequired, BiChoiceAdminPermission)
   async getBistudentSelectedTechers(@Param() param: {id: number}) {
     return await this.adminService.getBistudentSelectedTeachers(param.id);
+  }
+
+  /**
+   * @api {put} /admin/bichoice/bistudent/:id/teacher/:tid SelectTeacherForStudent
+   * @apiName SelectTeacherForStudent
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    {
+      "msg": "选择成功"
+    }
+   */
+  @Put('bichoice/bistudent/:bisid/teacher/:tid')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async selectTeacherForStudent(@Param() param: {bisid: string, tid: string}) {
+    const bisid = parseInt(param.bisid);
+    const tid = parseInt(param.tid);
+    return await this.adminService.selectTeacherForBistudent(bisid, tid);
+  }
+
+  /**
+   * @api {delete} /admin/bichoice/bistudent/:id/teacher/:tid DeleteTeacherForStudent
+   * @apiName DeleteTeacherForStudent
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    {
+      "msg": "取消选择成功"
+    }
+   */
+  @Delete('bichoice/bistudent/:bisid/teacher/:tid')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async deleteTeacherForStudent(@Param() param: {bisid: string, tid: string}) {
+    const bisid = parseInt(param.bisid);
+    const tid = parseInt(param.tid);
+    return await this.adminService.deleteTeacherForBistudent(bisid, tid);
   }
 }

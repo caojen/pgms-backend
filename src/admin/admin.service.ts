@@ -1000,12 +1000,18 @@ export class AdminService {
         gender, email, source, degree, image)
       VALUES(?,?,?,?,?,
         ?,?,?,?,
-        ?,?,?,?,?);
+        ?,?,?,?,?)
+      ON DUPLICATE KEY UPDATE name=?, recommended=?, score=?, graduation_university=?,
+        graduation_major=?, household_register=?, ethnic=?, phone=?,
+        gender=?, email=?, source=?, degree=?, image=?;
+      
     `;
 
     const r: any = await this.dbQuery.queryDb(sql, [uid, info.name, info.recommended, info.score, info.graduation_university,
       info.graduation_major, info.household_register, info.ethnic, info.phone,
-      info.gender, info.email, info.source, info.degree, config.default_image]);
+      info.gender, info.email, info.source, info.degree, config.defaultImage, info.name, info.recommended, info.score, info.graduation_university,
+      info.graduation_major, info.household_register, info.ethnic, info.phone,
+      info.gender, info.email, info.source, info.degree, config.defaultImage]);
     
     const insertId = r.insertId;
     return {
@@ -1078,8 +1084,22 @@ export class AdminService {
 
   async getBistudentSelectedTeachers(id: number) {
     const student = await this.bistudentService.getInfo(id);
-    return student.selected_teachers;
+    const selected_teachers = student?.selected_teachers;
+    if(selected_teachers) {
+      return JSON.parse(selected_teachers);
+    } else {
+      throw new HttpException({
+        msg: '无法找到此学生'
+      }, 406);
+    }
   }
 
+  async selectTeacherForBistudent(bisid: number, tid: number) {
+    return await this.bistudentService.selectOneTeacher(bisid, tid);
+  }
+
+  async deleteTeacherForBistudent(bisid: number, tid: number) {
+    return await this.bistudentService.deleteOneTeacher(bisid, tid);
+  }
   
 }
