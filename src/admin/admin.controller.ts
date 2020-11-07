@@ -3,6 +3,7 @@ import { AdminService } from './admin.service';
 import { LoginRequired } from 'src/user/user.guard';
 import { AttendAdminPermission, BiChoiceAdminPermission } from './admin.guard';
 import { EndeService } from 'src/ende/ende.service';
+import { BistudentCanSelect } from 'src/bistudent/bistudent.guard';
 
 @Controller('admin')
 export class AdminController {
@@ -938,7 +939,7 @@ export class AdminController {
     }
    */
   @Put('bichoice/bistudent/:bisid/teacher/:tid')
-  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  @UseGuards(LoginRequired, BiChoiceAdminPermission, BistudentCanSelect)
   async selectTeacherForStudent(@Param() param: {bisid: string, tid: string}) {
     const bisid = parseInt(param.bisid);
     const tid = parseInt(param.tid);
@@ -956,7 +957,7 @@ export class AdminController {
     }
    */
   @Delete('bichoice/bistudent/:bisid/teacher/:tid')
-  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  @UseGuards(LoginRequired, BiChoiceAdminPermission, BistudentCanSelect)
   async deleteTeacherForStudent(@Param() param: {bisid: string, tid: string}) {
     const bisid = parseInt(param.bisid);
     const tid = parseInt(param.tid);
