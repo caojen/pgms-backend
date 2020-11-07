@@ -257,4 +257,55 @@ export class TeacherController {
     response.end(Buffer.from(content));
   }
 
+  /**
+   * @api {get} /teacher/enrols GetEnrols
+   * @apiName GetEnrols
+   * @apiGroup Teacher
+   * @apiPermission Logined Teacher
+   * @apiSuccessExample {json} Success-Response
+  [
+    {
+        "id": 1,
+        "num": 3,
+        "description": "enrol",
+        "count": 1,
+        "selected_students": [
+            1
+        ]
+    }
+  ]
+  */
+  @Get('enrols')
+  @UseGuards(LoginRequired, TeacherPermission)
+  async getMyEnrols(@Req() request) {
+    const id = request.user.teacher.id;
+    return await this.teacherService.getMyEnrols(id);
+  }
+
+  /**
+   * @api {get} /teacher/degrees GetDegrees
+   * @apiName GetDegrees
+   * @apiGroup Teacher
+   * @apiPermission Logined Teacher
+   * @apiSuccessExample {json} Success-Response
+  [
+    {
+        "id": 1,
+        "num": 3,
+        "degree_description": "degree",
+        "enrol_description": "enrol",
+        "count": 1,
+        "selected_students": [
+            1
+        ]
+    }
+  ]
+  */
+  @Get('degrees')
+  @UseGuards(LoginRequired, TeacherPermission)
+  async getMyDegrees(@Req() request) {
+    const id = request.user.teacher.id;
+    return await this.teacherService.getMyDegrees(id);
+  }
+
 }

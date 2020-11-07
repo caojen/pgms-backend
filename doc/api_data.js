@@ -1089,6 +1089,54 @@ define({ "api": [
   },
   {
     "type": "get",
+    "url": "/teacher/degrees",
+    "title": "GetDegrees",
+    "name": "GetDegrees",
+    "group": "Teacher",
+    "permission": [
+      {
+        "name": "Logined Teacher"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n  {\n      \"id\": 1,\n      \"num\": 3,\n      \"degree_description\": \"degree\",\n      \"enrol_description\": \"enrol\",\n      \"count\": 1,\n      \"selected_students\": [\n          1\n      ]\n  }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/teacher/teacher.controller.ts",
+    "groupTitle": "Teacher"
+  },
+  {
+    "type": "get",
+    "url": "/teacher/enrols",
+    "title": "GetEnrols",
+    "name": "GetEnrols",
+    "group": "Teacher",
+    "permission": [
+      {
+        "name": "Logined Teacher"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n  {\n      \"id\": 1,\n      \"num\": 3,\n      \"description\": \"enrol\",\n      \"count\": 1,\n      \"selected_students\": [\n          1\n      ]\n  }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/teacher/teacher.controller.ts",
+    "groupTitle": "Teacher"
+  },
+  {
+    "type": "get",
     "url": "/teacher/bistudent/:bisid/files",
     "title": "GetOneBistudentFileList",
     "name": "GetOneBistudentFileList",

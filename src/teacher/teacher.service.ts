@@ -364,4 +364,143 @@ export class TeacherService {
       msg: '您没有权限获得此文件'
     }, 403);
   }
+
+  async getMyEnrols(id: number) {
+    const configSql = `
+      SELECT bichoice_config
+      FROM teacher
+      WHERE id=?;
+    `;
+
+    const bichoice_config = JSON.parse((await this.dbQuery.queryDb(configSql, [id]))[0].bichoice_config);
+    const enrols = bichoice_config.enrols;
+
+    const res: {
+      id: number,
+      num: number,
+      description: string,
+      count: number,
+      selected_students: any[]
+    }[] = [];
+
+    const selectSql = `
+      SELECT description
+      FROM enrol
+      WHERE id=?;
+    `;
+
+    const selectedStudentSql = `
+      SELECT selected_students
+      FROM teacher
+      WHERE id=?;
+    `;
+
+    const getEnrolSql = `
+      SELECT enrol.id as enrol
+      FROM bistudent
+        JOIN degree ON bistudent.degree = degree.id
+        JOIN enrol ON degree.enrol = enrol.id
+      WHERE bistudent.id=?;
+    `;
+    const selected_students_from_sql = JSON.parse((await this.dbQuery.queryDb(selectedStudentSql, [id]))[0].selected_students);
+
+    for(const index in enrols) {
+      const enrol = enrols[index];
+      const description = (await this.dbQuery.queryDb(selectSql, [enrol.id]))[0].description;
+
+      const selected_students = [];
+      
+      for(const stage in selected_students_from_sql) {
+        const students = selected_students_from_sql[stage];
+        for(const index in students) {
+          const student = students[index];
+          const e = (await this.dbQuery.queryDb(getEnrolSql, [student]))[0].enrol;
+          if(e === enrol.id) {
+            selected_students.push(student)
+          }
+        }
+      }
+
+      res.push({
+        id: enrol.id,
+        num: enrol.num,
+        description: description,
+        count: selected_students.length,
+        selected_students
+      });
+    }
+
+    return res;
+  }
+
+  async getMyDegrees(id: number) {
+    const configSql = `
+      SELECT bichoice_config
+      FROM teacher
+      WHERE id=?;
+    `;
+
+    const bichoice_config = JSON.parse((await this.dbQuery.queryDb(configSql, [id]))[0].bichoice_config);
+    const degrees = bichoice_config.degrees;
+
+    const res: {
+      id: number,
+      num: number,
+      degree_description: string,
+      enrol_description: string,
+      count: number,
+      selected_students: any[]
+    }[] = [];
+
+    const descriptionSql = `
+      SELECT degree.description AS degree_description,
+        enrol.description AS enrol_description
+      FROM degree
+        JOIN enrol ON degree.enrol = enrol.id
+      WHERE degree.id=?;
+    `;
+
+    const selectedStudentSql = `
+      SELECT selected_students
+      FROM teacher
+      WHERE id=?;
+    `;
+    const selected_students_from_sql = JSON.parse((await this.dbQuery.queryDb(selectedStudentSql, [id]))[0].selected_students);
+
+    const getDegreeSql = `
+      SELECT degree
+      FROM bistudent
+      WHERE id=?;
+    `;
+
+    for(const index in degrees) {
+      const degree = degrees[index];
+      const description = (await this.dbQuery.queryDb(descriptionSql, [degree.id]))[0];
+      const degree_description = description.degree_description;
+      const enrol_description = description.enrol_description;
+      const selected_students = [];
+      
+      for(const stage in selected_students_from_sql) {
+        const students = selected_students_from_sql[stage];
+        for(const index in students) {
+          const student = students[index];
+          const d = (await this.dbQuery.queryDb(getDegreeSql, [student]))[0].degree;
+          if(d === degree.id) {
+            selected_students.push(student)
+          }
+        }
+      }
+
+      res.push({
+        id: degree.id,
+        num: degree.num,
+        degree_description,
+        enrol_description,
+        count: selected_students.length,
+        selected_students
+      });
+    }
+
+    return res;
+  }
 }
