@@ -12,7 +12,7 @@ export class BistudentPermission implements CanActivate {
 }
 
 @Injectable()
-export class canSelect implements CanActivate {
+export class bistudentCanSelect implements CanActivate {
   async canActivate() {
     /*
     stage_count: number; 表示双选时总共的阶段数(这也是学生可以选择的老师总数)
