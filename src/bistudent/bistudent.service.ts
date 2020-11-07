@@ -47,7 +47,7 @@ export class BistudentService {
         JOIN source ON bistudent.source = source.id
         JOIN degree ON bistudent.degree = degree.id
         JOIN enrol ON degree.enrol = enrol.id
-      WHERE id=?;
+      WHERE bistudent.id=?;
     `;
     const query = (await this.dbQuery.queryDb(bistudentSql, [id]))[0];
     return query;

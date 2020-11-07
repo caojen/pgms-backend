@@ -1,9 +1,11 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { BistudentService } from 'src/bistudent/bistudent.service';
 import { EndeService } from 'src/ende/ende.service';
 import { QueryDbService } from 'src/query-db/query-db.service';
 import { StudentService } from 'src/student/student.service';
 import { UserService } from 'src/user/user.service';
 import { getConfigs } from 'src/util/global.funtions';
+import * as config from '../../config.json'
 
 @Injectable()
 export class AdminService {
@@ -11,6 +13,7 @@ export class AdminService {
     private readonly dbQuery: QueryDbService,
     private readonly studentService: StudentService,
     private readonly userService: UserService,
+    private readonly bistudentService: BistudentService
   ) {}
 
   async getAllAttendStudents(pageSize: number, offset: number) {
@@ -962,6 +965,121 @@ export class AdminService {
     throw new HttpException({
       msg: '双选已经开始, 无法删除Degree'
     }, 406);
-
   }
+
+  async getAllBistudents() {
+    const sql = `
+      SELECT *
+      FROM bistudent;
+    `;
+
+    return await this.dbQuery.queryDb(sql, []);
+  }
+
+  async addNewBistudent(info) {
+
+    const createUserSql = `
+      INSERT INTO user(username, password)
+      VALUES(?, ?)
+      ON DUPLICATE KEY UPDATE password=?;
+    `;
+    info.password = EndeService.encodeToDatabase(info.password);
+    await this.dbQuery.queryDb(createUserSql, [info.username, info.password, info.password])
+    
+    const selectUidSql = `
+      SELECT id
+      FROM user
+      WHERE username=?;
+    `;
+
+    const uid = (await this.dbQuery.queryDb(selectUidSql, [info.username]))[0].id;
+
+    const sql = `
+      INSERT INTO bistudent(uid, name, recommended, score, graduation_university,
+        graduation_major, household_register, ethnic, phone,
+        gender, email, source, degree, image)
+      VALUES(?,?,?,?,?,
+        ?,?,?,?,
+        ?,?,?,?,?);
+    `;
+
+    const r: any = await this.dbQuery.queryDb(sql, [uid, info.name, info.recommended, info.score, info.graduation_university,
+      info.graduation_major, info.household_register, info.ethnic, info.phone,
+      info.gender, info.email, info.source, info.degree, config.default_image]);
+    
+    const insertId = r.insertId;
+    return {
+      msg: '新建成功',
+      id: insertId
+    };
+  }
+
+  async changeBistudentInfo(id: number, info: any) {
+    const sql = `
+      UPDATE bistudent
+      SET name=?, recommended=?, score=?, graduation_university=?,
+        graduation_major=?, household_register=?, ethnic=?, phone=?,
+        gender=?, email=?, source=?, degree=?
+      WHERE id=?;
+    `;
+    await this.dbQuery.queryDb(sql, [
+      info.name, info.recommended, info.score, info.graduation_university,
+      info.graduation_major, info.household_register, info.ethnic, info.phone,
+      info.gender, info.email, info.source, info.degree,
+      id
+    ]);
+
+    const selectSql = `
+      SELECT *
+      FROM bistudent
+      WHERE id=?;
+    `
+
+    return {
+      msg: '修改成功',
+      bistudent: await this.dbQuery.queryDb(selectSql, [id]),
+    };
+  }
+
+  async deleteBistudent(id: number) {
+    const config = await getConfigs(["current_stage", "stage_count"]);
+    const current_stage = config.current_stage.value;
+    if(current_stage === -1) {
+      const selectUidSql = `
+        SELECT uid
+        FROM bistudent
+        WHERE id=?;
+      `;
+      const uid = (await this.dbQuery.queryDb(selectUidSql, [id]))[0].uid;
+      if(uid) {
+        const deleteSql = `
+          DELETE FROM user
+          WHERE id=?
+        `;
+
+        await this.dbQuery.queryDb(deleteSql, [uid]);
+        return {
+          msg: '删除成功'
+        };
+      }
+
+      throw new HttpException({
+        msg: '删除失败, 没有找到对应的用户'
+      }, 406);
+    }
+    throw new HttpException({
+      msg: '双选已经开始, 无法删除用户'
+    }, 406);
+  }
+
+  async getBistudentCanSelectTeachers(id: number) {
+    return await this.bistudentService.getAllTeachers(id);
+  }
+
+  async getBistudentSelectedTeachers(id: number) {
+    const student = await this.bistudentService.getInfo(id);
+    return student.selected_teachers;
+  }
+
+  
 }

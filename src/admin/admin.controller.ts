@@ -761,6 +761,19 @@ export class AdminController {
     return await this.adminService.getDegrees();
   }
 
+  /**
+   * @api {post} /admin/bichoice/degree AddNewDegree
+   * @apiName AddNewDegree
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    [
+      "degree_id": 1,
+      "degree_description": "",
+      "enrol_id": 5,
+      "enrol_description": ""
+    ]
+   */
   @Post('bichoice/degree')
   @UseGuards(LoginRequired, BiChoiceAdminPermission)
   async addNewDegree(@Body() body: {
@@ -770,15 +783,146 @@ export class AdminController {
     return await this.adminService.addNewDegree(body.description, body.enrol_id);
   }
 
+  /**
+   * @api {put} /admin/bichoice/degree/:id ChangeDegreeDescription
+   * @apiName ChangeDegreeDescription
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    [
+      "degree_id": 1,
+      "degree_description": "",
+      "enrol_id": 5,
+      "enrol_description": ""
+    ]
+   */
   @Put('bichoice/degree/:id')
   @UseGuards(LoginRequired, BiChoiceAdminPermission)
   async changeDegreeDescription(@Param() param: {id: number}, @Body() body: {description: string}) {
     return await this.adminService.changeDegreeDescription(param.id, body.description);
   }
 
+  /**
+   * @api {delete} /admin/bichoice/degree/:id DeleteDegree
+   * @apiName DeleteDegree
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    [
+      "degree_id": 1,
+      "degree_description": "",
+      "enrol_id": 5,
+      "enrol_description": ""
+    ]
+   */
   @Delete('bichoice/degree/:id')
   @UseGuards(LoginRequired, BiChoiceAdminPermission)
   async deleteDegree(@Param() param: {id: number}) {
     return await this.adminService.deleteDegree(param.id);
+  }
+
+  /**
+   * @api {get} /admin/bichoice/bistudents GetAllBistudents
+   * @apiName GetAllBistudents
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    [
+      {}
+    ]
+   */
+  @Get('bichoice/bistudents')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getAllBistudents() {
+    return await this.adminService.getAllBistudents();
+  }
+
+  @Post('bichoice/bistudent')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async addNewBistudent(@Body() body: {
+    username: string,
+    password: string,
+    name: string,
+    recommended: number,
+    score: number,
+    graduation_university: string,
+    graduation_major: string,
+    household_register: string,
+    ethnic: string,
+    phone: string,
+    gender: string,
+    email: string
+    source: number,
+    degree: number,
+  }) {
+    body.password = EndeService.decodeFromHttp(body.password);
+    return await this.adminService.addNewBistudent(body);
+  }
+
+  /**
+   * @api {put} /admin/bichoice/bistudent/:id ChangeBistudentInfo
+   * @apiName ChangeBistudentInfo
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    {
+      "msg": "修改成功",
+      "bistudent": {}
+    }
+   */
+  @Put('bichoice/bistudent/:id')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async changeBistudentInfo(@Param() param: {id: number}, @Body() body: {
+    name: string,
+    recommended: number,
+    score: number,
+    graduation_university: string,
+    graduation_major: string,
+    household_register: string,
+    ethnic: string,
+    phone: string,
+    gender: string,
+    email: string
+    source: number,
+    degree: number,
+  }) {
+    return await this.adminService.changeBistudentInfo(param.id, body);
+  }
+
+  @Delete('bichoice/bistudent/:id')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async deleteBistudent(@Param() param: {id: number}) {
+    return await this.adminService.deleteBistudent(param.id);
+  }
+
+  /**
+   * @api {get} /admin/bichoice/bistudent/:id/teachers GetBistudentCanSelectTeachers
+   * @apiName GetBistudentCanSelectTeachers
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    {
+      "msg": "修改成功",
+      "bistudent": {}
+    }
+   */
+  @Get('bichoice/bistudent/:id/teachers')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getBistudentCanSelectTeachers(@Param() param: {id: number}) {
+    return await this.adminService.getBistudentCanSelectTeachers(param.id);
+  }
+
+  /**
+   * @api {get} /admin/bichoice/bistudent/:id/teachers/selected GetBistudentSelectedTeachers
+   * @apiName GetBistudentSelectedTeachers
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    [1,2,3]
+   */
+  @Get('bichoice/bistudent/:id/teachers/selected')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getBistudentSelectedTechers(@Param() param: {id: number}) {
+    return await this.adminService.getBistudentSelectedTeachers(param.id);
   }
 }
