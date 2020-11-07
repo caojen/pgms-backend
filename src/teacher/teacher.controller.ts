@@ -3,8 +3,6 @@ import { LoginRequired } from 'src/user/user.guard';
 import { TeacherPermission } from './teacher.guard';
 import { TeacherService } from './teacher.service';
 import { TeacherCanSelect } from './teacher.guard';
-import { request } from 'http';
-import { parse } from 'path';
 
 @Controller('teacher')
 export class TeacherController {
