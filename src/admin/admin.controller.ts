@@ -1,7 +1,7 @@
 import { Controller, Get, Query, Req, HttpException, UseGuards, Param, Put, Body, Post, Delete } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { LoginRequired } from 'src/user/user.guard';
-import { AttendAdminPermission } from './admin.guard';
+import { AttendAdminPermission, BiChoiceAdminPermission } from './admin.guard';
 import { EndeService } from 'src/ende/ende.service';
 
 @Controller('admin')
@@ -622,4 +622,124 @@ export class AdminController {
     const password = EndeService.decodeFromHttp(body.password);
     return await this.adminService.changePasswordForTeacher(tid, password);
   }
+
+// for bichoice:
+
+  /**
+   * @api {get} /admin/bichoice/settings GetSettings
+   * @apiName GetSettings
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+   * [
+   *  {
+   *    "key": "setting_key",
+   *    "value": "setting_val, may be string, array, or number",
+   *    "lastUpdateTime": "2020-09-01 11:15:00",
+   *    "lastUpdateAdmin": {
+   *      "name": "adminname",
+   *      "type": "admintype"
+   *    }
+   *  }
+   * ]
+   */
+  @Get('bichoice/settings')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async biChoiceGetSettings() {
+    return await this.adminService.getSettings();
+  }
+
+  /**
+   * @api {get} /admin/bichoice/setting UpdateOrInsertSetting
+   * @apiName UpdateOrInsertSetting
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   */
+  @Put('bichoice/setting')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async bichoiceUpdateOrInsertSetting(@Req() req, @Body() body: {key: string, value: string}) {
+    const id = req.user.admin.id;
+    const {key, value} = body;
+    return await this.adminService.updateOrInsertSetting(id, key, value);
+  }
+
+  /**
+   * @api {get} /admin/bichoice/enrols GetEnrols
+   * @apiName GetEnrols
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    [
+      {
+          "id": 1,
+          "description": "enrol"
+      },
+      {
+          "id": 2,
+          "description": "enrol2"
+      }
+    ]
+   */
+  @Get('bichoice/enrols')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getEnrols() {
+    return await this.adminService.getEnrols();
+  }
+
+  /**
+   * @api {post} /admin/bichoice/enrol AddNewEnrol
+   * @apiName AddNewEnrol
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    {
+      "msg": "操作成功",
+      "id": 3,
+      "description": "enrol3"
+    }
+   */
+  @Post('bichoice/enrol')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async addNewEnrols(@Body() body: {description: string}) {
+    return await this.adminService.addNewEnrols(body.description);
+  }
+
+  /**
+   * @api {put} /admin/bichoice/enrol/:id ChangeEnrolDescription
+   * @apiName ChangeEnrolDescription
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    {
+      "msg": "操作成功",
+      "id": 3,
+      "description": "enrol3"
+    }
+   */
+  @Put('bichoice/enrol/:id')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async changeEnrolDescription(@Param() param: {id: string}, @Body() body: {description: string}) {
+    const eid = parseInt(param.id);
+    const description = body.description;
+
+    return await this.adminService.changeEnrolDescription(eid, description);
+  }
+   
+  /**
+   * @api {delete} /admin/bichoice/enrol/:id DeleteOneEnrol
+   * @apiName DeleteOneEnrol
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    {
+      "msg": "操作成功"
+    }
+   */
+  @Delete('bichoice/enrol/:id')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async deleteEnrol(@Param() param: {id: string}) {
+    const id = parseInt(param.id);
+    return await this.adminService.deleteEnrol(id);
+  }
+
 }

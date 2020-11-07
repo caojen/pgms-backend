@@ -3,6 +3,7 @@ import { EndeService } from 'src/ende/ende.service';
 import { QueryDbService } from 'src/query-db/query-db.service';
 import { StudentService } from 'src/student/student.service';
 import { UserService } from 'src/user/user.service';
+import { getConfigs } from 'src/util/global.funtions';
 
 @Injectable()
 export class AdminService {
@@ -95,7 +96,7 @@ export class AdminService {
    */
   async getSettings() {
     const sql = `
-      SELECT 'key', value, lastUpdate, lastUpdateAdmin,
+      SELECT \`key\`, value, lastUpdate, lastUpdateAdmin,
         name, type
       FROM settings LEFT JOIN admin ON settings.lastUpdateAdmin=admin.id;
     `;
@@ -827,7 +828,69 @@ export class AdminService {
     }
 
     return await this.userService.changePasswordForUser(tid, '', password);
+  }
 
+// for bichoice:
 
+  async getEnrols() {
+    const sql = `
+      SELECT *
+      FROM enrol;
+    `;
+
+    return await this.dbQuery.queryDb(sql, []);
+  }
+
+  async addNewEnrols(description: string) {
+    const sql = `
+      INSERT INTO enrol(description)
+      VALUES(?); 
+    `;
+    const result: any = await this.dbQuery.queryDb(sql, [description]);
+
+    return {
+      msg: '操作成功',
+      id: result.insertId,
+      description
+    };
+  }
+
+  async changeEnrolDescription(eid: number, description: string) {
+    const sql = `
+      UPDATE enrol
+      SET description=?
+      WHERE id=?;
+    `
+
+    await this.dbQuery.queryDb(sql, [description, eid]);
+    return {
+      msg: '操作成功',
+      eid,
+      description
+    };
+  }
+
+  async deleteEnrol(eid: number) {
+    // 删除enrol将会:
+    // 1. 级联删除所有degree
+    // 2. 级联删除对应的学生
+    // 不允许在开始双选后调用此接口
+
+    const config = await getConfigs(["current_stage", "stage_count"]);
+    const current_stage = config.current_stage.value;
+    if(current_stage === -1) {
+      const sql = `
+        DELETE FROM enrol
+        WHERE id=?;
+      `;
+      await this.dbQuery.queryDb(sql, [eid]);
+      return {
+        msg: '操作成功'
+      };
+    }
+
+    throw new HttpException({
+      msg: '双选已经开始, 无法删除Enrol'
+    }, 406);
   }
 }
