@@ -992,6 +992,30 @@
     "groupTitle": "Student"
   },
   {
+    "type": "delete",
+    "url": "/teacher/bistudent/:bisid",
+    "title": "DeleteOneBistudent",
+    "name": "DeleteOneBistudent",
+    "group": "Teacher",
+    "permission": [
+      {
+        "name": "Logined Teacher"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"msg\": \"取消选择成功\",\n  \"selected_students\": [[1],[2,3,4]]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/teacher/teacher.controller.ts",
+    "groupTitle": "Teacher"
+  },
+  {
     "type": "get",
     "url": "/teacher/students",
     "title": "GetAllStudents",
@@ -1007,6 +1031,117 @@
         {
           "title": "Success-Response",
           "content": "[\n     {\n         \"id\": 1,\n         \"name\": \"admin\",\n         \"email\": \"efbffcbc@mail2.sysu.edu.cn\",\n         \"latestRecordTime\": \"2020-10-07T15:08:46.000Z\"\n     }\n ]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/teacher/teacher.controller.ts",
+    "groupTitle": "Teacher"
+  },
+  {
+    "type": "get",
+    "url": "/teacher/bichoice",
+    "title": "GetBiChoiceInfo",
+    "name": "GetBiChoiceInfo",
+    "group": "Teacher",
+    "permission": [
+      {
+        "name": "Logined Teacher"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"begin_time\": \"{\\\"value\\\":\\\"2020-11-6 23:16:00\\\"}\",\n  \"current_stage\": \"{\\\"value\\\":1}\",\n  \"end_time\": \"{\\\"value\\\":\\\"2020-11-8 23:16:00\\\"}\",\n  \"stage_count\": \"{\\\"value\\\":3}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/teacher/teacher.controller.ts",
+    "groupTitle": "Teacher"
+  },
+  {
+    "type": "get",
+    "url": "/teacher/bistudents",
+    "title": "GetBistudents",
+    "name": "GetBistudents",
+    "group": "Teacher",
+    "permission": [
+      {
+        "name": "Logined Teacher"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n    [\n        {\n            \"id\": 1,\n            \"uid\": 11,\n            \"name\": \"bistudent\",\n            \"recommended\": 0,\n            \"score\": 399,\n            \"graduation_university\": \"uni\",\n            \"graduation_major\": \"maj\",\n            \"household_register\": \"reg\",\n            \"ethnic\": \"eth\",\n            \"phone\": \"phone\",\n            \"gender\": \"1\",\n            \"email\": \"mail\",\n            \"source\": 1,\n            \"degree\": 1,\n            \"image\": 11,\n            \"selected_teachers\": [\n                5\n            ]\n        }\n    ]\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/teacher/teacher.controller.ts",
+    "groupTitle": "Teacher"
+  },
+  {
+    "type": "get",
+    "url": "/teacher/bistudent/:bisid/files",
+    "title": "GetOneBistudentFileList",
+    "name": "GetOneBistudentFileList",
+    "group": "Teacher",
+    "permission": [
+      {
+        "name": "Logined Teacher"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n  {\n    \"filename\": \"abc\",\n    \"fid\": 1\n  }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/teacher/teacher.controller.ts",
+    "groupTitle": "Teacher"
+  },
+  {
+    "type": "get",
+    "url": "/teacher/bistudent/:bisid/file/:fid",
+    "title": "GetOneBistudentOneFile",
+    "name": "GetOneBistudentOneFile",
+    "group": "Teacher",
+    "permission": [
+      {
+        "name": "Logined Teacher"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "src/teacher/teacher.controller.ts",
+    "groupTitle": "Teacher"
+  },
+  {
+    "type": "get",
+    "url": "/teacher/bistudents/selected",
+    "title": "GetSelectedBistudents",
+    "name": "GetSelectedBistudents",
+    "group": "Teacher",
+    "permission": [
+      {
+        "name": "Logined Teacher"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[[1],[2,3,4,5]]",
           "type": "json"
         }
       ]
@@ -1049,6 +1184,30 @@
         {
           "title": "Success-Response",
           "content": "{\n      \"total\": 2,\n      \"records\": [\n          {\n              \"id\": 1,\n              \"rtime\": \"2020-10-07T15:08:46.000Z\",\n              \"position\": \"testposition\",\n              \"detail\": {\n                  \"title\": \"lecture1\",\n                  \"content\": \"content1\",\n                  \"start\": \"2020-10-07T15:07:00.000Z\",\n                  \"end\": \"2020-10-09T15:07:00.000Z\"\n              }\n          },\n          {\n              \"id\": 2,\n              \"rtime\": \"1999-05-24T16:25:00.000Z\",\n              \"position\": \"testposition\",\n              \"detail\": {\n                  \"title\": \"日常考勤\"\n              }\n          }\n      ]\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/teacher/teacher.controller.ts",
+    "groupTitle": "Teacher"
+  },
+  {
+    "type": "put",
+    "url": "/teacher/bistudent/:bisid",
+    "title": "SelectOneBistudent",
+    "name": "SelectOneBistudent",
+    "group": "Teacher",
+    "permission": [
+      {
+        "name": "Logined Teacher"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"msg\": \"选择成功\",\n  \"selected_students\": [[1],[2,3,4]]\n}",
           "type": "json"
         }
       ]

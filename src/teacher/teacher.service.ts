@@ -305,4 +305,63 @@ export class TeacherService {
       msg: '取消选择失败'
     }, 406);
   }
+
+  async getOneBistudentFileList(tid: number, bisid: number) {
+    let canGet = false;
+
+    const students = await this.getBistudents(tid);
+    for(const stage in students) {
+      const student = students[stage];
+      for(const index in student) {
+        if(student[index].id === bisid) {
+          canGet = true;
+          break;
+        }
+      }
+
+      if(canGet === true) {
+        break;
+      }
+    }
+
+    if(canGet === true) {
+      return await this.bistudentService.getFileList(bisid);
+    } 
+
+    throw new HttpException({
+      msg: '您没有权限查看'
+    }, 403);
+  }
+
+  async getOneBistudentFile(tid: number, bisid: number, fid: number) {
+    const fileList = await this.getOneBistudentFileList(tid, bisid);
+    // 获取bisid的学生的头像:
+    const getImageSql = `
+      SELECT image
+      FROM bistudent
+      WHERE id=?;
+    `;
+
+    const image = (await this.dbQuery.queryDb(getImageSql, [bisid]))[0].image;
+    let canGet = false;
+
+    if(image !== fid) {
+      for(const index in fileList) {
+        const file = fileList[index];
+        if(file.fid === fid) {
+          canGet = true;
+          break;
+        }
+      }
+    } else {
+      canGet = true;
+    }
+
+    if(canGet) {
+      return await this.bistudentService.getFile(bisid, image, fid);
+    }
+    throw new HttpException({
+      msg: '您没有权限获得此文件'
+    }, 403);
+  }
 }

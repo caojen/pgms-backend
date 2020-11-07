@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, HttpException, Param, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, Param, Put, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { LoginRequired } from 'src/user/user.guard';
 import { TeacherPermission } from './teacher.guard';
 import { TeacherService } from './teacher.service';
 import { TeacherCanSelect } from './teacher.guard';
 import { request } from 'http';
+import { parse } from 'path';
 
 @Controller('teacher')
 export class TeacherController {
@@ -180,7 +181,7 @@ export class TeacherController {
     return await this.teacherService.getSelectedBistudents(tid);
   }
 
-   /**
+  /**
    * @api {put} /teacher/bistudent/:bisid SelectOneBistudent
    * @apiName SelectOneBistudent
    * @apiGroup Teacher
@@ -190,7 +191,7 @@ export class TeacherController {
     "msg": "选择成功",
     "selected_students": [[1],[2,3,4]]
   }
-   */
+  */
   @Put('bistudent/:bisid')
   @UseGuards(LoginRequired, TeacherPermission, TeacherCanSelect)
   async selectOneBistudent(@Req() request, @Param() param: {bisid: string}) {
@@ -200,6 +201,17 @@ export class TeacherController {
     return await this.teacherService.selectOneBistudent(tid, bisid);
   }
 
+  /**
+   * @api {delete} /teacher/bistudent/:bisid DeleteOneBistudent
+   * @apiName DeleteOneBistudent
+   * @apiGroup Teacher
+   * @apiPermission Logined Teacher
+   * @apiSuccessExample {json} Success-Response
+  {
+    "msg": "取消选择成功",
+    "selected_students": [[1],[2,3,4]]
+  }
+  */
   @Delete('bistudent/:bisid')
   @UseGuards(LoginRequired, TeacherPermission, TeacherCanSelect)
   async deleteOneBistudent(@Req() request, @Param() param: {bisid: string}) {
@@ -207,6 +219,44 @@ export class TeacherController {
     const tid = request.user.teacher.id;
 
     return await this.teacherService.deleteOneBistudent(tid, bisid);
+  }
+
+  /**
+   * @api {get} /teacher/bistudent/:bisid/files GetOneBistudentFileList
+   * @apiName GetOneBistudentFileList
+   * @apiGroup Teacher
+   * @apiPermission Logined Teacher
+   * @apiSuccessExample {json} Success-Response
+  [
+    {
+      "filename": "abc",
+      "fid": 1
+    }
+  ]
+  */
+  @Get('bistudent/:bisid/files')
+  @UseGuards(LoginRequired, TeacherPermission)
+  async getOneBistudentFileList(@Req() request, @Param() param: {bisid: string}) {
+    const bisid = parseInt(param.bisid);
+    const tid = request.user.teacher.id;
+
+    return await this.teacherService.getOneBistudentFileList(tid, bisid);
+  }
+
+  /**
+   * @api {get} /teacher/bistudent/:bisid/file/:fid GetOneBistudentOneFile
+   * @apiName GetOneBistudentOneFile
+   * @apiGroup Teacher
+   * @apiPermission Logined Teacher
+  */
+  @Get('bistudent/:bisid/file/:fid')
+  @UseGuards(LoginRequired, TeacherPermission)
+  async getOneBistudentOneFile(@Req() request, @Param() param: {bisid: string, fid: string}, @Res() response) {
+    const bisid = parseInt(param.bisid);
+    const fid = parseInt(param.fid);
+    const tid = request.user.teacher.id;
+    const content = await this.teacherService.getOneBistudentFile(tid, bisid, fid);
+    response.end(Buffer.from(content));
   }
 
 }
