@@ -48,10 +48,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       INSERT INTO logger (ip, url, uid, response_body, response_status, usertype, method)
       VALUES (?, ?, ?, ?, ?, ?, ?);
     `;
-    this.queryDb(sql, [ip, url, uid, responseText, status, userType, method]);
+    this.queryDb(sql, [ip, url, uid, (responseText == null ? '500 null body' : responseText), ((status == null || status == undefined) ? 500 : status), userType, method]);
 
     response
-      .status(exception.status)
+      .status(exception.status ? exception.status : 500)
       .json(exception.response);
   }
 }

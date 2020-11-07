@@ -1,7 +1,9 @@
-import { Body, Controller, Get, HttpException, Param, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, Param, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { LoginRequired } from 'src/user/user.guard';
 import { TeacherPermission } from './teacher.guard';
 import { TeacherService } from './teacher.service';
+import { TeacherCanSelect } from './teacher.guard';
+import { request } from 'http';
 
 @Controller('teacher')
 export class TeacherController {
@@ -104,4 +106,107 @@ export class TeacherController {
     const tid = req.user.teacher.id;
     return await this.teacherService.updateTeacherInfo(tid, body);
   }
+
+  // for bi-choice:
+
+  /**
+   * @api {get} /teacher/bichoice GetBiChoiceInfo
+   * @apiName GetBiChoiceInfo
+   * @apiGroup Teacher
+   * @apiPermission Logined Teacher
+   * @apiSuccessExample {json} Success-Response
+  {
+    "begin_time": "{\"value\":\"2020-11-6 23:16:00\"}",
+    "current_stage": "{\"value\":1}",
+    "end_time": "{\"value\":\"2020-11-8 23:16:00\"}",
+    "stage_count": "{\"value\":3}"
+  }
+   */
+  @Get('bichoice')
+  async getBiChoiceInfo() {
+    return this.teacherService.getBiChoiceInfo();
+  }
+
+  /**
+   * @api {get} /teacher/bistudents GetBistudents
+   * @apiName GetBistudents
+   * @apiGroup Teacher
+   * @apiPermission Logined Teacher
+   * @apiSuccessExample {json} Success-Response
+[
+    [
+        {
+            "id": 1,
+            "uid": 11,
+            "name": "bistudent",
+            "recommended": 0,
+            "score": 399,
+            "graduation_university": "uni",
+            "graduation_major": "maj",
+            "household_register": "reg",
+            "ethnic": "eth",
+            "phone": "phone",
+            "gender": "1",
+            "email": "mail",
+            "source": 1,
+            "degree": 1,
+            "image": 11,
+            "selected_teachers": [
+                5
+            ]
+        }
+    ]
+]
+   */
+  @Get('bistudents')
+  @UseGuards(LoginRequired, TeacherPermission)
+  async getBistudents(@Req() request) {
+    const tid = request.user.teacher.id;
+    return await this.teacherService.getBistudents(tid);
+  }
+
+  /**
+   * @api {get} /teacher/bistudents/selected GetSelectedBistudents
+   * @apiName GetSelectedBistudents
+   * @apiGroup Teacher
+   * @apiPermission Logined Teacher
+   * @apiSuccessExample {json} Success-Response
+  [[1],[2,3,4,5]]
+   */
+  @Get('bistudents/selected')
+  @UseGuards(LoginRequired, TeacherPermission)
+  async getSelectedBistudents(@Req() request) {
+    const tid = request.user.teacher.id;
+    return await this.teacherService.getSelectedBistudents(tid);
+  }
+
+   /**
+   * @api {put} /teacher/bistudent/:bisid SelectOneBistudent
+   * @apiName SelectOneBistudent
+   * @apiGroup Teacher
+   * @apiPermission Logined Teacher
+   * @apiSuccessExample {json} Success-Response
+  {
+    "msg": "选择成功",
+    "selected_students": [[1],[2,3,4]]
+  }
+   */
+  @Put('bistudent/:bisid')
+  @UseGuards(LoginRequired, TeacherPermission, TeacherCanSelect)
+  async selectOneBistudent(@Req() request, @Param() param: {bisid: string}) {
+    const bisid = parseInt(param.bisid);
+    const tid = request.user.teacher.id;
+
+    return await this.teacherService.selectOneBistudent(tid, bisid);
+  }
+
+  @Delete('bistudent/:bisid')
+  @UseGuards(LoginRequired, TeacherPermission, TeacherCanSelect)
+  async deleteOneBistudent(@Req() request, @Param() param: {bisid: string}) {
+    const bisid = parseInt(param.bisid);
+    const tid = request.user.teacher.id;
+
+    return await this.teacherService.deleteOneBistudent(tid, bisid);
+  }
+
 }

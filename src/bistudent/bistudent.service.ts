@@ -34,6 +34,25 @@ export class BistudentService {
     return res;
   }
 
+  async getInfo(id: number) {
+    const bistudentSql = `
+      SELECT bistudent.id as id, name, recommended, score,
+        graduation_university, graduation_major, graduation_university,
+        household_register, ethnic, phone, gender, email,
+        source.description as source_des,
+        degree.description as degree_des,
+        enrol.description as enrol_des,
+        image, selected_teachers
+      FROM bistudent
+        JOIN source ON bistudent.source = source.id
+        JOIN degree ON bistudent.degree = degree.id
+        JOIN enrol ON degree.enrol = enrol.id
+      WHERE id=?;
+    `;
+    const query = (await this.dbQuery.queryDb(bistudentSql, [id]))[0];
+    return query;
+  }
+
   async updateInfo(id: number, {phone, email}) {
     const sql = `
       UPDATE bistudent
@@ -142,7 +161,6 @@ export class BistudentService {
     }
 
     selected_teachers.push(tid);
-    const length = selected_teachers.length;
     const updateSql = `
       UPDATE bistudent
       SET selected_teachers=?
