@@ -648,6 +648,54 @@
   },
   {
     "type": "post",
+    "url": "/admin/bichoice/bistudent",
+    "title": "AddNewBistudent",
+    "name": "AddNewBistudent",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"msg\": \"操作成功\",\n  \"id\": 1\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "post",
+    "url": "/admin/bichoice/bistudents",
+    "title": "AddNewBistudents",
+    "name": "AddNewBistudents",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"msg\": \"操作成功\",\n  \"success\": 12,\n  \"error\": [\n    {}\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "post",
     "url": "/admin/bichoice/degree",
     "title": "AddNewDegree",
     "name": "AddNewDegree",
@@ -686,6 +734,30 @@
         {
           "title": "Success-Response",
           "content": "{\n  \"msg\": \"操作成功\",\n  \"id\": 3,\n  \"description\": \"enrol3\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "post",
+    "url": "/admin/bichoice/source",
+    "title": "AddNewSource",
+    "name": "AddNewSource",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"msg\": \"添加成功\"\n}",
           "type": "json"
         }
       ]
@@ -767,6 +839,30 @@
     "groupTitle": "BiChoiceAdmin"
   },
   {
+    "type": "put",
+    "url": "/admin/bichoice/source/:id",
+    "title": "ChangeSourceDescription",
+    "name": "ChangeSourceDescription",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"msg\": \"修改成功\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
     "type": "delete",
     "url": "/admin/bichoice/degree/:id",
     "title": "DeleteDegree",
@@ -792,6 +888,30 @@
   },
   {
     "type": "delete",
+    "url": "/admin/bichoice/file/:fid",
+    "title": "DeleteFile",
+    "name": "DeleteFile",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"msg\": \"删除成功\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "delete",
     "url": "/admin/bichoice/enrol/:id",
     "title": "DeleteOneEnrol",
     "name": "DeleteOneEnrol",
@@ -806,6 +926,30 @@
         {
           "title": "Success-Response",
           "content": "{\n  \"msg\": \"操作成功\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "delete",
+    "url": "/admin/bichoice/source/:id",
+    "title": "DeleteOneSource",
+    "name": "DeleteOneSource",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "{\n  \"msg\": \"删除成功\"\n}",
           "type": "json"
         }
       ]
@@ -888,6 +1032,30 @@
   },
   {
     "type": "get",
+    "url": "/admin/bichoice/bistudent/:id/files",
+    "title": "GetBistudentFileList",
+    "name": "GetBistudentFileList",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n  {\n    \"filename\": \"asd\",\n    \"fid\": 1\n  }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "get",
     "url": "/admin/bichoice/bistudent/:id/teachers/selected",
     "title": "GetBistudentSelectedTeachers",
     "name": "GetBistudentSelectedTeachers",
@@ -960,6 +1128,21 @@
   },
   {
     "type": "get",
+    "url": "/admin/bichoice/file/:fid",
+    "title": "GetFile",
+    "name": "GetFile",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "get",
     "url": "/admin/bichoice/settings",
     "title": "GetSettings",
     "name": "GetSettings",
@@ -974,6 +1157,30 @@
         {
           "title": "Success-Response",
           "content": "[\n {\n   \"key\": \"setting_key\",\n   \"value\": \"setting_val, may be string, array, or number\",\n   \"lastUpdateTime\": \"2020-09-01 11:15:00\",\n   \"lastUpdateAdmin\": {\n     \"name\": \"adminname\",\n     \"type\": \"admintype\"\n   }\n }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/admin/admin.controller.ts",
+    "groupTitle": "BiChoiceAdmin"
+  },
+  {
+    "type": "get",
+    "url": "/admin/bichoice/sources",
+    "title": "GetSources",
+    "name": "GetSources",
+    "group": "BiChoiceAdmin",
+    "permission": [
+      {
+        "name": "Logined BiChoiceAdmin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "[\n  {\"id\": 1, \"description\": \"a\"}\n]",
           "type": "json"
         }
       ]
