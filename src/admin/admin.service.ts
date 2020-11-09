@@ -1,8 +1,10 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { BistudentService } from 'src/bistudent/bistudent.service';
 import { EndeService } from 'src/ende/ende.service';
+import { FileService } from 'src/file/file.service';
 import { QueryDbService } from 'src/query-db/query-db.service';
 import { StudentService } from 'src/student/student.service';
+import { TeacherService } from 'src/teacher/teacher.service';
 import { UserService } from 'src/user/user.service';
 import { getConfigs } from 'src/util/global.funtions';
 import * as config from '../../config.json'
@@ -1020,6 +1022,29 @@ export class AdminService {
     };
   }
 
+  async addNewBistudents(infos: any) {
+    const error = [];
+    let success = 0;
+    for(const index in infos) {
+      const info = infos[index];
+      try {
+        await this.addNewBistudent(info);
+        success += 1;
+      } catch(err) {
+        error.push({
+          ...info,
+          err
+        });
+      }
+    }
+
+    return {
+      msg: '操作已完成',
+      success,
+      error
+    };
+  }
+
   async changeBistudentInfo(id: number, info: any) {
     const sql = `
       UPDATE bistudent
@@ -1101,5 +1126,87 @@ export class AdminService {
   async deleteTeacherForBistudent(bisid: number, tid: number) {
     return await this.bistudentService.deleteOneTeacher(bisid, tid);
   }
+
+  async getBistudentFileList(bisid: number) {
+    return await this.bistudentService.getFileList(bisid);
+  }
+
+  async getBistudentFile(fid: number) {
+    const sql = `
+      SELECT port, ffid
+      FROM file
+      WHERE id=?;
+    `;
+
+    const query = (await this.dbQuery.queryDb(sql, [fid]))[0];
+    if(!!query) {
+      return await FileService.getFile(query.port, query.ffid);
+    }
+
+    throw new HttpException({
+      msg: '不存在此文件'
+    }, 404);
+  }
+
+  async deleteBistudentFile(fid: number) {
+    const sql = `
+      DELETE FROM file
+      WHERE id=?;
+    `;
+
+    await this.dbQuery.queryDb(sql, [fid]);
+    return {
+      msg: '删除成功'
+    };
+  }
   
+  async getSources() {
+    const sql = `
+      select * FROM source;
+    `;
+    return await this.dbQuery.queryDb(sql, []);
+  }
+
+  async addNewSource(body) {
+    const sql = `
+      INSERT INTO source(description)
+      VALUES(?);
+    `;
+
+    const query: any = await this.dbQuery.queryDb(sql, [body.description]);
+    const insertId = query.insertId;
+    return {
+      msg: '添加成功',
+      id: insertId,
+      description: body.description
+    }
+  }
+
+  async changeSourceDescription(id: number, description: string) {
+    const sql = `
+      UPDATE source
+      SET description=?
+      WHERE id=?;
+    `;
+
+    await this.dbQuery.queryDb(sql, [description, id]);
+    return {
+      msg: '更新成功',
+      id,
+      description
+    }
+  }
+
+  async deleteSource(id: number) {
+    const sql = `
+      DELETE FROM source
+      WHERE id=?;
+    `;
+
+    await this.dbQuery.queryDb(sql, [id]);
+    return {
+      msg: '删除成功',
+      id
+    }
+  }
 }

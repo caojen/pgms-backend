@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Req, HttpException, UseGuards, Param, Put, Body, Post, Delete } from '@nestjs/common';
+import { Controller, Get, Query, Req, HttpException, UseGuards, Param, Put, Body, Post, Delete, Res } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { LoginRequired } from 'src/user/user.guard';
 import { AttendAdminPermission, BiChoiceAdminPermission } from './admin.guard';
@@ -824,6 +824,72 @@ export class AdminController {
   }
 
   /**
+   * @api {get} /admin/bichoice/sources GetSources
+   * @apiName GetSources
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    [
+      {"id": 1, "description": "a"}
+    ]
+   */
+  @Get('bichoice/sources')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getSources() {
+    return await this.adminService.getSources();
+  }
+
+  /**
+   * @api {post} /admin/bichoice/source AddNewSource
+   * @apiName AddNewSource
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    {
+      "msg": "添加成功"
+    }
+   */
+  @Post('bichoice/source')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async addNewSource(@Body() body) {
+    return await this.adminService.addNewSource(body);
+  }
+
+  /**
+   * @api {put} /admin/bichoice/source/:id ChangeSourceDescription
+   * @apiName ChangeSourceDescription
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    {
+      "msg": "修改成功"
+    }
+   */
+  @Put('bichoice/source/:id')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async changeSourceDescription(@Param() param: {id: string}, @Body() body) {
+    const id = parseInt(param.id);
+    return await this.adminService.changeSourceDescription(id, body.description);
+  }
+
+  /**
+   * @api {delete} /admin/bichoice/source/:id DeleteOneSource
+   * @apiName DeleteOneSource
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    {
+      "msg": "删除成功"
+    }
+   */
+  @Delete('bichoice/source/:id')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async deleteSource(@Param() param: {id: string}) {
+    const id = parseInt(param.id);
+    return await this.adminService.deleteSource(id);
+  }
+
+  /**
    * @api {get} /admin/bichoice/bistudents GetAllBistudents
    * @apiName GetAllBistudents
    * @apiGroup BiChoiceAdmin
@@ -839,6 +905,17 @@ export class AdminController {
     return await this.adminService.getAllBistudents();
   }
 
+  /**
+   * @api {post} /admin/bichoice/bistudent AddNewBistudent
+   * @apiName AddNewBistudent
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    {
+      "msg": "操作成功",
+      "id": 1
+    }
+   */
   @Post('bichoice/bistudent')
   @UseGuards(LoginRequired, BiChoiceAdminPermission)
   async addNewBistudent(@Body() body: {
@@ -859,6 +936,45 @@ export class AdminController {
   }) {
     body.password = EndeService.decodeFromHttp(body.password);
     return await this.adminService.addNewBistudent(body);
+  }
+
+  /**
+   * @api {post} /admin/bichoice/bistudents AddNewBistudents
+   * @apiName AddNewBistudents
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    {
+      "msg": "操作成功",
+      "success": 12,
+      "error": [
+        {}
+      ]
+    }
+   */
+  @Post('bichoice/bistudents')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async addNewBistudents(@Body() body: {
+    username: string,
+    password: string,
+    name: string,
+    recommended: number,
+    score: number,
+    graduation_university: string,
+    graduation_major: string,
+    household_register: string,
+    ethnic: string,
+    phone: string,
+    gender: string,
+    email: string
+    source: number,
+    degree: number,
+  }[]) {
+    for(const index in body) {
+      body[index].password = EndeService.decodeFromHttp(body[index].password);
+    }
+
+    return await this.adminService.addNewBistudents(body);
   }
 
   /**
@@ -962,5 +1078,56 @@ export class AdminController {
     const bisid = parseInt(param.bisid);
     const tid = parseInt(param.tid);
     return await this.adminService.deleteTeacherForBistudent(bisid, tid);
+  }
+
+  /**
+   * @api {get} /admin/bichoice/bistudent/:id/files GetBistudentFileList
+   * @apiName GetBistudentFileList
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    [
+      {
+        "filename": "asd",
+        "fid": 1
+      }
+    ]
+   */
+  @Get('bichoice/bistudent/:bisid/files')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getBistudentFileList(@Param() param: {bisid: string}) {
+    const bisid = parseInt(param.bisid);
+    return await this.adminService.getBistudentFileList(bisid);
+  }
+
+  /**
+   * @api {get} /admin/bichoice/file/:fid GetFile
+   * @apiName GetFile
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   */
+  @Get('bichoice/file/:fid')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getBistudentFile(@Param() param: {fid: string}, @Res() response) {
+    const fid = parseInt(param.fid);
+    const content = await this.adminService.getBistudentFile(fid);
+    response.end(Buffer.from(content));
+  }
+
+  /**
+   * @api {delete} /admin/bichoice/file/:fid DeleteFile
+   * @apiName DeleteFile
+   * @apiGroup BiChoiceAdmin
+   * @apiPermission Logined BiChoiceAdmin
+   * @apiSuccessExample {json} Success-Response
+    {
+      "msg": "删除成功"
+    }
+   */
+  @Delete('bichoice/file/:fid')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async deleteBistudentFile(@Param() param: {fid: string}) {
+    const fid = parseInt(param.fid);
+    return await this.adminService.deleteBistudentFile(fid);
   }
 }
