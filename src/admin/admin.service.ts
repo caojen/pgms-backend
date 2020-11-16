@@ -15,7 +15,8 @@ export class AdminService {
     private readonly dbQuery: QueryDbService,
     private readonly studentService: StudentService,
     private readonly userService: UserService,
-    private readonly bistudentService: BistudentService
+    private readonly bistudentService: BistudentService,
+    private readonly teacherService: TeacherService
   ) {}
 
   async getAllAttendStudents(pageSize: number, offset: number) {
@@ -1208,5 +1209,38 @@ export class AdminService {
       msg: '删除成功',
       id
     }
+  }
+
+  async getAllBiTeachers() {
+    const sql = `
+      SELECT id, name, email, personal_page, research_area,
+        bichoice_config, selected_students
+      FROM teacher;
+    `;
+
+    return await this.dbQuery.queryDb(sql, []);
+  }
+
+  async getOneBiTeacher(id: number) {
+    const sql = `
+      SELECT id, name, email, personal_page, research_area,
+        bichoice_config, selected_students
+      FROM teacher
+      WHERE id=?;
+    `;
+
+    return await this.dbQuery.queryDb(sql, [id]);
+  }
+
+  async getStudentsOfTeachers(id: number) {
+    return await this.teacherService.getBistudents(id);
+  }
+
+  async getTeacherEnrols(id: number) {
+    return await this.teacherService.getMyEnrols(id);
+  }
+
+  async getTeacherDegrees(id: number) {
+    return await this.teacherService.getMyDegrees(id);
   }
 }

@@ -1130,4 +1130,38 @@ export class AdminController {
     const fid = parseInt(param.fid);
     return await this.adminService.deleteBistudentFile(fid);
   }
+
+  @Get('bichoice/teachers')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getAllBiTeachers() {
+    return await this.adminService.getAllBiTeachers();
+  }
+
+  @Get('bichoice/teacher/:id')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getOneBiTeacher(@Param() param: {id: string}) {
+    const id = parseInt(param.id);
+    return await this.adminService.getOneBiTeacher(id);
+  }
+
+  @Get('bichoice/teacher/:id/students')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getStudentsOfTeachers(@Param() param: {id: string}) {
+    const id = parseInt(param.id);
+    return await this.adminService.getStudentsOfTeachers(id);
+  }
+
+  @Get('bichoice/teacher/:id/enrols')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getTeacherEnrols(@Param() param: {id: string}) {
+    const id = parseInt(param.id);
+    return await this.adminService.getTeacherEnrols(id);
+  }
+
+  @Get('bichoice/teacher/:id/degrees')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getTeacherDegrees(@Param() param: {id: string}) {
+    const id = parseInt(param.id);
+    return await this.adminService.getTeacherDegrees(id);
+  }
 }
