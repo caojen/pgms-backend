@@ -9,10 +9,10 @@ build_image:
   
 test:
   script:
-    - docker run -it --rm pgms-backend:latest npm run test
+    - docker run -itd --rm pgms-backend:latest npm run test
 
 deploy:
   script:
-    - docker run -it --restart=always -p 5001:5001 pgms-backend:latest
+    - docker run -itd --restart=always -p 5001:5001 pgms-backend:latest
   only:
     - master
