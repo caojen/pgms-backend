@@ -1,4 +1,4 @@
 {
-  "env": "test",
+  "env": "dev",
   "defaultImage": 1
 }
