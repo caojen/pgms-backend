@@ -1,4 +1,4 @@
-stage:
+stages:
   - build_image
   - test
   - deploy
@@ -15,4 +15,4 @@ deploy:
   script:
     - docker run -it --restart=always -p 5001:5001 pgms-backend:latest
   only:
-    master
+    - master
