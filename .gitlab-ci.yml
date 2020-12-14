@@ -5,12 +5,12 @@ stages:
   - migrate
 
 variables:
-  PGMS_DOCKER_IMAGE_NAME: pgms-backend-$CI_COMMIT_REF_NAME
+  PGMS_DOCKER_IMAGE_NAME: pgms-backend-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
 
 build-image:
   stage: build-image
   script:
-    - docker build --no-cache -t pgms-backend-$PGMS_DOCKER_IMAGE_NAME .
+    - docker build --no-cache -t $PGMS_DOCKER_IMAGE_NAME .
   only:
     - master
   
