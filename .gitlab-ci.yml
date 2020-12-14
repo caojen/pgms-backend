@@ -19,12 +19,13 @@ build-image:
 delete-old-container:
   stage: stop-old-deploy
   script:
-    - docker rm -f pgms-backend || true
+    - docker rm -f $PGMS_DOCKER_IMAGE_NAME || true
+  only: master
 
 deploy:
   stage: deploy
   script:
-    - docker run -itd --restart=always -p 5001:5001 --name PGMS_DOCKER_IMAGE_NAME PGMS_DOCKER_IMAGE_NAME:latest
+    - docker run -itd --restart=always -p 5001:5001 --name $PGMS_DOCKER_IMAGE_NAME $PGMS_DOCKER_IMAGE_NAME:latest
   only:
     - master
 
