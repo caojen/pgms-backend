@@ -4,6 +4,9 @@ import * as rateLimit from 'express-rate-limit';
 import { requestListening } from './util/request.middleware';
 import { RequestInterceptor } from './util/request.interceptor';
 import { HttpExceptionFilter } from './util/exception.filter';
+import * as express from 'express';
+
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,6 +21,9 @@ async function bootstrap() {
   app.use(requestListening);
   app.useGlobalInterceptors(new RequestInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  app.use('/doc', express.static('doc'));
+
   await app.listen(5001);
 }
 bootstrap();

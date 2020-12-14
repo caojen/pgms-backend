@@ -7,7 +7,7 @@ stages:
 build-image:
   stage: build-image
   script:
-    - docker build --no-cache -t pgms-backend .
+    - docker build --no-cache -t pgms-backend-$CI_COMMIT_REF_NAME .
   
 # test:
 #   script:

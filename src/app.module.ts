@@ -10,10 +10,9 @@ import { TeacherModule } from './teacher/teacher.module';
 import { AdminModule } from './admin/admin.module';
 import { BistudentModule } from './bistudent/bistudent.module';
 import { FileModule } from './file/file.module';
-import { DocsModule } from './docs/docs.module';
 
 @Module({
-  imports: [QueryDbModule, UserModule, EndeModule, StudentModule, AutoscriptModule, TeacherModule, AdminModule, BistudentModule, FileModule, DocsModule],
+  imports: [QueryDbModule, UserModule, EndeModule, StudentModule, AutoscriptModule, TeacherModule, AdminModule, BistudentModule, FileModule],
   controllers: [AppController],
   providers: [AppService],
 })
