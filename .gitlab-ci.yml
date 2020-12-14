@@ -13,10 +13,6 @@ build-image:
     - docker build --no-cache -t $PGMS_DOCKER_IMAGE_NAME .
   only:
     - master
-  
-# test:
-#   script:
-#     - docker run -itd --rm pgms-backend:latest npm run test
 
 delete-old-container:
   stage: stop-old-deploy
