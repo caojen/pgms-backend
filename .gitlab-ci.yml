@@ -5,7 +5,7 @@ stages:
   - migrate
 
 variables:
-  PGMS_DOCKER_IMAGE_NAME: pgms-backend-$CI_COMMIT_REF_NAME
+  PGMS_DOCKER_IMAGE_NAME: pgms-backend-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
 
 build-image:
   stage: build-image
