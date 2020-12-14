@@ -10,4 +10,4 @@ RUN npm cache verify && \
     && npm run doc:build \
     && npm run build
 
-ENTRYPOINT npm start prod
+CMD npm start prod
