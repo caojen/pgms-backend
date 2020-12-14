@@ -5,6 +5,7 @@ stages:
   - migrate
 
 variables:
+  CONTIANER_NAME: pgms-backend
   PGMS_DOCKER_IMAGE_NAME: pgms-backend-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
 
 build-image:
@@ -17,14 +18,14 @@ build-image:
 delete-old-container:
   stage: stop-old-deploy
   script:
-    - docker rm -f $PGMS_DOCKER_IMAGE_NAME || true
+    - docker rm -f $CONTIANER_NAME || true
   only:
     - master
 
 deploy:
   stage: deploy
   script:
-    - docker run -itd --restart=always -p 5001:5001 --name $PGMS_DOCKER_IMAGE_NAME $PGMS_DOCKER_IMAGE_NAME:latest
+    - docker run -itd --restart=always -p 5001:5001 --name $CONTIANER_NAME $PGMS_DOCKER_IMAGE_NAME:latest
   only:
     - master
 
