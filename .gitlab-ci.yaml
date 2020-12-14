@@ -1,0 +1,18 @@
+stage:
+  - build_image
+  - test
+  - deploy
+
+build_image:
+  script:
+    - docker build -t pgms-backend .
+  
+test:
+  script:
+    - docker run -it --rm pgms-backend:latest npm run test
+
+deploy:
+  script:
+    - docker run -it --restart=always -p 5001:5001 pgms-backend:latest
+  only:
+    master
