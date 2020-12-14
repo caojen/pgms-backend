@@ -5,7 +5,7 @@ WORKDIR /workdir
 
 COPY . .
 
-RUN npm run install --registry=https://registry.npm.vmatrix.org.cn --unsafe-perm \
+RUN npm install --registry=https://registry.npm.vmatrix.org.cn --unsafe-perm \
     && npm run doc:build \
     && npm run build
 
