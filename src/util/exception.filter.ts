@@ -36,7 +36,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     const user = request["user"];
     const uid = user ? user.uid : null;
-    const ip = request.socket.remoteAddress;
+    const ip = request.headers['x-real-ip'];
     const url = request.url;
     const method = request.method;
     const status = exception.status;

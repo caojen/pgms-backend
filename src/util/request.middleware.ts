@@ -9,7 +9,7 @@ export function requestListening(req: Request, res: Response, next: any) {
   logger.log(objectToLog({
     method: req.method,
     url: req.url,
-    ip: req.socket.remoteAddress,
+    ip: req.headers['x-real-ip'],
   }));
   next();
 }
