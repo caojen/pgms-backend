@@ -7,5 +7,14 @@
     "database": "pgms",
     "host": "124.70.215.24",
     "multipleStatements": true
+  },
+  "dev": {
+    "driver": "mysql",
+    "user": "pgms",
+    "password": "ppggmmss13331270",
+    "port": 6033,
+    "database": "pgms",
+    "host": "127.0.0.1",
+    "multipleStatements": true
   }
 }

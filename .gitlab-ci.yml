@@ -2,6 +2,7 @@ stages:
   - build-image
   - stop-old-deploy
   - deploy
+  - migrate
 
 build-image:
   stage: build-image
@@ -21,5 +22,12 @@ deploy:
   stage: deploy
   script:
     - docker run -itd --restart=always -p 5001:5001 --name pgms-backend pgms-backend:latest
+  only:
+    - master
+
+migrate:
+  stage: migrate
+  script:
+    - docker run pgms-backend npm run migrate up -- -c 10
   only:
     - master
