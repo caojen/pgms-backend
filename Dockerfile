@@ -5,7 +5,8 @@ WORKDIR /workdir
 
 COPY . .
 
-RUN npm install --registry=https://registry.npm.taobao.org --unsafe-perm \
+RUN npm cache verify && \
+    npm install --registry=https://registry.npm.taobao.org --unsafe-perm \
     && npm run doc:build \
     && npm run build
 
