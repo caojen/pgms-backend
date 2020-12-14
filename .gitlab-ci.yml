@@ -11,6 +11,8 @@ build-image:
   stage: build-image
   script:
     - docker build --no-cache -t pgms-backend-$PGMS_DOCKER_IMAGE_NAME .
+  only:
+    - master
   
 # test:
 #   script:
@@ -20,7 +22,8 @@ delete-old-container:
   stage: stop-old-deploy
   script:
     - docker rm -f $PGMS_DOCKER_IMAGE_NAME || true
-  only: master
+  only:
+    - master
 
 deploy:
   stage: deploy
