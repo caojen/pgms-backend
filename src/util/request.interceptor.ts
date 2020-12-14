@@ -37,7 +37,7 @@ export class RequestInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     const user = request["user"];
     const uid = user ? user.uid : null;
-    const ip = request.socket.remoteAddress;
+    const ip = request.headers['x-real-ip'];
     const method = request.method;
     const url = request.url;
     const responseText = '';
