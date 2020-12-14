@@ -1,18 +1,25 @@
 stages:
-  - build_image
-  - test
+  - build-image
+  - stop-old-deploy
   - deploy
 
-build_image:
+build-image:
+  stage: build-image
   script:
     - docker build -t pgms-backend .
   
-test:
+# test:
+#   script:
+#     - docker run -itd --rm pgms-backend:latest npm run test
+
+delete-old-container:
+  stage: stop-old-deploy
   script:
-    - docker run -itd --rm pgms-backend:latest npm run test
+    - docker rm -f pgms-backend || true
 
 deploy:
+  stage: deploy
   script:
-    - docker run -itd --restart=always -p 5001:5001 pgms-backend:latest
+    - docker run -itd --restart=always -p 5001:5001 --name pgms-backend pgms-backend:latest
   only:
     - master
