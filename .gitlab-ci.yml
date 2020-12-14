@@ -10,7 +10,7 @@ variables:
 build-image:
   stage: build-image
   script:
-    - docker build --no-cache -t pgms-backend-$PGMS_DOCKER_IMAGE_NAME .
+    - docker build --no-cache -t $PGMS_DOCKER_IMAGE_NAME .
   only:
     - master
   
