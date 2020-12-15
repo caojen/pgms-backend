@@ -14,7 +14,7 @@
     "password": "ppggmmss13331270",
     "port": 6033,
     "database": "pgms",
-    "host": "172.17.10.1",
+    "host": "127.0.0.1",
     "multipleStatements": true
   }
 }
