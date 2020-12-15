@@ -12,6 +12,7 @@ export function requestListening(req: Request, res: Response, next: any) {
     ip: req.headers['x-real-ip'],
   }));
   console.log("headers:", req.headers);
+  console.log("connections:", req.connection);
   next();
 }
 
