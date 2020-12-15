@@ -10,11 +10,11 @@
   },
   "dev": {
     "driver": "mysql",
-    "user": "pgms",
+    "user": "root",
     "password": "ppggmmss13331270",
-    "port": 6033,
+    "port": 3306,
     "database": "pgms",
-    "host": "pgms.mysql",
+    "host": "localhost",
     "multipleStatements": true
   }
 }
