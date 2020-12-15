@@ -25,6 +25,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
   }
 
   async queryDb(sql: string, params: any[]) {
+    console.log(sql, params);
     return (await this.executePool.query(sql, params))[0] as any[];
   }
 
