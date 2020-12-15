@@ -4,11 +4,10 @@ import { Request } from 'express';
 
 function getCookies(request: Request, key: string) {
   const cookies = {};
-  request.headers?.cookie?.split('?')?.forEach(cookie => {
+  request.headers?.cookie?.split(';')?.forEach(cookie => {
     const parts = cookie.match(/(.*?)=(.*)$/)
     cookies[ parts[1].trim() ] = (parts[2] || '').trim();
   });
-
   return cookies[key];
 }
 
