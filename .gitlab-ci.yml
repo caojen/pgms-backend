@@ -40,6 +40,6 @@ stages:
 fix:
   stage: fix
   script:
-    - docker network rm pgms-net
+    - docker network ls
   only:
-    - master
+    - test
