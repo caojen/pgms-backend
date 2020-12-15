@@ -12,11 +12,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // limit each ip to 200 request per 15mins
-  const limiter = rateLimit({
-    windowMs: 15*60*1000,
-    max: 200,
-  });
-  app.use(limiter);
+  // const limiter = rateLimit({
+  //   windowMs: 15*60*1000,
+  //   max: 200,
+  // });
+  // app.use(limiter);
 
   app.use(requestListening);
   app.useGlobalInterceptors(new RequestInterceptor());
