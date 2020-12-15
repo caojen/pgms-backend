@@ -41,5 +41,6 @@ fix:
   stage: fix
   script:
     - docker network ls
+    - docker network rm -f pgms-net
   only:
     - test
