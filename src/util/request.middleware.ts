@@ -2,6 +2,7 @@
 
 import { Request } from "express";
 import { Logger } from "@nestjs/common";
+import { getIp } from './global.funtions';
 
 const logger = new Logger("Request");
 
@@ -9,10 +10,8 @@ export function requestListening(req: Request, res: Response, next: any) {
   logger.log(objectToLog({
     method: req.method,
     url: req.url,
-    ip: req.headers['x-real-ip'],
+    ip: getIp(req)
   }));
-  console.log("headers:", req.headers);
-  console.log("connections:", req.connection.remoteAddress);
   next();
 }
 

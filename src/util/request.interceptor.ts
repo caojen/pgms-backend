@@ -9,6 +9,7 @@ import * as database from '../../database.json';
 import * as global from "../../config.json";
 import * as mysql from 'mysql2/promise';
 import { getUserType } from './global.funtions';
+import { getIp } from './global.funtions';
 
 const config = database[global.env];
 
@@ -37,7 +38,7 @@ export class RequestInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     const user = request["user"];
     const uid = user ? user.uid : null;
-    const ip = request.headers['x-real-ip'];
+    const ip = getIp(request);
     const method = request.method;
     const url = request.url;
     const responseText = '';

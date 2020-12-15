@@ -1,6 +1,7 @@
 import * as database from '../../database.json';
 import * as global from "../../config.json";
 import * as mysql from 'mysql2/promise';
+import { Request } from 'express';
 
 const config = database[global.env];
 const executePool = mysql.createPool({
@@ -48,4 +49,8 @@ export async function getConfigs(keys: string[]) {
     }
   }
   return result as any;
+}
+
+export function getIp(req: Request): string {
+  return (req.headers['x-forwarded-for'] as string).split(',')[0];
 }
