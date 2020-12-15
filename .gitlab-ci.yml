@@ -32,6 +32,6 @@ deploy:
 migrate:
   stage: migrate
   script:
-    - docker run $PGMS_DOCKER_IMAGE_NAME npm run migrate up -- -c 10
+    - docker run --rm $PGMS_DOCKER_IMAGE_NAME npm run migrate up -- -c 10
   only:
     - master
