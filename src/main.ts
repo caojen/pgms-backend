@@ -28,7 +28,7 @@ async function bootstrap() {
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
-    res.setHeader('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE');
+    res.setHeader('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
     next();
   });
 
