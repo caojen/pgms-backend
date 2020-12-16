@@ -1,5 +1,5 @@
 'use strict';
-
+var fs = require('fs');
 var dbm;
 var type;
 var seed;
