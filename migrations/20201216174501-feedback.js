@@ -14,7 +14,7 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = function(db, callback) {
   fs.readFile('migrations/feedback.sql', {encoding: 'utf-8'}, (err, data) => {
     // console.log(err, data);
     if(err) {
