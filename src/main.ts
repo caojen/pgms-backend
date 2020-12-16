@@ -23,6 +23,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   app.use('/doc', express.static('doc'));
+  app.enableCors();
 
   await app.listen(5001);
 }
