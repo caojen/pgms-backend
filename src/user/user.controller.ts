@@ -49,7 +49,7 @@ export class UserController {
       }, 403);
     } else {
       // set cookie:
-      res.setHeader("Set-Cookie", `token=${loginResult.token}; path=/; SameSize=None`);
+      res.setHeader("Set-Cookie", `token=${loginResult.token}; path=/; SameSite=None`);
       res.json(loginResult.body);
     }
   }
