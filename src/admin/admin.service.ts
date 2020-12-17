@@ -44,8 +44,6 @@ export class AdminService {
       LIMIT ?, ?
     `
 
-    console.log(sql)
-
     const queryResult = await this.dbQuery.queryDb(sql, [
       pageSize * offset,
       pageSize * 1
