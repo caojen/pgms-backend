@@ -1261,9 +1261,11 @@ export class AdminService {
     }
 
     const sql = `
-      SELECT id, name
+      SELECT teacher.id as id, teacher.name as name,
+        user.username as username
       FROM teacher
-      WHERE name like ?
+        JOIN user ON user.id = teacher.uid
+      WHERE teacher.name like ?
     `;
 
     return await this.dbQuery.queryDb(sql, [`%${name}%`]);
