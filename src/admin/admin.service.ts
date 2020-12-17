@@ -38,15 +38,15 @@ export class AdminService {
         user.id AS uid, user.username AS username
       FROM student LEFT JOIN user on student.uid=user.id
       WHERE user.isActive=1
-        ?
-        ?
+        ${!!name ? `AND student.name like '%${name}%'` : 'AND 1'}
+        ${!!username ? `AND user.username like '%${username}%'` : 'AND 1'}
       ORDER BY student.id
       LIMIT ?, ?
     `
 
+    console.log(sql)
+
     const queryResult = await this.dbQuery.queryDb(sql, [
-      !!name ? `AND student.name like '%${name}%'` : '',
-      !!username ? `AND user.username like '%${username}%'` : '',
       pageSize * offset,
       pageSize * 1
     ]);
