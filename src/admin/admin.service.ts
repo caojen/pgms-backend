@@ -19,7 +19,11 @@ export class AdminService {
     private readonly teacherService: TeacherService
   ) {}
 
-  async getAllAttendStudents(pageSize: number, offset: number) {
+  async getAllAttendStudents(pageSize: number, offset: number, queries: {
+    name,
+    username
+  }) {
+    const { name, username } = queries;
     const countSql = `
       SELECT count(1) AS count
       FROM student LEFT JOIN user on student.uid=user.id
@@ -34,11 +38,18 @@ export class AdminService {
         user.id AS uid, user.username AS username
       FROM student LEFT JOIN user on student.uid=user.id
       WHERE user.isActive=1
+        ?
+        ?
       ORDER BY student.id
       LIMIT ?, ?
     `
 
-    const queryResult = await this.dbQuery.queryDb(sql, [pageSize * offset, pageSize * 1]);
+    const queryResult = await this.dbQuery.queryDb(sql, [
+      !!name ? `AND student.name like '%${name}%'` : '',
+      !!username ? `AND user.username like '%${username}%'` : '',
+      pageSize * offset,
+      pageSize * 1
+    ]);
     return {
       count,
       students: queryResult.map(result => {

@@ -32,17 +32,24 @@ export class AdminController {
   @UseGuards(LoginRequired, AttendAdminPermission)
   async getAllAttendStudents(@Query() query: {
     pageSize: number,
-    offset: number
+    offset: number,
+    queryName: string,
+    queryUsername: string
   }) {
     const pageSize = query.pageSize;
     const offset = query.offset;
+
+    const queries = {
+      name: query.queryName,
+      username: query.queryUsername
+    };
 
     if(isNaN(pageSize) || isNaN(offset)) {
       throw new HttpException({
         msg: '参数错误'
       }, 406);
     }
-    return await this.adminService.getAllAttendStudents(pageSize, offset);
+    return await this.adminService.getAllAttendStudents(pageSize, offset, queries);
   }
 
   /**
