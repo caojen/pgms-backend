@@ -27,7 +27,9 @@ export class AdminService {
     const countSql = `
       SELECT count(1) AS count
       FROM student LEFT JOIN user on student.uid=user.id
-      WHERE user.isActive=1;
+      WHERE user.isActive=1
+        ${!!name ? `AND student.name like '%${name}%'` : 'AND 1'}
+        ${!!username ? `AND user.username like '%${username}%'` : 'AND 1'}
     `
 
     const count = (await this.dbQuery.queryDb(countSql, []))[0].count;
