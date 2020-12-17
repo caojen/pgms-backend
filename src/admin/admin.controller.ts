@@ -635,6 +635,7 @@ export class AdminController {
   @Get('attend/teacher/query')
   @UseGuards(LoginRequired, AttendAdminPermission)
   async queryTeacherByName(@Query() query: {name: string}) {
+    console.log('attend teahcer query', query)
     const { name } = query;
     console.log(name)
     return await this.adminService.queryTeacherByName(name);
