@@ -4,6 +4,7 @@ import { LoginRequired } from 'src/user/user.guard';
 import { AttendAdminPermission, BiChoiceAdminPermission } from './admin.guard';
 import { EndeService } from 'src/ende/ende.service';
 import { BistudentCanSelect } from 'src/bistudent/bistudent.guard';
+import { get } from 'request-promise-native';
 
 @Controller('admin')
 export class AdminController {
@@ -629,6 +630,13 @@ export class AdminController {
     const {tid} = param;
     const password = EndeService.decodeFromHttp(body.password);
     return await this.adminService.changePasswordForTeacher(tid, password);
+  }
+
+  @Get('attend/teacher/query')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async queryTeacherByName(@Query() query: {name: string}) {
+    const { name } = query;
+    return await this.adminService.queryTeacherByName(name);
   }
 
 // for bichoice:

@@ -1254,4 +1254,18 @@ export class AdminService {
   async getTeacherDegrees(id: number) {
     return await this.teacherService.getMyDegrees(id);
   }
+
+  async queryTeacherByName(name: string) {
+    if(!name) {
+      return [];
+    }
+
+    const sql = `
+      SELECT id, name
+      FROM teacher
+      WHERE name like ?
+    `;
+
+    return await this.dbQuery.queryDb(sql, [`%${name}%`]);
+  }
 }
