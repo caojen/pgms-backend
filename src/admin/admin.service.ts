@@ -1256,6 +1256,7 @@ export class AdminService {
   }
 
   async queryTeacherByName(name: string) {
+    console.log(name)
     if(!name) {
       return [];
     }
@@ -1268,6 +1269,8 @@ export class AdminService {
       WHERE teacher.name like ?
     `;
 
-    return await this.dbQuery.queryDb(sql, [`%${name}%`]);
+    const res = await this.dbQuery.queryDb(sql, [`%${name}%`]);
+    console.log(res)
+    return res;
   }
 }
