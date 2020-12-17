@@ -632,12 +632,10 @@ export class AdminController {
     return await this.adminService.changePasswordForTeacher(tid, password);
   }
 
-  @Get('attend/teacher/query')
+  @Get('attend/query/teacher')
   @UseGuards(LoginRequired, AttendAdminPermission)
   async queryTeacherByName(@Query() query: {name: string}) {
-    console.log('attend teahcer query', query)
     const { name } = query;
-    console.log(name)
     return await this.adminService.queryTeacherByName(name);
   }
 
