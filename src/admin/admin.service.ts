@@ -160,7 +160,7 @@ export class AdminService {
   async getAllTeachers(pageSize: number, offset: number, name: string, username: string) {
     const sql = `
       SELECT teacher.id as id, teacher.name as name, teacher.email as email,
-        teacher.personal_page as personal_page, teacher.research_area as research_area
+        teacher.personal_page as personal_page, teacher.research_area as research_area,
         user.username as username
       FROM teacher
         JOIN user ON user.id = teacher.uid
