@@ -230,21 +230,15 @@ export class UserService {
   }
 
   async userLoginWithToken(token: string): Promise<false | {token: string, body: any}> {
-    const sql = `
-      SELECT uid
-      FROM token
-      WHERE value=?
-    `;
-
-    const res = await this.dbService.queryDb(sql, [token]);
-    if(res.length === 0) {
+    const uid = await this.getUidByToken(token)
+    if(uid) {
+      const body = await this.getUserBasicInfo(uid)
+      return {
+        token,
+        body
+      }
+    } else {
       return false
-    }
-    const uid = res[0].uid
-    const body = await this.getUserBasicInfo(uid)
-    return {
-      token,
-      body
     }
   }
 }
