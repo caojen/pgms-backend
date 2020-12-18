@@ -157,18 +157,28 @@ export class AdminService {
    * @param pageSize 
    * @param offset 
    */
-  async getAllTeachers(pageSize: number, offset: number) {
+  async getAllTeachers(pageSize: number, offset: number, name: string, username: string) {
     const sql = `
-      SELECT id, name, email, personal_page, research_area
+      SELECT teacher.id as id, teacher.name as name, teacher.email as email,
+        teacher.personal_page as personal_page, teacher.research_area as research_area
+        user.username as username
       FROM teacher
-      ORDER BY id
+        JOIN user ON user.id = teacher.uid
+      WHERE user.isActive = 1
+        AND ${!!name ? `teacher.name=${name}` : '1'}
+        AND ${!!username ? `user.username=${username}` : '1'}
+      ORDER BY teacher.id
       LIMIT ?, ?;
     `;
 
     const query = await this.dbQuery.queryDb(sql, [pageSize*offset, pageSize*1]);
     const countSql = `
       SELECT count(1) AS count
-      FROM teacher;
+      FROM teacher
+        JOIN user ON user.id = teacher.uid
+      WHERE user.isActive = 1
+        AND ${!!name ? `teacher.name=${name}` : '1'}
+        AND ${!!username ? `user.username=${username}` : '1'};
     `;
     const count = (await this.dbQuery.queryDb(countSql, []))[0].count;
     return {
