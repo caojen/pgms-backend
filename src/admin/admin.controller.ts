@@ -639,7 +639,7 @@ export class AdminController {
     return await this.adminService.queryTeacherByName(name);
   }
 
-  @Put('attend/teachers/password')
+  @Put('attend/all/teacher/password')
   @UseGuards(LoginRequired, AttendAdminPermission)
   async resetAllTeachersPassword(@Body() body: {
     password: string
