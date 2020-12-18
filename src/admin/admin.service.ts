@@ -1,4 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { query } from 'express';
 import { BistudentService } from 'src/bistudent/bistudent.service';
 import { EndeService } from 'src/ende/ende.service';
 import { FileService } from 'src/file/file.service';
@@ -28,11 +29,19 @@ export class AdminService {
       SELECT count(1) AS count
       FROM student LEFT JOIN user on student.uid=user.id
       WHERE user.isActive=1
-        ${!!name ? `AND student.name like '%${name}%'` : 'AND 1'}
-        ${!!username ? `AND user.username like '%${username}%'` : 'AND 1'}
+        ${!!name ? `AND student.name like ?` : 'AND 1'}
+        ${!!username ? `AND user.username like ?` : 'AND 1'}
     `
 
-    const count = (await this.dbQuery.queryDb(countSql, []))[0].count;
+    const queryArr = []
+    if(!!name) {
+      queryArr.push(`%${name}%`)
+    }
+    if(!!username) {
+      queryArr.push(`%${username}%`)
+    }
+
+    const count = (await this.dbQuery.queryDb(countSql, [...queryArr]))[0].count;
 
     const sql = `
       SELECT student.id AS sid, student.name AS name,
@@ -40,13 +49,14 @@ export class AdminService {
         user.id AS uid, user.username AS username
       FROM student LEFT JOIN user on student.uid=user.id
       WHERE user.isActive=1
-        ${!!name ? `AND student.name like '%${name}%'` : 'AND 1'}
-        ${!!username ? `AND user.username like '%${username}%'` : 'AND 1'}
+        ${!!name ? `AND student.name like ?` : 'AND 1'}
+        ${!!username ? `AND user.username like ?` : 'AND 1'}
       ORDER BY student.id
       LIMIT ?, ?
     `
 
     const queryResult = await this.dbQuery.queryDb(sql, [
+      ...queryArr,
       pageSize * offset,
       pageSize * 1
     ]);
@@ -165,22 +175,30 @@ export class AdminService {
       FROM teacher
         JOIN user ON user.id = teacher.uid
       WHERE user.isActive = 1
-        AND ${!!name ? `teacher.name=${name}` : '1'}
-        AND ${!!username ? `user.username=${username}` : '1'}
+        AND ${!!name ? `teacher.name like ?` : '1'}
+        AND ${!!username ? `user.username like ?` : '1'}
       ORDER BY teacher.id
       LIMIT ?, ?;
     `;
 
-    const query = await this.dbQuery.queryDb(sql, [pageSize*offset, pageSize*1]);
+    const queryArr = []
+    if(!!name) {
+      queryArr.push(`%${name}%`)
+    }
+    if(!!username) {
+      queryArr.push(`%${username}%`)
+    }
+
+    const query = await this.dbQuery.queryDb(sql, [...queryArr, pageSize*offset, pageSize*1]);
     const countSql = `
       SELECT count(1) AS count
       FROM teacher
         JOIN user ON user.id = teacher.uid
       WHERE user.isActive = 1
-        AND ${!!name ? `teacher.name=${name}` : '1'}
-        AND ${!!username ? `user.username=${username}` : '1'};
+        AND ${!!name ? `teacher.name=?` : '1'}
+        AND ${!!username ? `user.username=?` : '1'};
     `;
-    const count = (await this.dbQuery.queryDb(countSql, []))[0].count;
+    const count = (await this.dbQuery.queryDb(countSql, [...queryArr]))[0].count;
     return {
       count,
       teachers: query
