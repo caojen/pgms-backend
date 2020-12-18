@@ -117,4 +117,20 @@ export class UserController {
     const uid = req.user.uid;
     return await this.userService.changePasswordForUser(uid, body.oldpassword, body.newpassword);
   }
+
+  @Post('token')
+  async loginWithToken(@Body() body: {token: string}, @Res() res: Response) {
+    const { token } = body;
+    const loginResult = await this.userService.userLoginWithToken(token);
+
+    if(loginResult === false) {
+      throw new HttpException({
+        msg: '用户名不存在或密码错误',
+      }, 403);
+    } else {
+      // set cookie:
+      res.setHeader("Set-Cookie", `token=${loginResult.token}; path=/; SameSite=None; Secure`);
+      res.json(loginResult.body);
+    }
+  }
 }

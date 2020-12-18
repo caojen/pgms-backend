@@ -228,4 +228,23 @@ export class UserService {
       msg: '修改密码成功'
     };
   }
+
+  async userLoginWithToken(token: string): Promise<false | {token: string, body: any}> {
+    const sql = `
+      SELECT uid
+      FROM token
+      WHERE value=?
+    `;
+
+    const res = await this.dbService.queryDb(sql, [token]);
+    if(res.length === 0) {
+      return false
+    }
+    const uid = res[0].uid
+    const body = await this.getUserBasicInfo(uid)
+    return {
+      token,
+      body
+    }
+  }
 }
