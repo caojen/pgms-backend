@@ -1271,4 +1271,29 @@ export class AdminService {
     const res = await this.dbQuery.queryDb(sql, [`%${name}%`]);
     return res;
   }
+
+  async resetAllPasswordForTeachers(password: string) {
+    // 首先，选出所有老师的uid:
+    const sql = `
+      SELECT uid
+      FROM teacher
+    `;
+
+    const update = `
+      UPDATE user
+      SET password=?
+      WHERE id=?
+    `
+    const teachers = await this.dbQuery.queryDb(sql, []);
+    for(let i = 0; i < teachers.length; i++) {
+      const uid = teachers[i].uid;
+      const epass = EndeService.encodeToDatabase(password);
+      await this.dbQuery.queryDb(update, [epass, uid]);
+    }
+
+    return {
+      msg: '已修改',
+      count: teachers.length
+    }
+  }
 }

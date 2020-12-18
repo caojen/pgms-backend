@@ -639,6 +639,15 @@ export class AdminController {
     return await this.adminService.queryTeacherByName(name);
   }
 
+  @Put('attend/teachers/password')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async resetAllTeachersPassword(@Body() body: {
+    password: string
+  }) {
+    const { password } = body;
+    return await this.adminService.resetAllPasswordForTeachers(password)
+  }
+
 // for bichoice:
 
   /**
