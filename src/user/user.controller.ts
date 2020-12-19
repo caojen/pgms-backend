@@ -121,6 +121,11 @@ export class UserController {
   @Post('token')
   async loginWithToken(@Body() body: {token: string}, @Res() res: Response) {
     const { token } = body;
+    if(!token) {
+      throw new HttpException({
+        msg: 'Token验证失败',
+      }, 403);
+    }
     const loginResult = await this.userService.userLoginWithToken(token);
 
     if(loginResult === false) {
