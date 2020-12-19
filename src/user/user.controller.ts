@@ -125,7 +125,7 @@ export class UserController {
 
     if(loginResult === false) {
       throw new HttpException({
-        msg: '用户名不存在或密码错误',
+        msg: 'Token验证失败',
       }, 403);
     } else {
       // set cookie:
