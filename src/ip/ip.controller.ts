@@ -7,7 +7,6 @@ export class IpController {
   @Get('')
   getClientIp(@Req() request: Request) {
     const ip = getIp(request);
-    console.log(ip)
-    return ip;
+    return { ip }
   }
 }
