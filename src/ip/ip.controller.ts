@@ -5,7 +5,9 @@ import { getIp } from 'src/util/global.funtions';
 @Controller('ip')
 export class IpController {
   @Get('')
-  async getClientIp(@Req() request: Request) {
-    return getIp(request)
+  getClientIp(@Req() request: Request) {
+    const ip = getIp(request);
+    console.log(ip)
+    return ip;
   }
 }
