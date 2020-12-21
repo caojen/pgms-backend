@@ -24,6 +24,7 @@ export class FeedbackService {
         msg: '创建成功'
       };
     } catch (e) {
+      console.log(e)
       if(e.msg) {
         throw e
       } else {
