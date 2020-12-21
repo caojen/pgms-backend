@@ -53,6 +53,5 @@ export async function getConfigs(keys: string[]) {
 
 export function getIp(req: Request): string {
   const ip = (req.headers['x-forwarded-for'] as string).split(',')[0];
-  console.log('get ip = ', ip)
   return ip;
 }

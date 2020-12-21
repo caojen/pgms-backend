@@ -13,7 +13,7 @@ export class FeedbackController {
   @Post('forget-password')
   @UseGuards(FeedbackLimit)
   async forgetPassword(@Req() request: Request, @Body() body) {
-    const ip = request['ip'];
+    const ip = request['x-ip'];
     if (!body) {
       throw new HttpException({
         msg: '没有收到有效数据'
