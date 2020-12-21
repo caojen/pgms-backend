@@ -21,6 +21,8 @@ export class FeedbackLimit implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const ip = getIp(request);
     request['ip'] = ip;
+    console.log('feedbacklimit')
+    console.log(ip)
     if(ip) {
       const sql = `
         SELECT count(1) as count
@@ -28,9 +30,12 @@ export class FeedbackLimit implements CanActivate {
         WHERE identify=?
           AND timestampdiff(minute, create_time, now()) < ${FeedbackLimit.ptime}
       `;
+      console.log('in ip')
       const res = (await this.queryDb.queryDb(sql, [ip]))[0].count;
+      console.log(res)
       return res < FeedbackLimit.tries;
     } else {
+      console.log('return false')
       return false;
     }
   }
