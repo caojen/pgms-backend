@@ -16,7 +16,7 @@ export class FeedbackService {
         }, 406);
       }
       const sql = `
-        INSERT INTO feedback(idenfity, type, detail)
+        INSERT INTO feedback(identify, type, detail)
         VALUES (?, 'forget-password', ?);
       `;
       await this.dbQuery.queryDb(sql, [identify, strBody]);
@@ -24,7 +24,6 @@ export class FeedbackService {
         msg: '创建成功'
       };
     } catch (e) {
-      console.log(e)
       if(e.msg) {
         throw e
       } else {
