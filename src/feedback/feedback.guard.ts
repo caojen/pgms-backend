@@ -18,6 +18,7 @@ export class FeedbackLimit implements CanActivate {
   ): Promise<boolean> {
     // 设定限制频率
     // 得到当前ip：
+    console.log('feedbacklimit')
     const request = context.switchToHttp().getRequest();
     const ip = getIp(request);
     request['ip'] = ip;
