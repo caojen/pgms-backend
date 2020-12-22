@@ -29,7 +29,9 @@ export function rateLimit(req: Request, res: Response, next: any) {
       break;
     }
   }
-  // cli[ip].splice(0, index + 1)
+  if(index !== -1) {
+    cli[ip] = cli[ip].slice(index)
+  }
   // 删除后，将当前时间加入到cli[ip]中
   cli[ip].push(now)
   // 判断是否超过了限制：
