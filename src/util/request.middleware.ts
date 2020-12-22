@@ -1,6 +1,6 @@
 //! 通过logger打出请求
 
-import { Request } from "express";
+import { Request, Response } from "express";
 import { Logger } from "@nestjs/common";
 import { getIp } from './global.funtions';
 
