@@ -252,6 +252,7 @@ export class AdminService {
     const querySql = `
       SELECT id, title, content, start, end
       FROM lecture
+      ORDER BY id desc
       LIMIT ?, ?;
     `;
 
