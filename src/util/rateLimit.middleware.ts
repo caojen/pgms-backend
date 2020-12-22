@@ -35,10 +35,8 @@ export function rateLimit(req: Request, res: Response, next: any) {
   // 删除后，将当前时间加入到cli[ip]中
   cli[ip].push(now)
   // 判断是否超过了限制：
-  logger.log(cli);
-  logger.log(`Limited ip ${ip} with requests ${cli[ip].length}`);
   if(cli[ip].length > requests) {
-    logger.log(`Limited ip ${ip} with requests ${cli[ip].length}`);
+    logger.error(`Limited ip ${ip} with requests ${cli[ip].length}`);
     throw new HttpException({
       msg: '请求频率太多，请稍后重试'
     }, 429);
