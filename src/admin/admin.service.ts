@@ -491,7 +491,7 @@ export class AdminService {
     const findResult = await this.dbQuery.queryDb(findSql, [id, pid]);
     if(findResult.length === 0) {
       throw new HttpException({
-        msg: '该Lecture不存在此地点'
+        msg: '该讲座不存在此地点'
       }, 406);
     }
 
@@ -1376,6 +1376,7 @@ export class AdminService {
       count,
       records: queryRecord.map(query => {
         return {
+          ...query,
           id: query.id,
           rtime: query.rtime,
           position: query.position,
