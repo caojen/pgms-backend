@@ -299,8 +299,8 @@ export class AdminController {
     title: string,
     content: string,
     positions: number[],
-    start: Date,
-    end: Date
+    start: number,
+    end: number
   }) {
     return await this.adminService.addOneLecture(body);
   }
