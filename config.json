@@ -1,5 +1,5 @@
 {
-  "env": "env",
+  "env": "dev",
   "defaultImage": 1,
   "secure": true
 }
