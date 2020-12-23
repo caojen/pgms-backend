@@ -1401,7 +1401,7 @@ export class AdminService {
 
   async getAllLecturesWithoutQuery() {
     const querySql = `
-      SELECT id, title, content, start, end
+      SELECT id, title, start, end
       FROM lecture
       ORDER BY id desc
       LIMIT ?, ?;
