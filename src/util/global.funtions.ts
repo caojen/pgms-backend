@@ -60,3 +60,7 @@ export function getIp(req: Request): string {
     return 'unknown';
   }
 }
+
+export function timestamp2DatetimeString(timestamp: number): string {
+  return ''
+}

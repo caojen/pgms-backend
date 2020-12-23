@@ -370,8 +370,8 @@ export class AdminService {
     start: number,
     end: number
   }) {
-    const start = body.start.toLocaleString();
-    const end = body.end.toLocaleString();
+    const start = new Date(body.start).toLocaleString();
+    const end = new Date(body.end).toLocaleString();
     console.log(start, end);
     const insertSql = `
       INSERT INTO lecture(title, content, start, end)
