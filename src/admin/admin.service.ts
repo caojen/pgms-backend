@@ -1404,7 +1404,6 @@ export class AdminService {
       SELECT id, title, start, end
       FROM lecture
       ORDER BY id desc
-      LIMIT ?, ?;
     `;
 
     const lectures = await this.dbQuery.queryDb(querySql, []);
