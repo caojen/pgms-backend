@@ -1329,4 +1329,56 @@ export class AdminService {
       count: teachers.length
     }
   }
+
+  async getAllRecords(pageSize: number, offset: number) {
+    const begin = pageSize * offset;
+    const countSql = `
+      SELECT count(1) AS count
+      FROM record;
+    `;
+    const count = (await this.dbQuery.queryDb(countSql, []))[0].count;
+
+    const selectRecordSql = `
+      SELECT record.id AS id, record.time AS rtime, position.description AS position, position.id AS pid
+      FROM record LEFT JOIN position on record.pid=position.id
+      ORDER BY record.time DESC
+      Limit ?, ?;
+    `;
+    const queryRecord = await this.dbQuery.queryDb(selectRecordSql, [begin, pageSize*1]);
+
+    const selectedLectureSql = `
+      SELECT lecture.title AS title, lecture.content AS content, lecture.start AS start, lecture.end AS end
+      FROM lecture INNER JOIN lecture_position ON lecture.id=lecture_position.lid
+      WHERE lecture.start <= ?
+        AND lecture.end >= ?
+        AND lecture_position.pid = ?;
+    `;
+
+    for(const index in queryRecord) {
+      const record = queryRecord[index];
+
+      const queryLecture = await this.dbQuery.queryDb(selectedLectureSql, [record.rtime, record.rtime, record.pid]);
+      if(queryLecture.length > 0) {
+        // note: only one lecture can appear at one position at one time
+        const lecture = queryLecture[0];
+        queryRecord[index].detail = {
+          title: lecture.title,
+          content: lecture.content,
+          start: lecture.start,
+          end: lecture.end,
+        };
+      }
+    }
+    return {
+      count,
+      records: queryRecord.map(query => {
+        return {
+          id: query.id,
+          rtime: query.rtime,
+          position: query.position,
+          detail: query.detail || { title: '日常考勤' },
+        };
+      }),
+    };
+  }
 }

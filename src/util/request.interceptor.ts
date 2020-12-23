@@ -12,6 +12,7 @@ import { getUserType } from './global.funtions';
 import { getIp } from './global.funtions';
 
 const config = database[global.env];
+console.log(config)
 
 @Injectable()
 export class RequestInterceptor implements NestInterceptor {

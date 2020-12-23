@@ -52,7 +52,7 @@ export class StudentService {
   async getRecords(id: number, pageSize: number, offset: number) {
     const begin = pageSize * offset;
     const countSql = `
-      SELECT count(*) AS total
+      SELECT count(1) AS total
       FROM record
       WHERE sid=?;
     `;

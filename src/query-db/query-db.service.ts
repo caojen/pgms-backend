@@ -5,24 +5,25 @@ import * as mysql from 'mysql2/promise';
 
 @Injectable()
 export class QueryDbService {
-
+  private readonly config = database[global.env]
   constructor() {
-    const config = database[global.env];
     this.selectedPool = mysql.createPool({
-      host: config.host,
-      user: config.user,
-      database: config.database,
-      password: config.password,
+      host: this.config.host,
+      user: this.config.user,
+      database: this.config.database,
+      password: this.config.password,
+      multipleStatements: false,
       connectionLimit: 20,
       waitForConnections: true,
       queueLimit: 0
     });
 
     this.executePool = mysql.createPool({
-      host: config.host,
-      user: config.user,
-      database: config.database,
-      password: config.password,
+      host: this.config.host,
+      user: this.config.user,
+      database: this.config.database,
+      password: this.config.password,
+      multipleStatements: false,
       connectionLimit: 20,
       waitForConnections: true,
       queueLimit: 0

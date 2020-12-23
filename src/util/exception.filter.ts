@@ -1,4 +1,4 @@
-import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, Logger, HttpException } from '@nestjs/common';
 import { Response, Request } from 'express';
 import * as database from '../../database.json';
 import * as global from "../../config.json";
@@ -12,6 +12,7 @@ const config = database[global.env];
 export class HttpExceptionFilter implements ExceptionFilter {
 
   private executePool: mysql.Pool = null;
+  private readonly logger = new Logger('ExceptionFilter')
 
   constructor() {
     this.executePool = mysql.createPool({
@@ -26,7 +27,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
   }
 
   async queryDb(sql: string, params: any[]) {
-    return (await this.executePool.query(sql, params))[0] as any[];
+    try {
+      return (await this.executePool.query(sql, params))[0] as any[];
+    } catch (e) {
+      throw new HttpException({msg: '数据库查询出错'}, 500);
+    }
   }
 
   // catch exception, will throw to here...

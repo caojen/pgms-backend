@@ -118,6 +118,22 @@ export class AdminController {
     return await this.adminService.getStudentRecords(sid, pageSize, offset);
   }
 
+  @Get('attend/records')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async getAllRecords(@Query() query: {
+    pageSize: number,
+    offset: number
+  }) {
+    const { pageSize, offset } = query;
+    if(isNaN(pageSize) || isNaN(offset)) {
+      throw new HttpException({
+        msg: '参数错误'
+      }, 406);
+    }
+
+    return await this.adminService.getAllRecords(pageSize, offset);
+  }
+
   /**
    * @api {get} /admin/attend/settings GetSettings
    * @apiName GetSettings
@@ -365,7 +381,7 @@ export class AdminController {
   }
 
   /**
-   * @api {delete} /admin/attend/:rid DeleteOneRecord
+   * @api {delete} /admin/attend/record/:rid DeleteOneRecord
    * @apiName DeleteOneRecord
    * @apiGroup AttendAdmin
    * @apiPermission Logined AttendAdmin

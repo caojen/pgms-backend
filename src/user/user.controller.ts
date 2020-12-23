@@ -4,6 +4,8 @@ import { EndeService } from 'src/ende/ende.service';
 import { LoginRequired } from './user.guard';
 import { UserService } from './user.service';
 
+import * as config from '../../config.json';
+
 @Controller('user')
 export class UserController {
   // we don't provide a register api for any new user
@@ -49,7 +51,11 @@ export class UserController {
       }, 403);
     } else {
       // set cookie:
-      res.setHeader("Set-Cookie", `token=${loginResult.token}; path=/; SameSite=None; Secure`);
+      if(config.secure === false) {
+        res.setHeader("Set-Cookie", `token=${loginResult.token}; path=/;`);
+      } else {
+        res.setHeader("Set-Cookie", `token=${loginResult.token}; path=/; SameSite=None; Secure`);
+      }
       res.json(loginResult.body);
     }
   }
@@ -134,7 +140,11 @@ export class UserController {
       }, 403);
     } else {
       // set cookie:
-      res.setHeader("Set-Cookie", `token=${loginResult.token}; path=/; SameSite=None; Secure`);
+      if(config.secure === false) {
+        res.setHeader("Set-Cookie", `token=${loginResult.token}; path=/;`);
+      } else {
+        res.setHeader("Set-Cookie", `token=${loginResult.token}; path=/; SameSite=None; Secure`);
+      }
       res.json(loginResult.body);
     }
   }
