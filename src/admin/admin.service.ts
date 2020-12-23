@@ -1339,8 +1339,11 @@ export class AdminService {
     const count = (await this.dbQuery.queryDb(countSql, []))[0].count;
 
     const selectRecordSql = `
-      SELECT record.id AS id, record.time AS rtime, position.description AS position, position.id AS pid
+      SELECT record.id AS id, record.time AS rtime, position.description AS position, position.id AS pid,
+        student.name as name, user.username as username, student.student_id as student_id
       FROM record LEFT JOIN position on record.pid=position.id
+        LEFT JOIN student on record.sid=student.id
+        LEFT JOIN user on user.id=student.uid
       ORDER BY record.time DESC
       Limit ?, ?;
     `;
