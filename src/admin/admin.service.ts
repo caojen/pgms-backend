@@ -1392,10 +1392,43 @@ export class AdminService {
         SELECT student.id AS sid, student.name AS name,
           user.username AS username
         FROM student LEFT JOIN user on student.uid=user.id
-        WHERE user.username like ?
+        WHERE user.username like ? and user.isActive=1
         ORDER BY student.id
       `;
       return this.dbQuery.queryDb(sql, [`%${username}%`])
     }
+  }
+
+  async getAllLecturesWithoutQuery() {
+    const querySql = `
+      SELECT id, title, content, start, end
+      FROM lecture
+      ORDER BY id desc
+      LIMIT ?, ?;
+    `;
+
+    const lectures = await this.dbQuery.queryDb(querySql, []);
+
+    const positionSql = `
+      SELECT position.description AS description, position.device AS device, position.id AS pid
+      FROM lecture
+        INNER JOIN lecture_position ON lecture.id = lecture_position.lid
+        INNER JOIN position ON position.id = lecture_position.pid
+      WHERE lecture.id=?;
+    `;
+
+    for(const index in lectures) {
+      const lecture = lectures[index];
+      const positions = await this.dbQuery.queryDb(positionSql, [lecture.id]);
+      lecture.positions = positions.map(position => {
+        return {
+          id: position.pid,
+          description: position.description,
+          device: position.device,
+        };
+      });
+    }
+
+    return lectures;
   }
 }

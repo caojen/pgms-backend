@@ -53,6 +53,14 @@ export class AdminController {
     return await this.adminService.getAllAttendStudents(pageSize, offset, queries);
   }
 
+  @Get('attend/students/query')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async queryStudentByUsername(@Query() query: {
+    username: string
+  }) {
+    return await this.adminService.queryAttendStudentsByUsername(query.username);
+  }
+
   /**
    * @api {get} /admin/attend/student/:sid GetStudentInfo
    * @apiName GetStudentInfo
@@ -222,6 +230,12 @@ export class AdminController {
     }
 
     return await this.adminService.getAllLectures(pageSize, offset);
+  }
+
+  @Get('attend/lectures/noquery')
+  @UseGuards(LoginRequired, AttendAdminPermission)
+  async getAllLecturesWithoutQuery() {
+    return await this.adminService.getAllLecturesWithoutQuery();
   }
 
   /**
