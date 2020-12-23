@@ -63,5 +63,5 @@ export function getIp(req: Request): string {
 }
 
 export function timestamp2Datetime(timestamp: number): string {
-  return strftime('%F%%20%T', new Date(timestamp));
+  return strftime('%F %T', new Date(timestamp));
 }
