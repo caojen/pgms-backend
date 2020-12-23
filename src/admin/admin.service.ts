@@ -374,7 +374,6 @@ export class AdminService {
   }) {
     const start = timestamp2Datetime(body.start);
     const end = timestamp2Datetime(body.end);
-    console.log(start, end);
     const insertSql = `
       INSERT INTO lecture(title, content, start, end)
       VALUES(?, ?, ?, ?);
