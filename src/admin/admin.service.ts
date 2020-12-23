@@ -8,6 +8,7 @@ import { StudentService } from 'src/student/student.service';
 import { TeacherService } from 'src/teacher/teacher.service';
 import { UserService } from 'src/user/user.service';
 import { getConfigs } from 'src/util/global.funtions';
+import { timezone } from 'strftime';
 import * as config from '../../config.json'
 
 @Injectable()
@@ -370,8 +371,8 @@ export class AdminService {
     start: number,
     end: number
   }) {
-    const start = new Date(body.start).toLocaleString();
-    const end = new Date(body.end).toLocaleString();
+    const start = new Date(body.start).toLocaleString('en-GB', {timeZone: 'Asia/Shanghai'});
+    const end = new Date(body.end).toLocaleString('en-GB', {timeZone: 'Asia/Shanghai'});
     console.log(start, end);
     const insertSql = `
       INSERT INTO lecture(title, content, start, end)
@@ -381,8 +382,8 @@ export class AdminService {
     const insertId = ((await this.dbQuery.queryDb(insertSql, [
       body.title,
       body.content,
-      body.start,
-      body.end
+      start,
+      end
     ])) as any).insertId;
 
     const insertPositionSql = `

@@ -61,6 +61,6 @@ export function getIp(req: Request): string {
   }
 }
 
-export function timestamp2DatetimeString(timestamp: number): string {
+export function timestamp2Datetime(timestamp: number): string {
   return ''
 }
