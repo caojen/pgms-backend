@@ -1,5 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { query } from 'express';
+import { timestamp } from 'rxjs/operators';
 import { BistudentService } from 'src/bistudent/bistudent.service';
 import { EndeService } from 'src/ende/ende.service';
 import { FileService } from 'src/file/file.service';
@@ -7,7 +8,7 @@ import { QueryDbService } from 'src/query-db/query-db.service';
 import { StudentService } from 'src/student/student.service';
 import { TeacherService } from 'src/teacher/teacher.service';
 import { UserService } from 'src/user/user.service';
-import { getConfigs } from 'src/util/global.funtions';
+import { getConfigs, timestamp2Datetime } from 'src/util/global.funtions';
 import { timezone } from 'strftime';
 import * as config from '../../config.json'
 
@@ -371,8 +372,8 @@ export class AdminService {
     start: number,
     end: number
   }) {
-    const start = new Date(body.start).toLocaleString('en-GB', {timeZone: 'Asia/Shanghai'});
-    const end = new Date(body.end).toLocaleString('en-GB', {timeZone: 'Asia/Shanghai'});
+    const start = timestamp2Datetime(body.start);
+    const end = timestamp2Datetime(body.end);
     console.log(start, end);
     const insertSql = `
       INSERT INTO lecture(title, content, start, end)

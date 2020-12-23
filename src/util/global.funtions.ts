@@ -3,6 +3,7 @@ import * as global from "../../config.json";
 import * as mysql from 'mysql2/promise';
 import { Request } from 'express';
 import { Logger } from '@nestjs/common';
+import * as strftime from 'strftime';
 
 const config = database[global.env];
 const executePool = mysql.createPool({
@@ -62,5 +63,5 @@ export function getIp(req: Request): string {
 }
 
 export function timestamp2Datetime(timestamp: number): string {
-  return ''
+  return strftime('%F%%20%T', new Date(timestamp));
 }
