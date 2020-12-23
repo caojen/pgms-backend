@@ -1384,4 +1384,18 @@ export class AdminService {
       }),
     };
   }
+  async queryAttendStudentsByUsername(username: string) {
+    if(!username) {
+      return []
+    } else {
+      const sql = `
+        SELECT student.id AS sid, student.name AS name,
+          user.username AS username
+        FROM student LEFT JOIN user on student.uid=user.id
+        WHERE user.username like ?
+        ORDER BY student.id
+      `;
+      return this.dbQuery.queryDb(sql, [`%${username}%`])
+    }
+  }
 }
