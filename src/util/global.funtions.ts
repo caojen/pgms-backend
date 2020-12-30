@@ -36,7 +36,7 @@ export function getUserType(user: any) {
 // 得到数据库中settings表的某些键值:
 export async function getConfigs(keys: string[]) {
   const sql = `
-    SELECT *
+    SELECT key, value, lastUpdate, lastUpdateAdmin
     FROM settings;
   `;
   const settings = await queryDb(sql, []);
