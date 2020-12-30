@@ -884,7 +884,7 @@ export class AdminService {
 
   async getEnrols() {
     const sql = `
-      SELECT *
+      SELECT id, description
       FROM enrol;
     `;
 
