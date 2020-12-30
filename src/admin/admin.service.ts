@@ -1014,13 +1014,111 @@ export class AdminService {
     }, 406);
   }
 
-  async getAllBistudents() {
-    const sql = `
-      SELECT *
-      FROM bistudent;
+  async getAllBistudents(query: {
+    pageSize: string,
+    offset: string,
+    username?: string,
+    name?: string,
+    enrol?: string,
+    degree?: string,
+    source?: string
+  }) {
+
+    // 将enrol，degree和source转换成id:
+    let enrol_id = -1;
+    let degree_id = -1;
+    let source_id = -1;
+
+    if(query.enrol) {
+      const sql = `
+        select id from enrol where description=?;
+      `;
+      const res = await this.dbQuery.queryDb(sql, [query.enrol])
+      if(res.length === 0) {
+        return []
+      } else {
+        enrol_id = res[0].id
+      }
+    }
+    if(query.degree) {
+      const sql = `
+        select degree.id as id
+        from degree
+          left join enrol on degree.enrol = enrol.id
+        where degree.description = ?
+          and enrol.description = ?;
+      `;
+      const degree_des = query.degree.split(' ')[0];
+      const enrol_des = query.degree.split(' ')[1];
+      const res = await this.dbQuery.queryDb(sql, [degree_des, enrol_des]);
+      if(res.length === 0) {
+        return []
+      } else {
+        degree_id = res[0].id
+      }
+    }
+    if(query.source) {
+      const sql = `
+        select id from source
+        where description = ?;
+      `
+      const res = await this.dbQuery.queryDb(sql, [query.source]);
+      if(res.length === 0) {
+        return []
+      } else {
+        source_id = res[0].id
+      }
+    }
+
+    const arr = [
+      !!query.username ? `%${query.username}%` : 1,
+      !!query.name ? `%${query.name}%` : 1,
+      enrol_id === 1 ? 1 : enrol_id,
+      degree_id === 1 ? 1 : degree_id,
+      source_id === 1 ? 1 : source_id,
+      parseInt(query.pageSize) * parseInt(query.offset),
+      parseInt(query.pageSize) * 1
+    ]
+    
+    // 计算count
+    const count_sql = `
+      select count(1) as count
+      from bistudent
+        left join user on bistudent.uid = user.id
+      where user.isActive=1
+        and ${!!query.username ? 'user.username like ?' : '?'}
+        and ${!!query.name ? 'bistudent.name like ?' : '?'}
+        and ${enrol_id === -1 ? '?' : 'enrol_id = ?'}
+        and ${degree_id === -1 ? '?' : 'degree_id = ?'}
+        and ${source_id === -1 ? '?' : 'source_id = ?'}
+      order by bistudent.id asc
+      limit ?, ?;
     `;
 
-    return await this.dbQuery.queryDb(sql, []);
+    const count = (await this.dbQuery.queryDb(count_sql, [count_sql, arr]))[0].count
+
+    const sql = `
+      SELECT bistudent.id as id, name, recommended, score, graduation_university,
+        graduation_major, household_register, ethnic, phone, gender,
+        email, source, degree, image, selected_teachers
+      FROM bistudent
+      left join user on bistudent.uid = user.id
+      where user.isActive=1
+        and ${!!query.username ? 'user.username like ?' : '?'}
+        and ${!!query.name ? 'bistudent.name like ?' : '?'}
+        and ${enrol_id === -1 ? '?' : 'enrol_id = ?'}
+        and ${degree_id === -1 ? '?' : 'degree_id = ?'}
+        and ${source_id === -1 ? '?' : 'source_id = ?'}
+      order by bistudent.id asc
+      limit ?, ?;
+    `;
+
+    const bistudents = await this.dbQuery.queryDb(sql, arr);
+
+    return {
+      count,
+      bistudents
+    }
   }
 
   async addNewBistudent(info) {

@@ -952,11 +952,31 @@ export class AdminController {
     [
       {}
     ]
+    enrol: '学硕',
+    description: '计算机科学 学硕' (用空格分开)
    */
   @Get('bichoice/bistudents')
   @UseGuards(LoginRequired, BiChoiceAdminPermission)
-  async getAllBistudents() {
-    return await this.adminService.getAllBistudents();
+  async getAllBistudents(@Query() query: {
+    pageSize: string,
+    offset: string,
+    username?: string,
+    name?: string,
+    enrol?: string,
+    degree?: string,
+    source?: string
+  }) {
+    const { pageSize, offset } = query;
+    const p = parseInt(pageSize);
+    const o = parseInt(offset);
+
+    if(isNaN(p) || isNaN(o)) {
+      throw new HttpException({
+        msg: '参数错误'
+      }, 406);
+    }
+
+    return await this.adminService.getAllBistudents(query);
   }
 
   /**
