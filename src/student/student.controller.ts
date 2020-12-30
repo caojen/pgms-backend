@@ -1,4 +1,5 @@
 import { Body, Controller, Get, HttpException, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { request } from 'express';
 import { LoginRequired } from 'src/user/user.guard';
 import { StudentPermission } from './student.guard';
 import { StudentService } from './student.service';
@@ -91,5 +92,19 @@ export class StudentController {
     }
 
     return await this.studentService.getRecords(sid, pageSize, offset);
+  }
+  
+  @Get('lectures')
+  @UseGuards(LoginRequired, StudentPermission)
+  async getLectures(@Query() query: {pageSize: number, offset: number}) {
+    const pageSize = query.pageSize;
+    const offset = query.offset;
+    if(isNaN(pageSize) || isNaN(offset)) {
+      throw new HttpException({
+        msg: '参数错误'
+      }, 406);
+    }
+
+    return await this.studentService.getLectures(pageSize, offset);
   }
 }
