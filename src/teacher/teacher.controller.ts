@@ -3,6 +3,8 @@ import { LoginRequired } from 'src/user/user.guard';
 import { TeacherPermission } from './teacher.guard';
 import { TeacherService } from './teacher.service';
 import { TeacherCanSelect } from './teacher.guard';
+import { parse } from 'path';
+import { off } from 'process';
 
 @Controller('teacher')
 export class TeacherController {
@@ -306,6 +308,23 @@ export class TeacherController {
   async getMyDegrees(@Req() request) {
     const id = request.user.teacher.id;
     return await this.teacherService.getMyDegrees(id);
+  }
+
+  @Get('lectures')
+  @UseGuards(LoginRequired, TeacherPermission)
+  async getLectures(@Query() query: {
+    pageSize: string,
+    offset: string
+  }) {
+    const { pageSize, offset } = query;
+    const p = parseInt(pageSize)
+    const o = parseInt(offset)
+    if(isNaN(p) || isNaN(o)) {
+      throw new HttpException({
+        msg: '参数错误'
+      }, 406)
+    }
+    return this.teacherService.getLectures(p, o)
   }
 
 }
