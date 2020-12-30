@@ -233,6 +233,13 @@ export class UserService {
     const uid = await this.getUidByToken(token)
     if(uid) {
       const body = await this.getUserBasicInfo(uid)
+      const token: string = EndeService.createNewToken();
+      const updateToken = `
+        insert into token(uid, value)
+        values(?, ?)
+        on duplicate key update value=?;
+      `;
+      await this.dbService.queryDb(updateToken, [uid, token, token]);
       return {
         token,
         body
