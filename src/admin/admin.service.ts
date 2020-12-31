@@ -1075,9 +1075,7 @@ export class AdminService {
       !!query.name ? `%${query.name}%` : 1,
       enrol_id === 1 ? 1 : enrol_id,
       degree_id === 1 ? 1 : degree_id,
-      source_id === 1 ? 1 : source_id,
-      parseInt(query.pageSize) * parseInt(query.offset),
-      parseInt(query.pageSize) * 1
+      source_id === 1 ? 1 : source_id
     ]
     
     // 计算count
@@ -1091,11 +1089,16 @@ export class AdminService {
         and ${enrol_id === -1 ? '?' : 'enrol_id = ?'}
         and ${degree_id === -1 ? '?' : 'degree_id = ?'}
         and ${source_id === -1 ? '?' : 'source_id = ?'}
-      order by bistudent.id asc
-      limit ?, ?;
+        and not exists (
+          select 1 from student
+          where student.uid = user.id
+        );
     `;
 
     const count = (await this.dbQuery.queryDb(count_sql, [count_sql, arr]))[0].count
+
+    arr.push(parseInt(query.pageSize) * parseInt(query.offset))
+    arr.push(parseInt(query.pageSize) * 1)
 
     const sql = `
       SELECT bistudent.id as id, name, recommended, score, graduation_university,
@@ -1109,6 +1112,10 @@ export class AdminService {
         and ${enrol_id === -1 ? '?' : 'enrol_id = ?'}
         and ${degree_id === -1 ? '?' : 'degree_id = ?'}
         and ${source_id === -1 ? '?' : 'source_id = ?'}
+        and not exists (
+          select 1 from student
+          where student.uid=user.id
+        )
       order by bistudent.id asc
       limit ?, ?;
     `;

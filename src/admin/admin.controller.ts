@@ -705,7 +705,7 @@ export class AdminController {
   }
 
   /**
-   * @api {get} /admin/bichoice/setting UpdateOrInsertSetting
+   * @api {put} /admin/bichoice/setting UpdateOrInsertSetting
    * @apiName UpdateOrInsertSetting
    * @apiGroup BiChoiceAdmin
    * @apiPermission Logined BiChoiceAdmin
