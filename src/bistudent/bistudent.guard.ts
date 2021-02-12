@@ -30,9 +30,19 @@ export class BistudentCanSelect implements CanActivate {
         return true;
       }
     }
+    let msg = '';
 
+    if(config.current_stage.value === -1) {
+      msg = '双选还没开始'
+    } else if(config.current_stage.value > config.stage_count) {
+      msg = '双选已经结束'
+    } else if(config.current_stage.value !== 0) {
+      msg = '当前不在学生的选择阶段中'
+    } else {
+      msg = '学生选择阶段还没有开始'
+    }
     throw new HttpException({
-      msg: '当前不在选择阶段中'
+      msg
     }, 403);
   }
 }

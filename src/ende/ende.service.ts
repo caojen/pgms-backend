@@ -9,7 +9,8 @@ export class EndeService {
    * @param password 
    */
   static decodeFromHttp(password: string): string {
-    return password;
+    const buffer = Buffer.from(password, 'base64');
+    return buffer.toString();
   }
 
 
@@ -31,7 +32,7 @@ export class EndeService {
   }
 
   private static readonly charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  private static readonly tokenlen = 128;
+  private static readonly tokenlen = 64;
   static createNewToken(): string {
     let str = '';
     for(let i = 0;i<this.tokenlen;i++) {

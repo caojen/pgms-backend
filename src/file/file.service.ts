@@ -17,7 +17,7 @@ https://www.npmjs.com/package/request-promise-native
     const response = await requestAsync(`${this.filesystem}${this.lookup}`);
     const body = JSON.parse(response);
     const uri = body?.fid;
-    const port = body.publicUrl?.split(':')[1];
+    const port = body?.publicUrl?.split(':')[1];
     if(!uri || !port) {
       throw new HttpException({
         msg: '文件系统错误'

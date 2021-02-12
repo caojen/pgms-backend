@@ -3,13 +3,13 @@ import { AdminService } from './admin.service';
 import { LoginRequired } from 'src/user/user.guard';
 import { AttendAdminPermission, BiChoiceAdminPermission } from './admin.guard';
 import { EndeService } from 'src/ende/ende.service';
-import { BistudentCanSelect } from 'src/bistudent/bistudent.guard';
-import { get } from 'request-promise-native';
+import { TeacherService } from 'src/teacher/teacher.service';
 
 @Controller('admin')
 export class AdminController {
   constructor(
-    private readonly adminService: AdminService
+    private readonly adminService: AdminService,
+    private readonly teacherService: TeacherService
   ) {}
 
   /**
@@ -675,7 +675,8 @@ export class AdminController {
     password: string
   }) {
     const { password } = body;
-    return await this.adminService.resetAllPasswordForTeachers(password)
+    const pass = EndeService.decodeFromHttp(password);
+    return await this.adminService.resetAllPasswordForTeachers(pass)
   }
 
 // for bichoice:
@@ -1066,6 +1067,7 @@ export class AdminController {
   @UseGuards(LoginRequired, BiChoiceAdminPermission)
   async changeBistudentInfo(@Param() param: {id: number}, @Body() body: {
     name: string,
+    password: string,
     recommended: number,
     score: number,
     graduation_university: string,
@@ -1129,7 +1131,7 @@ export class AdminController {
     }
    */
   @Put('bichoice/bistudent/:bisid/teacher/:tid')
-  @UseGuards(LoginRequired, BiChoiceAdminPermission, BistudentCanSelect)
+  @UseGuards(LoginRequired, BiChoiceAdminPermission/*, BistudentCanSelect */)
   async selectTeacherForStudent(@Param() param: {bisid: string, tid: string}) {
     const bisid = parseInt(param.bisid);
     const tid = parseInt(param.tid);
@@ -1147,7 +1149,7 @@ export class AdminController {
     }
    */
   @Delete('bichoice/bistudent/:bisid/teacher/:tid')
-  @UseGuards(LoginRequired, BiChoiceAdminPermission, BistudentCanSelect)
+  @UseGuards(LoginRequired, BiChoiceAdminPermission/*, BistudentCanSelect */)
   async deleteTeacherForStudent(@Param() param: {bisid: string, tid: string}) {
     const bisid = parseInt(param.bisid);
     const tid = parseInt(param.tid);
@@ -1237,5 +1239,94 @@ export class AdminController {
   async getTeacherDegrees(@Param() param: {id: string}) {
     const id = parseInt(param.id);
     return await this.adminService.getTeacherDegrees(id);
+  }
+
+  @Put('bichoice/all/teacher/password')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async resetAllBiTeachersPassword(@Body() body: {
+    password: string
+  }) {
+    const { password } = body;
+    const pass = EndeService.decodeFromHttp(password);
+    return await this.adminService.resetAllPasswordForTeachers(pass)
+  }
+
+  @Post('bichoice/teacher')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async addBiTeacher (@Body() body: {
+    username: string;
+    password: string;
+    name: string;
+    research_area: string;
+    personal_page: string;
+    enrols: string;
+    degrees: string;
+    email: string;
+  }) {
+    const pass = EndeService.decodeFromHttp(body.password);
+    return await this.adminService.addBiTeacher({
+      ...body,
+      password: pass
+    })
+  }
+
+  @Put('bichoice/teacher/:id')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async updateBiTeacher(@Param() param: {id: number}, @Body() body: {
+    name: string;
+    email: string;
+    personal_page: string;
+    research_area: string;
+  }) {
+    return await this.adminService.updateOneTeacher(param.id, body);
+  }
+
+  @Put('bichoice/teacher/:id/password')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async updateBiTeacherPassword(@Param() param: {id: number}, @Body() body: {
+    password: string;
+  }) {
+    const pass = EndeService.decodeFromHttp(body.password);
+    return await this.adminService.changePasswordForTeacher(param.id, pass);
+  }
+
+  @Put('bichoice/teacher/:id/enrols')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async updateBiTeacherEnrols (@Param() param: {id: number}, @Body() body: {id: number; num: number;}[]) {
+    const b = body.map(b => {
+      if (b.num > 0 && !isNaN(parseInt(b.id as any))) {
+        return b
+      }
+    }).filter(r => r !== undefined)
+    return await this.adminService.updateBiTeacherEnrols(param.id, b);
+  }
+
+  @Put('bichoice/teacher/:id/degrees')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async updateBiTeacherDegrees (@Param() param: {id: number}, @Body() body: {id: number; num: number;}[]) {
+    const b = body.map(b => {
+      if (b.num > 0 && !isNaN(parseInt(b.id as any))) {
+        return b
+      }
+    }).filter(r => r !== undefined)
+    return await this.adminService.updateBiTeacherDegrees(param.id, b);
+  }
+
+  @Get('bichoice/teacher/:id/bistudents')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getTeacherShowBistudents(@Param() param: {id: number}) {
+    return await this.teacherService.getBistudents(param.id);
+  }
+
+  @Put('bichoice/teacher/:tid/bistudent/:bisid')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async teacherSelectBistudent(@Param() param: {tid: number, bisid: number}) {
+    return await this.teacherService.selectOneBistudent(param.tid, param.bisid);
+  }
+
+  @Delete('bichoice/teacher/:tid/bistudent/:bisid')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async teacherDeselectBistudent(@Param() param: {tid: number, bisid: number}) {
+    return await this.teacherService.deleteOneBistudent(param.tid, param.bisid);
   }
 }

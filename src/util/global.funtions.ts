@@ -2,7 +2,6 @@ import * as database from '../../database.json';
 import * as global from "../../config.json";
 import * as mysql from 'mysql2/promise';
 import { Request } from 'express';
-import { Logger } from '@nestjs/common';
 import * as strftime from 'strftime';
 
 const config = database[global.env];
@@ -36,7 +35,7 @@ export function getUserType(user: any) {
 // 得到数据库中settings表的某些键值:
 export async function getConfigs(keys: string[]) {
   const sql = `
-    SELECT key, value, lastUpdate, lastUpdateAdmin
+    SELECT \`key\`, value, lastUpdate, lastUpdateAdmin
     FROM settings;
   `;
   const settings = await queryDb(sql, []);
@@ -55,8 +54,8 @@ export async function getConfigs(keys: string[]) {
 
 export function getIp(req: Request): string {
   try {
-    const ip = (req.headers['x-forwarded-for'] as string).split(',')[0];
-    return ip;
+    const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0];
+    return ip || req.socket.remoteAddress || req.ip
   } catch {
     return 'unknown';
   }

@@ -1035,7 +1035,7 @@ export class AdminService {
       `;
       const res = await this.dbQuery.queryDb(sql, [query.enrol])
       if(res.length === 0) {
-        return []
+        return { count: 0, bistudents: [] }
       } else {
         enrol_id = res[0].id
       }
@@ -1052,7 +1052,7 @@ export class AdminService {
       const enrol_des = query.degree.split(' ')[1];
       const res = await this.dbQuery.queryDb(sql, [degree_des, enrol_des]);
       if(res.length === 0) {
-        return []
+        return { count: 0, bistudents: [] }
       } else {
         degree_id = res[0].id
       }
@@ -1064,7 +1064,7 @@ export class AdminService {
       `
       const res = await this.dbQuery.queryDb(sql, [query.source]);
       if(res.length === 0) {
-        return []
+        return { count: 0, bistudents: [] }
       } else {
         source_id = res[0].id
       }
@@ -1073,9 +1073,9 @@ export class AdminService {
     const arr = [
       !!query.username ? `%${query.username}%` : 1,
       !!query.name ? `%${query.name}%` : 1,
-      enrol_id === 1 ? 1 : enrol_id,
-      degree_id === 1 ? 1 : degree_id,
-      source_id === 1 ? 1 : source_id
+      enrol_id === -1 ? 1 : enrol_id,
+      degree_id === -1 ? 1 : degree_id,
+      source_id === -1 ? 1 : source_id
     ]
     
     // 计算count
@@ -1086,16 +1086,16 @@ export class AdminService {
       where user.isActive=1
         and ${!!query.username ? 'user.username like ?' : '?'}
         and ${!!query.name ? 'bistudent.name like ?' : '?'}
-        and ${enrol_id === -1 ? '?' : 'enrol_id = ?'}
-        and ${degree_id === -1 ? '?' : 'degree_id = ?'}
-        and ${source_id === -1 ? '?' : 'source_id = ?'}
+        and ${enrol_id === -1 ? '?' : 'bistudent.enrol = ?'}
+        and ${degree_id === -1 ? '?' : 'bistudent.degree = ?'}
+        and ${source_id === -1 ? '?' : 'bistudent.source = ?'}
         and not exists (
           select 1 from student
           where student.uid = user.id
         );
     `;
 
-    const count = (await this.dbQuery.queryDb(count_sql, [count_sql, arr]))[0].count
+    const count = (await this.dbQuery.queryDb(count_sql, arr))[0]?.count || 0
 
     arr.push(parseInt(query.pageSize) * parseInt(query.offset))
     arr.push(parseInt(query.pageSize) * 1)
@@ -1103,15 +1103,19 @@ export class AdminService {
     const sql = `
       SELECT bistudent.id as id, name, recommended, score, graduation_university,
         graduation_major, household_register, ethnic, phone, gender,
-        email, source, degree, image, selected_teachers
+        email, source.description as source, degree.description as degree, enrol.description as enrol,
+        image, selected_teachers, user.username as username
       FROM bistudent
-      left join user on bistudent.uid = user.id
+        left join user on bistudent.uid = user.id
+        left join degree on degree.id = bistudent.degree
+        left join source on source.id = bistudent.source
+        left join enrol on enrol.id = degree.enrol
       where user.isActive=1
         and ${!!query.username ? 'user.username like ?' : '?'}
         and ${!!query.name ? 'bistudent.name like ?' : '?'}
-        and ${enrol_id === -1 ? '?' : 'enrol_id = ?'}
-        and ${degree_id === -1 ? '?' : 'degree_id = ?'}
-        and ${source_id === -1 ? '?' : 'source_id = ?'}
+        and ${enrol_id === -1 ? '?' : 'bistudent.enrol like ?'}
+        and ${degree_id === -1 ? '?' : 'bistudent.degree like ?'}
+        and ${source_id === -1 ? '?' : 'bistudent.source like ?'}
         and not exists (
           select 1 from student
           where student.uid=user.id
@@ -1121,15 +1125,24 @@ export class AdminService {
     `;
 
     const bistudents = await this.dbQuery.queryDb(sql, arr);
-
     return {
       count,
-      bistudents
+      bistudents: bistudents.map(bis => {
+        return {
+          ...bis,
+          enrol: undefined,
+          degree: `${bis.degree} ${bis.enrol}`
+        }
+      })
     }
   }
 
   async addNewBistudent(info) {
-
+    if(!info.username || !info.password) {
+      throw new HttpException({
+        msg: '需要提供用户名和密码'
+      }, 406);
+    }
     const createUserSql = `
       INSERT INTO user(username, password)
       VALUES(?, ?)
@@ -1196,6 +1209,7 @@ export class AdminService {
   }
 
   async changeBistudentInfo(id: number, info: any) {
+    console.log(id, info)
     const sql = `
       UPDATE bistudent
       SET name=?, recommended=?, score=?, graduation_university=?,
@@ -1203,6 +1217,7 @@ export class AdminService {
         gender=?, email=?, source=?, degree=?
       WHERE id=?;
     `;
+
     await this.dbQuery.queryDb(sql, [
       info.name, info.recommended, info.score, info.graduation_university,
       info.graduation_major, info.household_register, info.ethnic, info.phone,
@@ -1215,16 +1230,32 @@ export class AdminService {
       FROM bistudent
       WHERE id=?;
     `
+    const bistudent = (await this.dbQuery.queryDb(selectSql, [id]))[0];
 
+    if (info.password) {
+      console.log(info.password)
+      const password = EndeService.decodeFromHttp(info.password);
+      const epassword = EndeService.encodeToDatabase(password);
+      console.log(epassword)
+      const changePasswordSql = `
+        UPDATE user
+        SET password=?
+        WHERE id=?
+      `;
+      console.log(bistudent)
+      await this.dbQuery.queryDb(changePasswordSql, [epassword, bistudent.uid]);
+    }
+    console.log(bistudent)
     return {
       msg: '修改成功',
-      bistudent: await this.dbQuery.queryDb(selectSql, [id]),
+      bistudent
     };
   }
 
   async deleteBistudent(id: number) {
     const config = await getConfigs(["current_stage", "stage_count"]);
     const current_stage = config.current_stage.value;
+    
     if(current_stage === -1) {
       const selectUidSql = `
         SELECT uid
@@ -1234,8 +1265,7 @@ export class AdminService {
       const uid = (await this.dbQuery.queryDb(selectUidSql, [id]))[0].uid;
       if(uid) {
         const deleteSql = `
-          DELETE FROM user
-          WHERE id=?
+          DELETE FROM user WHERE id=?;
         `;
 
         await this.dbQuery.queryDb(deleteSql, [uid]);
@@ -1243,7 +1273,6 @@ export class AdminService {
           msg: '删除成功'
         };
       }
-
       throw new HttpException({
         msg: '删除失败, 没有找到对应的用户'
       }, 406);
@@ -1362,12 +1391,45 @@ export class AdminService {
 
   async getAllBiTeachers() {
     const sql = `
-      SELECT id, name, email, personal_page, research_area,
-        bichoice_config, selected_students
-      FROM teacher;
+      SELECT teacher.id as id, teacher.name as name, email, personal_page, research_area,
+        bichoice_config, selected_students, user.username as username
+      FROM teacher
+        LEFT JOIN user ON user.id=teacher.uid;
     `;
 
-    return await this.dbQuery.queryDb(sql, []);
+    const teachers = await this.dbQuery.queryDb(sql, []);
+    for (let i = 0; i < teachers.length; i++) {
+      teachers[i].bichoice_config = JSON.parse(teachers[i].bichoice_config)
+      const teacher = teachers[i];
+      const selected_students = JSON.parse(teacher.selected_students);
+      const students = [];
+      let count = 0;
+      for (let j = 0; j < selected_students.length; j++) {
+        const group = selected_students[j];
+        students.push([]);
+        for (let k = 0; k < group.length; k++) {
+          const bisid = group[k];
+          const sql = `
+            SELECT user.username as username,
+              bistudent.name as name,
+              degree.description as degree,
+              enrol.description as enrol
+            FROM bistudent
+              LEFT JOIN user on bistudent.uid=user.id
+              LEFT JOIN degree on bistudent.degree=degree.id
+              LEFT JOIN enrol on degree.enrol=enrol.id
+            WHERE bistudent.id=?;
+          `;
+          const s = (await this.dbQuery.queryDb(sql, [bisid]))[0];
+          s.index = count + 1
+          students[j].push(s);
+          count += 1;
+        }
+      }
+      teachers[i].selected_students = students;
+      teachers[i].students_count = count;
+    }
+    return teachers;
   }
 
   async getOneBiTeacher(id: number) {
@@ -1423,9 +1485,9 @@ export class AdminService {
       WHERE id=?
     `
     const teachers = await this.dbQuery.queryDb(sql, []);
+    const epass = EndeService.encodeToDatabase(password);
     for(let i = 0; i < teachers.length; i++) {
       const uid = teachers[i].uid;
-      const epass = EndeService.encodeToDatabase(password);
       await this.dbQuery.queryDb(update, [epass, uid]);
     }
 
@@ -1535,5 +1597,95 @@ export class AdminService {
     }
 
     return lectures;
+  }
+
+  async addBiTeacher (info: {
+    username: string;
+    password: string;
+    name: string;
+    research_area: string;
+    personal_page: string;
+    enrols: string;
+    degrees: string;
+    email: string;
+  }) {
+    const epass = EndeService.encodeToDatabase(info.password);
+    if(!info.password || !info.username) {
+      throw new HttpException({
+        msg: '需要提供用户名和密码'
+      }, 406);
+    }
+    const addUserSql = `
+      INSERT INTO user(username, password)
+      VALUES (?, ?);
+    `;
+
+    try {
+      const t = await this.dbQuery.queryDb(addUserSql, [info.username, epass]);
+      const insertId = (t as any).insertId;
+
+      const conf = {
+        enrols: info.enrols,
+        degrees: info.degrees
+      };
+      const addTeacherSql = `
+        INSERT INTO teacher(uid, name, email,
+          personal_page, research_area, bichoice_config)
+        VALUES(?, ?, ?, ?, ?, ?);
+      `;
+      await this.dbQuery.queryDb(addTeacherSql, [
+        insertId, info.name, info.email, info.personal_page, info.research_area,
+        JSON.stringify(conf)
+      ]);
+
+      return {
+        msg: '添加老师成功'
+      }
+    } catch (e) {
+      throw new HttpException({
+        msg: '用户已存在',
+        error: e
+      }, 406)
+    }
+  }
+  async updateBiTeacherEnrols (id: number, body: {id: number; num: number;}[]) {
+    const sql = `
+      SELECT bichoice_config
+      FROM teacher
+      WHERE id=?;
+    `;
+    const bichoice_config = (await this.dbQuery.queryDb(sql, [id]))[0].bichoice_config;
+    const conf = JSON.parse(bichoice_config);
+    conf.enrols = body;
+    const update = `
+      UPDATE teacher
+      SET bichoice_config = ?
+      WHERE id=?;
+    `;
+
+    await this.dbQuery.queryDb(update, [JSON.stringify(conf), id]);
+    return {
+      msg: '修改成功'
+    }
+  }
+
+  async updateBiTeacherDegrees (id: number, body: {id: number; num: number}[]) {
+    const sql = `
+      SELECT bichoice_config
+      FROM teacher
+      WHERE id=?;
+    `;
+    const bichoice_config = (await this.dbQuery.queryDb(sql, [id]))[0].bichoice_config;
+    const conf = JSON.parse(bichoice_config);
+    conf.degrees = body;
+    const update = `
+      UPDATE teacher
+      SET bichoice_config = ?
+      WHERE id=?;
+    `;
+    await this.dbQuery.queryDb(update, [JSON.stringify(conf), id]);
+    return {
+      msg: '修改成功'
+    }
   }
 }

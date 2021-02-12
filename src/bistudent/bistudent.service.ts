@@ -1,6 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { FileService } from 'src/file/file.service';
 import { QueryDbService } from 'src/query-db/query-db.service';
+import { getConfigs } from 'src/util/global.funtions';
 
 @Injectable()
 export class BistudentService {
@@ -40,11 +41,14 @@ export class BistudentService {
       SELECT bistudent.id as id, name, recommended, score,
         graduation_university, graduation_major, graduation_university,
         household_register, ethnic, phone, gender, email,
-        source.description as source_des,
-        degree.description as degree_des,
-        enrol.description as enrol_des,
-        image, selected_teachers
+        source.description as source,
+        degree.description as degree,
+        enrol.description as enrol,
+        degree.id as degree_id,
+        enrol.id as enrol_id,
+        image, selected_teachers, user.username as username
       FROM bistudent
+        JOIN user ON user.id = bistudent.uid
         JOIN source ON bistudent.source = source.id
         JOIN degree ON bistudent.degree = degree.id
         JOIN enrol ON degree.enrol = enrol.id
@@ -110,9 +114,9 @@ export class BistudentService {
             if(enrol.id == enrol_id) {
               if(enrol.num > 0) {
                 canChoose = true;
+                break;
               }
             }
-            break;
           }
 
           if(canChoose) {
@@ -133,6 +137,8 @@ export class BistudentService {
   }
 
   async selectOneTeacher(bid: number, tid: number) {
+    const config = await getConfigs(['stage_count'])
+    const max_stage = config['stage_count'].value
     const teachers = await this.getAllTeachers(bid);
     let canChoose = false;
     for(const index in teachers) {
@@ -161,6 +167,11 @@ export class BistudentService {
     if(selected_teachers.indexOf(tid) !== -1) {
       throw new HttpException({
         msg: '该老师已被选择, 无需重复选择'
+      }, 406);
+    }
+    if(selected_teachers.length >= max_stage) {
+      throw new HttpException({
+        msg: '超过限选数量'
       }, 406);
     }
 

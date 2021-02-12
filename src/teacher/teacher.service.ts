@@ -117,13 +117,37 @@ export class TeacherService {
     return res as any;
   }
 
-  async getBistudents(id: number) {
+  async getBistudents(_id: number) {
+    const id = parseInt(_id as any);
     try {
       const bichoiceInfo = await this.getBiChoiceInfo();
       const current_stage = JSON.parse(bichoiceInfo.current_stage).value;
       const stage_count = JSON.parse(bichoiceInfo.stage_count).value;
       if(current_stage <= 0) {
         return [];
+      }
+
+      // 查看老师的bichoice_config:
+      const biconfigSql = `
+        SELECT bichoice_config
+        FROM teacher
+        WHERE id=?;
+      `;
+      const bichoice_config = JSON.parse((await this.dbQuery.queryDb(biconfigSql, [id]))[0].bichoice_config);
+      const enrols = {};
+      const degrees = {};
+      for (let i = 0; i < bichoice_config.enrols.length; i++) {
+        if (bichoice_config.enrols[i].id in enrols === false) {
+          enrols[bichoice_config.enrols[i].id] = 0;
+        }
+        enrols[bichoice_config.enrols[i].id] = bichoice_config.enrols[i].num;
+      }
+
+      for (let i = 0; i < bichoice_config.degrees.length; i++) {
+        if (bichoice_config.degrees[i].id in degrees === false) {
+          degrees[bichoice_config.degrees[i].id] = 0;
+        }
+        degrees[bichoice_config.degrees[i].id] = bichoice_config.degrees[i].num;
       }
 
       const res = [];
@@ -143,14 +167,27 @@ export class TeacherService {
         if(students !== undefined) {
           for(const index in students) {
             const student = students[index];
-            res[stage].push(await this.bistudentService.getInfo(student));
+            const info = await this.bistudentService.getInfo(student)
+            enrols[info.enrol_id]--;
+            degrees[info.degree_id]--;
+            res[stage].push({
+              ...info,
+              selected: true,
+              canSelect: false
+            });
           }
         }
       }
 
       const studentsSql = `
-        SELECT *
-        FROM bistudent;
+        SELECT bistudent.id as id, name, recommended, score, graduation_university, graduation_major, household_register,
+          ethnic, phone, gender, email, source, image, selected_teachers,
+          enrol.id as enrol_id, user.username as username, enrol.description as enrol,
+          degree.id as degree_id, degree.description as degree
+        FROM bistudent
+          LEFT JOIN user on user.id=bistudent.uid
+          LEFT JOIN degree on degree.id=bistudent.degree
+          LEFT JOIN enrol on enrol.id=degree.enrol
       `;
       const students = await this.dbQuery.queryDb(studentsSql, []);
     
@@ -163,8 +200,24 @@ export class TeacherService {
             if(res[stage] === undefined) {
               res[stage] = [];
             }
-
-            res[stage].push(student);
+            let canSelect = true
+            if (stage !== current_stage - 1) {
+              canSelect = false
+            } else {
+              const enrol_id = student.enrol_id;
+              const degree_id = student.degree_id;
+              if(enrols[enrol_id] <= 0) {
+                canSelect = false
+              }
+              if(degrees[degree_id] <= 0) {
+                canSelect = false
+              }
+            }
+            res[stage].push({
+              ...student,
+              selected: false,
+              canSelect
+            });
           }
         }
 
@@ -174,7 +227,11 @@ export class TeacherService {
             res[current_stage-1] = [];
           }
 
-          res[current_stage-1].push(student);
+          res[current_stage-1].push({
+            ...student,
+            selected: true,
+            canSelect: true
+          });
         }
       }
       return res;
@@ -201,7 +258,7 @@ export class TeacherService {
 
     for(const index in selected_teachers) {
       const teacher = selected_teachers[index];
-      const selected_students = (await this.dbQuery.queryDb(teacherSelectedSql, [teacher]))[0].selected_students;
+      const selected_students = JSON.parse((await this.dbQuery.queryDb(teacherSelectedSql, [teacher]))[0].selected_students);
       for(const index in selected_students) {
         const students = selected_students[index];
         if(students && students.indexOf(bisid) !== -1) {
@@ -223,7 +280,9 @@ export class TeacherService {
     return JSON.parse((await this.dbQuery.queryDb(sql, [id]))[0].selected_students);
   }
 
-  async selectOneBistudent(tid: number, bisid: number) {
+  async selectOneBistudent(_tid: number, _bisid: number) {
+    const tid = parseInt(_tid as any);
+    const bisid = parseInt(_bisid as any);
     const bichoiceInfo = await this.getBiChoiceInfo();
     const current_stage = JSON.parse(bichoiceInfo.current_stage).value;
 
@@ -273,7 +332,13 @@ export class TeacherService {
     }, 406);
   }
 
-  async deleteOneBistudent(tid: number, bisid: number) {
+  async deleteOneBistudent(tid: number, _bisid: number) {
+    const bisid = parseInt(_bisid as any);
+    if(isNaN(bisid)) {
+      throw new HttpException({
+        msg: '参数错误'
+      }, 406);
+    }
     const bichoiceInfo = await this.getBiChoiceInfo();
     const current_stage = JSON.parse(bichoiceInfo.current_stage).value;
 

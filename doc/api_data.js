@@ -238,7 +238,7 @@ define({ "api": [
   },
   {
     "type": "delete",
-    "url": "/admin/attend/:rid",
+    "url": "/admin/attend/record/:rid",
     "title": "DeleteOneRecord",
     "name": "DeleteOneRecord",
     "group": "AttendAdmin",
@@ -997,7 +997,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response",
-          "content": "[\n  {}\n]",
+          "content": "[\n  {}\n]\nenrol: '学硕',\ndescription: '计算机科学 学硕' (用空格分开)",
           "type": "json"
         }
       ]
@@ -1214,7 +1214,7 @@ define({ "api": [
     "groupTitle": "BiChoiceAdmin"
   },
   {
-    "type": "get",
+    "type": "put",
     "url": "/admin/bichoice/setting",
     "title": "UpdateOrInsertSetting",
     "name": "UpdateOrInsertSetting",
