@@ -5,7 +5,7 @@ import { HttpException, Logger } from '@nestjs/common'
 import { getIp } from "./global.funtions";
 
 // 每60秒最多请求100次
-const requests = 100;
+const requests = 1000;
 const sec = 60;
 
 const logger = new Logger('RateLimit')

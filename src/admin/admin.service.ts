@@ -127,7 +127,8 @@ export class AdminService {
     const sql = `
       SELECT \`key\`, value, lastUpdate, lastUpdateAdmin,
         name, type
-      FROM settings LEFT JOIN admin ON settings.lastUpdateAdmin=admin.id;
+      FROM settings LEFT JOIN admin ON settings.lastUpdateAdmin=admin.id
+      ORDER BY \`key\`;
     `;
 
     const query = await this.dbQuery.queryDb(sql, []);
@@ -885,7 +886,8 @@ export class AdminService {
   async getEnrols() {
     const sql = `
       SELECT id, description
-      FROM enrol;
+      FROM enrol
+      order by id;
     `;
 
     return await this.dbQuery.queryDb(sql, []);
@@ -949,7 +951,8 @@ export class AdminService {
       SELECT degree.id AS degree_id, degree.description AS degree_description,
         enrol.id AS enrol_id, enrol.description AS enrol_description
       FROM degree
-        JOIN enrol ON degree.enrol = enrol.id;
+        JOIN enrol ON degree.enrol = enrol.id
+      ORDER by degree_id;
     `;
 
     return await this.dbQuery.queryDb(sql, []);
@@ -1402,31 +1405,32 @@ export class AdminService {
       teachers[i].bichoice_config = JSON.parse(teachers[i].bichoice_config)
       const teacher = teachers[i];
       const selected_students = JSON.parse(teacher.selected_students);
-      const students = [];
+      // const students = [];
       let count = 0;
       for (let j = 0; j < selected_students.length; j++) {
         const group = selected_students[j];
-        students.push([]);
-        for (let k = 0; k < group.length; k++) {
-          const bisid = group[k];
-          const sql = `
-            SELECT user.username as username,
-              bistudent.name as name,
-              degree.description as degree,
-              enrol.description as enrol
-            FROM bistudent
-              LEFT JOIN user on bistudent.uid=user.id
-              LEFT JOIN degree on bistudent.degree=degree.id
-              LEFT JOIN enrol on degree.enrol=enrol.id
-            WHERE bistudent.id=?;
-          `;
-          const s = (await this.dbQuery.queryDb(sql, [bisid]))[0];
-          s.index = count + 1
-          students[j].push(s);
-          count += 1;
-        }
+        count += group.length;
+      //   students.push([]);
+      //   for (let k = 0; k < group.length; k++) {
+      //     const bisid = group[k];
+      //     const sql = `
+      //       SELECT user.username as username,
+      //         bistudent.name as name,
+      //         degree.description as degree,
+      //         enrol.description as enrol
+      //       FROM bistudent
+      //         LEFT JOIN user on bistudent.uid=user.id
+      //         LEFT JOIN degree on bistudent.degree=degree.id
+      //         LEFT JOIN enrol on degree.enrol=enrol.id
+      //       WHERE bistudent.id=?;
+      //     `;
+      //     const s = (await this.dbQuery.queryDb(sql, [bisid]))[0];
+      //     s.index = count + 1
+      //     students[j].push(s);
+      //     count += 1;
+      //   }
       }
-      teachers[i].selected_students = students;
+      // teachers[i].selected_students = students;
       teachers[i].students_count = count;
     }
     return teachers;
@@ -1687,5 +1691,40 @@ export class AdminService {
     return {
       msg: '修改成功'
     }
+  }
+
+  async getTeacherSelectedBistudents(tid: number) {
+    const sql = `
+      SELECT selected_students
+      FROM teacher
+      WHERE id=?;
+    `;
+
+    const selected_students = JSON.parse((await this.dbQuery.queryDb(sql, [tid]))[0].selected_students);
+    let count = 0;
+    const res = []
+    for (let j = 0; j < selected_students.length; j++) {
+      const group = selected_students[j];
+      res[j] = []
+      for (let k = 0; k < group.length; k++) {
+        const bisid = group[k];
+        const sql = `
+          SELECT user.username as username,
+            bistudent.name as name,
+            degree.description as degree,
+            enrol.description as enrol
+          FROM bistudent
+            LEFT JOIN user on bistudent.uid=user.id
+            LEFT JOIN degree on bistudent.degree=degree.id
+            LEFT JOIN enrol on degree.enrol=enrol.id
+          WHERE bistudent.id=?;
+        `;
+        const s = (await this.dbQuery.queryDb(sql, [bisid]))[0];
+        s.index = count + 1;
+        res[j].push(s);
+        count += 1
+      }
+    }
+    return res;
   }
 }

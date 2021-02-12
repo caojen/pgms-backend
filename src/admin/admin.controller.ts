@@ -4,6 +4,7 @@ import { LoginRequired } from 'src/user/user.guard';
 import { AttendAdminPermission, BiChoiceAdminPermission } from './admin.guard';
 import { EndeService } from 'src/ende/ende.service';
 import { TeacherService } from 'src/teacher/teacher.service';
+import { parse } from 'path';
 
 @Controller('admin')
 export class AdminController {
@@ -1328,5 +1329,17 @@ export class AdminController {
   @UseGuards(LoginRequired, BiChoiceAdminPermission)
   async teacherDeselectBistudent(@Param() param: {tid: number, bisid: number}) {
     return await this.teacherService.deleteOneBistudent(param.tid, param.bisid);
+  }
+
+  @Get('bichoice/teacher/:id/bistudents/selected')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getTeacherSelectedBistudents(@Param() param: {id: string}) {
+    const id = parseInt(param.id);
+    if(isNaN(id)) {
+      throw new HttpException({
+        msg: '参数错误'
+      }, 406);
+    }
+    return await this.adminService.getTeacherSelectedBistudents(id);
   }
 }
