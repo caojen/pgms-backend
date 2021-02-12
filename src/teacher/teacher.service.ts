@@ -1,4 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { parse } from 'path';
 import { BistudentService } from 'src/bistudent/bistudent.service';
 import { QueryDbService } from 'src/query-db/query-db.service';
 import { StudentService } from 'src/student/student.service';
@@ -117,130 +118,257 @@ export class TeacherService {
     return res as any;
   }
 
+  // async getBistudents(_id: number) {
+  //   const id = parseInt(_id as any);
+  //   try {
+  //     const bichoiceInfo = await this.getBiChoiceInfo();
+  //     const current_stage = JSON.parse(bichoiceInfo.current_stage).value;
+  //     const stage_count = JSON.parse(bichoiceInfo.stage_count).value;
+  //     if(current_stage <= 0) {
+  //       return [];
+  //     }
+
+  //     // 查看老师的bichoice_config:
+  //     const biconfigSql = `
+  //       SELECT bichoice_config
+  //       FROM teacher
+  //       WHERE id=?;
+  //     `;
+  //     const bichoice_config = JSON.parse((await this.dbQuery.queryDb(biconfigSql, [id]))[0].bichoice_config);
+  //     const enrols = {};
+  //     const degrees = {};
+  //     for (let i = 0; i < bichoice_config.enrols.length; i++) {
+  //       if (bichoice_config.enrols[i].id in enrols === false) {
+  //         enrols[bichoice_config.enrols[i].id] = 0;
+  //       }
+  //       enrols[bichoice_config.enrols[i].id] = bichoice_config.enrols[i].num;
+  //     }
+
+  //     for (let i = 0; i < bichoice_config.degrees.length; i++) {
+  //       if (bichoice_config.degrees[i].id in degrees === false) {
+  //         degrees[bichoice_config.degrees[i].id] = 0;
+  //       }
+  //       degrees[bichoice_config.degrees[i].id] = bichoice_config.degrees[i].num;
+  //     }
+
+  //     const res = [];
+
+  //     const selectedSql = `
+  //       SELECT selected_students
+  //       FROM teacher
+  //       WHERE id=?;
+  //     `;
+
+  //     const selected_students = JSON.parse((await this.dbQuery.queryDb(selectedSql, [id]))[0].selected_students);
+  //     for(let stage = 0; stage < current_stage-1; stage += 1) {
+  //       if(res[stage] === undefined) {
+  //         res[stage] = [];
+  //       }
+  //       const students = selected_students[stage];
+  //       if(students !== undefined) {
+  //         for(const index in students) {
+  //           const student = students[index];
+  //           const info = await this.bistudentService.getInfo(student)
+  //           enrols[info.enrol_id]--;
+  //           degrees[info.degree_id]--;
+  //           res[stage].push({
+  //             ...info,
+  //             selected: true,
+  //             canSelect: false
+  //           });
+  //         }
+  //       }
+  //     }
+
+  //     const studentsSql = `
+  //       SELECT bistudent.id as id, name, recommended, score, graduation_university, graduation_major, household_register,
+  //         ethnic, phone, gender, email, source, image, selected_teachers,
+  //         enrol.id as enrol_id, user.username as username, enrol.description as enrol,
+  //         degree.id as degree_id, degree.description as degree
+  //       FROM bistudent
+  //         LEFT JOIN user on user.id=bistudent.uid
+  //         LEFT JOIN degree on degree.id=bistudent.degree
+  //         LEFT JOIN enrol on enrol.id=degree.enrol
+  //     `;
+  //     const students = await this.dbQuery.queryDb(studentsSql, []);
+    
+  //     for(const index in students) {
+  //       const student = students[index];
+  //       student.selected_teachers = JSON.parse(student.selected_teachers);
+
+  //       for(let stage = current_stage-1; stage < stage_count; stage += 1) {
+  //         if(student.selected_teachers[stage] === id && await this.bistudentIsSelected(student.id) === false) {
+  //           if(res[stage] === undefined) {
+  //             res[stage] = [];
+  //           }
+  //           let canSelect = true
+  //           if (stage !== current_stage - 1) {
+  //             canSelect = false
+  //           } else {
+  //             const enrol_id = student.enrol_id;
+  //             const degree_id = student.degree_id;
+  //             if(enrols[enrol_id] <= 0) {
+  //               canSelect = false
+  //             }
+  //             if(degrees[degree_id] <= 0) {
+  //               canSelect = false
+  //             }
+  //           }
+  //           res[stage].push({
+  //             ...student,
+  //             selected: false,
+  //             canSelect
+  //           });
+  //         }
+  //       }
+
+  //       if(!!selected_students[current_stage - 1] &&
+  //           selected_students[current_stage - 1].indexOf(student.id) !== -1) {
+  //         if(res[current_stage-1] === undefined) {
+  //           res[current_stage-1] = [];
+  //         }
+
+  //         res[current_stage-1].push({
+  //           ...student,
+  //           selected: true,
+  //           canSelect: true
+  //         });
+  //       }
+  //     }
+  //     return res;
+  //   } catch (err) {
+  //     throw new HttpException({
+  //       msg: '服务器错误',
+  //       err
+  //     }, 500);
+  //   }
+  // }
   async getBistudents(_id: number) {
     const id = parseInt(_id as any);
-    try {
-      const bichoiceInfo = await this.getBiChoiceInfo();
-      const current_stage = JSON.parse(bichoiceInfo.current_stage).value;
-      const stage_count = JSON.parse(bichoiceInfo.stage_count).value;
-      if(current_stage <= 0) {
-        return [];
+    if(isNaN(id)) {
+      throw new HttpException({ msg: '参数错误' }, 406);
+    }
+
+    // 获取双选情况
+    const bichoiceInfo = await this.getBiChoiceInfo();
+    const current_stage = JSON.parse(bichoiceInfo.current_stage).value;
+    const stage_count = JSON.parse(bichoiceInfo.stage_count).value;
+    if (stage_count <= 0) { return []; } // 老师还没开始时，不允许查看
+
+    // 查看老师的bichoice_config
+    const biconfigSql = `
+      SELECT bichoice_config, selected_students
+      FROM teacher WHERE id=?;
+    `;
+
+    const teacher = (await this.dbQuery.queryDb(biconfigSql, [id]))[0];
+
+    const bichoice_config = JSON.parse(teacher.bichoice_config);
+    const enrols = {}   // 从bichoice_config计算老师现在可用的enrol和degree
+    const degrees = {}
+
+    for (let i = 0; i < bichoice_config?.enrols?.length || 0; i++) {
+      const eid = bichoice_config.enrols[i].id;
+      const num = bichoice_config.enrols[i].num;
+      if (num > 0) {
+        enrols[eid] = bichoice_config.enrols[i].num;
       }
-
-      // 查看老师的bichoice_config:
-      const biconfigSql = `
-        SELECT bichoice_config
-        FROM teacher
-        WHERE id=?;
-      `;
-      const bichoice_config = JSON.parse((await this.dbQuery.queryDb(biconfigSql, [id]))[0].bichoice_config);
-      const enrols = {};
-      const degrees = {};
-      for (let i = 0; i < bichoice_config.enrols.length; i++) {
-        if (bichoice_config.enrols[i].id in enrols === false) {
-          enrols[bichoice_config.enrols[i].id] = 0;
-        }
-        enrols[bichoice_config.enrols[i].id] = bichoice_config.enrols[i].num;
+    }
+    for (let i = 0; i < bichoice_config?.degrees?.length || 0; i++) {
+      const did = bichoice_config.degrees[i].id;
+      const num = bichoice_config.degrees[i].num;
+      if (num > 0) {
+        degrees[did] = bichoice_config.degrees[i].num;
       }
+    }
 
-      for (let i = 0; i < bichoice_config.degrees.length; i++) {
-        if (bichoice_config.degrees[i].id in degrees === false) {
-          degrees[bichoice_config.degrees[i].id] = 0;
-        }
-        degrees[bichoice_config.degrees[i].id] = bichoice_config.degrees[i].num;
+    const res = []
+
+    // 查看老师已选择的学生:
+    const selected_students = JSON.parse(teacher.selected_students);
+    // 对于之前选择阶段的学生，减去enrols和degrees, 并且将学生加入到res中
+    for (let stage = 0; stage < current_stage - 1; stage++) {
+      if (res[stage] === undefined) {
+        res[stage] = [];
       }
-
-      const res = [];
-
-      const selectedSql = `
-        SELECT selected_students
-        FROM teacher
-        WHERE id=?;
-      `;
-
-      const selected_students = JSON.parse((await this.dbQuery.queryDb(selectedSql, [id]))[0].selected_students);
-      for(let stage = 0; stage < current_stage-1; stage += 1) {
-        if(res[stage] === undefined) {
-          res[stage] = [];
-        }
-        const students = selected_students[stage];
-        if(students !== undefined) {
-          for(const index in students) {
-            const student = students[index];
-            const info = await this.bistudentService.getInfo(student)
-            enrols[info.enrol_id]--;
-            degrees[info.degree_id]--;
-            res[stage].push({
-              ...info,
-              selected: true,
-              canSelect: false
-            });
-          }
-        }
+      const students = selected_students[stage] || [];
+      for (const index in students) {
+        const student_id = students[index];
+        const info = await this.bistudentService.getInfo(student_id);
+        enrols[info.enrol_id]--;
+        degrees[info.degree_id]--;
+        res[stage].push({ ...info, selected: true, canSelect: false });
       }
+    }
 
-      const studentsSql = `
-        SELECT bistudent.id as id, name, recommended, score, graduation_university, graduation_major, household_register,
-          ethnic, phone, gender, email, source, image, selected_teachers,
-          enrol.id as enrol_id, user.username as username, enrol.description as enrol,
-          degree.id as degree_id, degree.description as degree
-        FROM bistudent
-          LEFT JOIN user on user.id=bistudent.uid
-          LEFT JOIN degree on degree.id=bistudent.degree
-          LEFT JOIN enrol on enrol.id=degree.enrol
-      `;
-      const students = await this.dbQuery.queryDb(studentsSql, []);
-    
-      for(const index in students) {
-        const student = students[index];
-        student.selected_teachers = JSON.parse(student.selected_teachers);
+    // 判断当前还可以选择的学生的enrol和degree：
+    const active_enrols = Object.keys(enrols).map(key => {
+      if (enrols[key] > 0) {
+        return key;
+      } else {
+        return -1;
+      }
+    }).filter(f => f !== -1);
 
-        for(let stage = current_stage-1; stage < stage_count; stage += 1) {
-          if(student.selected_teachers[stage] === id && await this.bistudentIsSelected(student.id) === false) {
-            if(res[stage] === undefined) {
-              res[stage] = [];
-            }
-            let canSelect = true
-            if (stage !== current_stage - 1) {
-              canSelect = false
-            } else {
-              const enrol_id = student.enrol_id;
-              const degree_id = student.degree_id;
-              if(enrols[enrol_id] <= 0) {
-                canSelect = false
-              }
-              if(degrees[degree_id] <= 0) {
-                canSelect = false
-              }
-            }
+    const active_degrees = Object.keys(degrees).map(key => {
+      if (degrees[key] > 0) {
+        return key;
+      } else {
+        return -1;
+      }
+    }).filter(f => f !== -1);
+
+    // 选出这些学生，然后判断
+    // 1. 这些学生是否被选择了, 如果被选择了，那么是不是这个老师选择的
+    // 2. 这些学生是否有在本阶段和接下来的阶段选了这个老师
+    // 3. 如果满足，那么添加到res中
+
+    const studentsSql = `
+      SELECT bistudent.id as id, name, recommended, score, graduation_university, graduation_major, household_register,
+        ethnic, phone, gender, email, source, image, selected_teachers,
+        enrol.id as enrol_id, user.username as username, enrol.description as enrol,
+        degree.id as degree_id, degree.description as degree
+      FROM bistudent
+        LEFT JOIN user on user.id=bistudent.uid
+        LEFT JOIN degree on degree.id=bistudent.degree
+        LEFT JOIN enrol on enrol.id=degree.enrol
+      WHERE enrol.id in ? and degree.id in ?;
+    `;
+
+    const students = await this.dbQuery.queryDb(studentsSql, [active_enrols, active_degrees]);
+    for (const index in students) {
+      const student = students[index];
+      student.selected_teachers = JSON.parse(student.selected_teachers);
+      for (let stage = current_stage - 1; stage < stage_count; stage++) {
+        if(res[stage] === undefined) { res[stage] = []; }
+
+        if (student.selected_teachers[stage] === id) {
+          if (await this.bistudentIsSelected(student.id) === false) {
+            // 该学生选择了老师，并且还没有被选择
+            const canSelect = stage === current_stage - 1 &&  // 在本阶段才可以选择
+              enrols[student.enrol_id] > 0 && degrees[student.degree_id] > 0 // 老师人数还没有选满
             res[stage].push({
               ...student,
               selected: false,
               canSelect
             });
+          } else {
+            // 判断这个学生是不是被当前老师选择的
+            if(!!selected_students[current_stage - 1]
+              && selected_students[current_stage - 1].indexOf(student.id) !== -1) {
+                // 是被当前老师选择的
+                res[current_stage-1].push({
+                  ...student,
+                  selected: true,
+                  canSelect: true
+                });
+            }
           }
-        }
-
-        if(!!selected_students[current_stage - 1] &&
-            selected_students[current_stage - 1].indexOf(student.id) !== -1) {
-          if(res[current_stage-1] === undefined) {
-            res[current_stage-1] = [];
-          }
-
-          res[current_stage-1].push({
-            ...student,
-            selected: true,
-            canSelect: true
-          });
         }
       }
-      return res;
-    } catch (err) {
-      throw new HttpException({
-        msg: '服务器错误',
-        err
-      }, 500);
     }
+
+    return res;
   }
 
   async bistudentIsSelected(bisid: number): Promise<boolean> {
