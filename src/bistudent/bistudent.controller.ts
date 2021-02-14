@@ -167,7 +167,7 @@ export class BistudentController {
   @Post('file/')
   @UseGuards(LoginRequired, BistudentPermission, BistudentCanUploadFile)
   @UseInterceptors(FileInterceptor('file', {
-    limits: {fileSize: 50 * 1024 * 1024},
+    limits: {fileSize: 20 * 1024 * 1024},
     fileFilter: (req, file, cb) => {
       const mimetype = file.mimetype;
       const allowtype = [
@@ -204,7 +204,7 @@ export class BistudentController {
   @Post('image')
   @UseGuards(LoginRequired, BistudentPermission)
   @UseInterceptors(FileInterceptor('file', {
-    limits: {fileSize: 10*1024*1024},
+    limits: {fileSize: 1*1024*1024},
     fileFilter: (req, file, cb) => {
       const mimetype = file.mimetype;
       const allowtype = [
