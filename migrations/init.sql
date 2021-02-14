@@ -31,7 +31,6 @@ CREATE TABLE IF NOT EXISTS `pgms`.`user` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `username_UNIQUE` (`username` ASC) )
 ENGINE = InnoDB
-AUTO_INCREMENT = 11
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -48,10 +47,9 @@ CREATE TABLE IF NOT EXISTS `pgms`.`admin` (
   CONSTRAINT `admin_uid_ref_user_id`
     FOREIGN KEY (`uid`)
     REFERENCES `pgms`.`user` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 4
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -171,8 +169,8 @@ CREATE TABLE IF NOT EXISTS `pgms`.`bistudentfile` (
   CONSTRAINT `bistudent_file_ref_bistudent_id`
     FOREIGN KEY (`bisid`)
     REFERENCES `pgms`.`bistudent` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `bistudent_file_ref_file_id`
     FOREIGN KEY (`fid`)
     REFERENCES `pgms`.`file` (`id`)
@@ -193,7 +191,6 @@ CREATE TABLE IF NOT EXISTS `pgms`.`lecture` (
   `end` DATETIME NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 4
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -207,7 +204,6 @@ CREATE TABLE IF NOT EXISTS `pgms`.`position` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `device_UNIQUE` (`device` ASC) )
 ENGINE = InnoDB
-AUTO_INCREMENT = 6
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -251,10 +247,9 @@ CREATE TABLE IF NOT EXISTS `pgms`.`logger` (
   CONSTRAINT `logger_uid_ref_user_id`
     FOREIGN KEY (`uid`)
     REFERENCES `pgms`.`user` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 7
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -267,7 +262,6 @@ CREATE TABLE IF NOT EXISTS `pgms`.`migrations` (
   `run_on` DATETIME NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 2
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -288,7 +282,6 @@ CREATE TABLE IF NOT EXISTS `pgms`.`student` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 6
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -315,7 +308,6 @@ CREATE TABLE IF NOT EXISTS `pgms`.`record` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 2
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -354,8 +346,8 @@ CREATE TABLE IF NOT EXISTS `pgms`.`settings` (
   CONSTRAINT `settings_admin_ref_admin_id`
     FOREIGN KEY (`lastUpdateAdmin`)
     REFERENCES `pgms`.`admin` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
@@ -380,7 +372,6 @@ CREATE TABLE IF NOT EXISTS `pgms`.`teacher` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 5
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -423,7 +414,6 @@ CREATE TABLE IF NOT EXISTS `pgms`.`token` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 57
 DEFAULT CHARACTER SET = utf8;
 
 
