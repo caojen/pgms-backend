@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpException, Param, Post, Put, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { LoginRequired } from 'src/user/user.guard';
-import { BistudentPermission, BistudentCanSelect } from './bistudent.guard';
+import { BistudentPermission, BistudentCanSelect, BistudentCanUploadFile } from './bistudent.guard';
 import { BistudentService } from './bistudent.service';
 import * as mime from 'mime-types';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -165,7 +165,7 @@ export class BistudentController {
     }
    */
   @Post('file/')
-  @UseGuards(LoginRequired, BistudentPermission)
+  @UseGuards(LoginRequired, BistudentPermission, BistudentCanUploadFile)
   @UseInterceptors(FileInterceptor('file', {
     limits: {fileSize: 50 * 1024 * 1024},
     fileFilter: (req, file, cb) => {
