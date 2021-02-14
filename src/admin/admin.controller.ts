@@ -1342,4 +1342,16 @@ export class AdminController {
     }
     return await this.adminService.getTeacherSelectedBistudents(id);
   }
+
+  @Get('bichoice/files/count')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getBichoiceFilesCount() {
+    return this.adminService.getBichoiceFilesCount();
+  }
+
+  @Get('bichoice/bistudents/all')
+  @UseGuards(LoginRequired, BiChoiceAdminPermission)
+  async getBistudentsBrief() {
+    return this.adminService.getBistudentsBrief();
+  }
 }

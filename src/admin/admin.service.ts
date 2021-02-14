@@ -1727,4 +1727,27 @@ export class AdminService {
     }
     return res;
   }
+
+  async getBichoiceFilesCount() {
+    const sql = `
+      SELECT count(*) as count FROM bistudentfile;
+    `
+
+    const count = (await this.dbQuery.queryDb(sql, []))[0].count;
+
+    return {
+      count
+    }
+  }
+
+  async getBistudentsBrief() {
+    const sql = `
+      SELECT bistudent.id as id, bistudent.name,
+        user.username as username
+      FROM bistudent
+        LEFT JOIN user ON bistudent.uid = user.id;
+    `;
+
+    return await this.dbQuery.queryDb(sql, []);
+  }
 }
