@@ -651,9 +651,7 @@ export class TeacherService {
     `;
 
     const res = (await this.dbQuery.queryDb(sql, [id]))[0]
-    console.log(res)
     const { port, ffid } = res;
-    console.log(port, ffid)
     return await FileService.getFile(port, ffid);
   }
 }

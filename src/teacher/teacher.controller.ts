@@ -254,7 +254,6 @@ export class TeacherController {
     const fid = parseInt(param.fid);
     const tid = request.user.teacher.id;
     const content = await this.teacherService.getOneBistudentFile(tid, bisid, fid);
-    console.log(content)
     response.end(Buffer.from(content));
   }
 
@@ -337,7 +336,6 @@ export class TeacherController {
   @UseGuards(LoginRequired, TeacherPermission)
   async getBichoiceFile(@Param() param, @Res() response) {
     const id = parseInt(param.id);
-    console.log(id)
     const content = await this.teacherService.getBichoiceFile(id)
     response.end(Buffer.from(content))
   }
