@@ -46,5 +46,4 @@ export class QueryDbService {
       throw new HttpException("数据库查询出错", 500);
     }
   }
-
 }

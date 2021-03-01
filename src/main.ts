@@ -1,4 +1,4 @@
-import { APP_INTERCEPTOR, NestFactory } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { requestListening } from './util/request.middleware';
 import { RequestInterceptor } from './util/request.interceptor';

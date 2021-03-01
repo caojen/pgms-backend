@@ -1,6 +1,4 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { query } from 'express';
-import { timestamp } from 'rxjs/operators';
 import { BistudentService } from 'src/bistudent/bistudent.service';
 import { EndeService } from 'src/ende/ende.service';
 import { FileService } from 'src/file/file.service';
@@ -9,7 +7,6 @@ import { StudentService } from 'src/student/student.service';
 import { TeacherService } from 'src/teacher/teacher.service';
 import { UserService } from 'src/user/user.service';
 import { getConfigs, timestamp2Datetime } from 'src/util/global.funtions';
-import { timezone } from 'strftime';
 import * as config from '../../config.json'
 
 @Injectable()
@@ -1749,5 +1746,32 @@ export class AdminService {
     `;
 
     return await this.dbQuery.queryDb(sql, []);
+  }
+
+  async getBichoiceFilesList() {
+    const sql = `
+      SELECT bistudent.id as id, bistudent.name as name,
+        user.username as username,
+        bistudentfile.fid as fid, bistudentfile.filename as filename
+      FROM bistudentfile
+        LEFT JOIN bistudent on bistudentfile.bisid = bistudent.id
+        LEFT JOIN user on bistudent.uid = user.id
+      ORDER BY bistudent.id
+    `;
+
+    const res = await this.dbQuery.queryDb(sql, [])
+    
+    const list = {}
+
+    for (let index = 0; index < res.length; index++) {
+      const item = res[index];
+      const id = item.id;
+      if (!list[id]) {
+        list[id] = { id, name: item.name, username: item.username, files: [] }
+      }
+      list[id].files.push({ fid: item.fid, filename: item.filename })
+    }
+
+    return list
   }
 }

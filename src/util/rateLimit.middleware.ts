@@ -1,10 +1,10 @@
 // rateLimit中间件
 
-import { request, Request, Response } from "express";
+import { Request, Response } from "express";
 import { HttpException, Logger } from '@nestjs/common'
 import { getIp } from "./global.funtions";
 
-// 每60秒最多请求100次
+// 每60秒最多请求1000次
 const requests = 1000;
 const sec = 60;
 
