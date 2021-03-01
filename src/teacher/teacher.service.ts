@@ -635,4 +635,10 @@ export class TeacherService {
       lectures
     }
   }
+
+  async getBichoiceSummary(id: number) {
+    throw new HttpException({
+      msg: 'unimplemented!'
+    }, 502)
+  }
 }

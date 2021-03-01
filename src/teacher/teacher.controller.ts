@@ -327,4 +327,11 @@ export class TeacherController {
     return this.teacherService.getLectures(p, o)
   }
 
+  @Get('bichoice/summary')
+  @UseGuards(LoginRequired, TeacherPermission)
+  async getBichoiceSummary(@Req() request) {
+    const id = request.user.teacher.id;
+    return await this.teacherService.getBichoiceSummary(id);
+  }
+
 }

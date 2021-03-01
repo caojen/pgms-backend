@@ -1653,7 +1653,8 @@ export class AdminService {
     const sql = `
       SELECT bichoice_config
       FROM teacher
-      WHERE id=?;
+      WHERE id=?
+      FOR UPDATE;
     `;
     const bichoice_config = (await this.dbQuery.queryDb(sql, [id]))[0].bichoice_config;
     const conf = JSON.parse(bichoice_config);
@@ -1674,7 +1675,8 @@ export class AdminService {
     const sql = `
       SELECT bichoice_config
       FROM teacher
-      WHERE id=?;
+      WHERE id=?
+      FOR UPDATE;
     `;
     const bichoice_config = (await this.dbQuery.queryDb(sql, [id]))[0].bichoice_config;
     const conf = JSON.parse(bichoice_config);
