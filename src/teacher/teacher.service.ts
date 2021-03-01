@@ -1,5 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { BistudentService } from 'src/bistudent/bistudent.service';
+import { FileService } from 'src/file/file.service';
 import { QueryDbService } from 'src/query-db/query-db.service';
 import { StudentService } from 'src/student/student.service';
 
@@ -9,7 +10,7 @@ export class TeacherService {
   constructor(
     private readonly dbQuery: QueryDbService,
     private readonly studentService: StudentService,
-    private readonly bistudentService: BistudentService,
+    private readonly bistudentService: BistudentService
   ) {}
 
   /**
@@ -640,5 +641,19 @@ export class TeacherService {
     throw new HttpException({
       msg: 'unimplemented!'
     }, 502)
+  }
+
+  async getBichoiceFile(id: number) {
+    const sql = `
+      SELECT port, ffid
+      FROM file
+      WHERE id=?;
+    `;
+
+    const res = (await this.dbQuery.queryDb(sql, [id]))[0]
+    console.log(res)
+    const { port, ffid } = res;
+    console.log(port, ffid)
+    return await FileService.getFile(port, ffid);
   }
 }

@@ -34,7 +34,7 @@ https://www.npmjs.com/package/request-promise-native
       })
       return response;
     } catch (e) {
-      throw new HttpException({
+      throw new HttpException({ 
         msg: '文件系统错误',
         err: e.name
       }, 500);

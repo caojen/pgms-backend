@@ -1188,6 +1188,7 @@ export class AdminController {
   async getBistudentFile(@Param() param: {fid: string}, @Res() response) {
     const fid = parseInt(param.fid);
     const content = await this.adminService.getBistudentFile(fid);
+    console.log(content)
     response.end(Buffer.from(content));
   }
 
