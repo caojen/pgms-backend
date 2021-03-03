@@ -332,11 +332,11 @@ export class TeacherController {
     return await this.teacherService.getBichoiceSummary(id);
   }
 
-  @Get('bichoice/file/:id')
-  @UseGuards(LoginRequired, TeacherPermission)
-  async getBichoiceFile(@Param() param, @Res() response) {
-    const id = parseInt(param.id);
-    const content = await this.teacherService.getBichoiceFile(id)
-    response.end(Buffer.from(content))
-  }
+  // @Get('bichoice/file/:id')
+  // @UseGuards(LoginRequired, TeacherPermission)
+  // async getBichoiceFile(@Param() param, @Res() response) {
+  //   const id = parseInt(param.id);
+  //   const content = await this.teacherService.getBichoiceFile(id)
+  //   response.end(Buffer.from(content))
+  // }
 }

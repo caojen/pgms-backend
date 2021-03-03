@@ -13,7 +13,7 @@ export class BistudentController {
   ) {}
 
   /**
-   * @api {put} /bistudent GetBiChoiceInfo
+   * @api {get} /bistudent GetBiChoiceInfo
    * @apiName GetBiChoiceInfo
    * @apiGroup Bistudent
    * @apiPermission Logined Bistudent
@@ -167,7 +167,7 @@ export class BistudentController {
   @Post('file/')
   @UseGuards(LoginRequired, BistudentPermission, BistudentCanUploadFile)
   @UseInterceptors(FileInterceptor('file', {
-    limits: {fileSize: 20 * 1024 * 1024},
+    limits: {fileSize: 50 * 1024 * 1024},
     fileFilter: (req, file, cb) => {
       const mimetype = file.mimetype;
       const allowtype = [
@@ -180,7 +180,7 @@ export class BistudentController {
         cb(null, true);
       } else {
         cb(new HttpException({
-          msg: '不接受此文件类型'
+          msg: '不接受此文件类型(jpg, png, pdf)'
         }, 406), false);
       }
     }
@@ -204,7 +204,7 @@ export class BistudentController {
   @Post('image')
   @UseGuards(LoginRequired, BistudentPermission)
   @UseInterceptors(FileInterceptor('file', {
-    limits: {fileSize: 1*1024*1024},
+    limits: {fileSize: 10*1024*1024},
     fileFilter: (req, file, cb) => {
       const mimetype = file.mimetype;
       const allowtype = [
@@ -216,9 +216,9 @@ export class BistudentController {
         cb(null, true);
       } else {
         cb(new HttpException({
-          msg: '不接受此文件类型',
+          msg: '不接受此文件类型(jpg, png)',
           status: false
-        }, 403), false);
+        }, 406), false);
       }
       
     }

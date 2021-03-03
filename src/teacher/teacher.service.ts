@@ -211,13 +211,14 @@ export class TeacherService {
 
     const studentsSql = `
       SELECT bistudent.id as id, name, recommended, score, graduation_university, graduation_major, household_register,
-        ethnic, phone, gender, email, source, image, selected_teachers,
+        ethnic, phone, gender, email, source.description as source, image, selected_teachers,
         enrol.id as enrol_id, user.username as username, enrol.description as enrol,
         degree.id as degree_id, degree.description as degree
       FROM bistudent
         LEFT JOIN user on user.id=bistudent.uid
         LEFT JOIN degree on degree.id=bistudent.degree
         LEFT JOIN enrol on enrol.id=degree.enrol
+        LEFT JOIN source on bistudent.source=source.id
       WHERE ${active_enrols.length === 0 ? '0' : 'enrol.id in (?)'}
         AND ${active_degrees.length === 0 ? '0' : 'degree.id in (?)'}
       ORDER BY id;
@@ -258,6 +259,7 @@ export class TeacherService {
         }
       }
     }
+    console.log(res)
     return res;
   }
 
