@@ -320,4 +320,60 @@ export class BistudentService {
     const files = await this.dbQuery.queryDb(selectSql, [id]);
     return files;
   }
+
+  async orderUp(id: number, index: number) {
+    const selectSql = `
+      SELECT selected_teachers FROM bistudent
+      WHERE id=?;
+    `
+    const selected_teachers_str = (await this.dbQuery.queryDb(selectSql, [id]))[0].selected_teachers
+    const selected_teachers = JSON.parse(selected_teachers_str)
+    if(index === 0 || index >= selected_teachers.length) {
+      throw new HttpException({
+        msg: '参数错误'
+      }, 406)
+    }
+    let tmp = selected_teachers[index];
+    selected_teachers[index] = selected_teachers[index - 1];
+    selected_teachers[index - 1] = tmp;
+
+    const updateSql = `
+      UPDATE bistudent
+      SET selected_teachers = ?
+      WHERE id=?;
+    `;
+
+    await this.dbQuery.queryDb(updateSql, [JSON.stringify(selected_teachers), id])
+    return {
+      msg: '修改成功'
+    }
+  }
+
+  async orderDown(id: number, index: number) {
+    const selectSql = `
+      SELECT selected_teachers FROM bistudent
+      WHERE id=?;
+    `
+    const selected_teachers_str = (await this.dbQuery.queryDb(selectSql, [id]))[0].selected_teachers
+    const selected_teachers = JSON.parse(selected_teachers_str)
+    if(index >= selected_teachers.length - 1) {
+      throw new HttpException({
+        msg: '参数错误'
+      }, 406)
+    }
+    let tmp = selected_teachers[index];
+    selected_teachers[index] = selected_teachers[index + 1];
+    selected_teachers[index + 1] = tmp;
+
+    const updateSql = `
+      UPDATE bistudent
+      SET selected_teachers = ?
+      WHERE id=?;
+    `;
+
+    await this.dbQuery.queryDb(updateSql, [JSON.stringify(selected_teachers), id])
+    return {
+      msg: '修改成功'
+    }
+  }
 }

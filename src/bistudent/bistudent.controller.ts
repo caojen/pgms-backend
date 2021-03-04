@@ -267,4 +267,32 @@ export class BistudentController {
     const id = request.user.bistudent.id;
     return await this.bistudentService.getFileList(id);
   }
+  
+  @Put('teacher/order/up/:index')
+  @UseGuards(LoginRequired, BistudentPermission, BistudentCanSelect)
+  async orderUp(@Param() param: { index: string }, @Req() request) {
+    const id = request.user.bistudent.id;
+    const index = param.index;
+    if (isNaN(parseInt(index))) {
+      throw new HttpException({
+        msg: '参数错误'
+      }, 406)
+    }
+
+    return await this.bistudentService.orderUp(id, parseInt(index))
+  }
+
+  @Put('teacher/order/down/:index')
+  @UseGuards(LoginRequired, BistudentPermission, BistudentCanSelect)
+  async orderDown(@Param() param: { index: string }, @Req() request) {
+    const id = request.user.bistudent.id;
+    const index = param.index;
+    if (isNaN(parseInt(index))) {
+      throw new HttpException({
+        msg: '参数错误'
+      }, 406)
+    }
+
+    return await this.bistudentService.orderDown(id, parseInt(index))
+  }
 }
