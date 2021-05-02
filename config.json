@@ -1,5 +1,6 @@
 {
   "env": "test",
   "defaultImage": 1,
-  "secure": false
+  "secure": false,
+  "showSql": true
 }
