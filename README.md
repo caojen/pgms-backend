@@ -33,3 +33,14 @@
 + mysql.config:
   + 位于``database.json``
   + 注意：json里面的``multipleStatements``只用于迁移，项目中不允许多条sql执行
+
+## Issue
+
++ 迁移数据库
+  1. 将User表迁移
+  2. 迁移两种身份，也就是Student, Teacher
+  3. 不用迁移文件数据、老师双选配置
+  4. 迁移考勤记录，包括
+     1. 所有的位置信息，录入设备号和对应的地点名
+     2. 迁移讲座
+     3. 迁移考勤记录
