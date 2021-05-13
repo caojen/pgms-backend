@@ -10,7 +10,7 @@ import * as config from '../config.json'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const prefix = '/api'
+  const prefix = '/'
 
   app.use(requestListening);
   app.use(rateLimit);
