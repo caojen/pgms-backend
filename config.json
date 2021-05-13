@@ -1,6 +1,6 @@
 {
-  "env": "test",
+  "env": "dev",
   "defaultImage": 1,
-  "secure": false,
-  "showSql": true
+  "secure": true,
+  "showSql": false
 }
