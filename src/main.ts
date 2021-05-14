@@ -32,7 +32,7 @@ async function bootstrap() {
 
   if(!config.secure) {
     app.enableCors({
-      origin: '*',
+      origin: "http://1*",
       credentials: true
     });
   }
