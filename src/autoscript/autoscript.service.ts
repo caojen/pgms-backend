@@ -32,7 +32,7 @@ export class AutoscriptService extends NestSchedule {
     let lastDate: Date;
     if(record.length === 0) {
       // no record here, set to default
-      lastDate = new Date(Date.parse('2020-10-01 00:00:00'));
+      lastDate = new Date(Date.parse('2010-01-01 00:00:00'));
     } else {
       lastDate = record[0].time;
     }

@@ -19,13 +19,6 @@
 + 数据库迁移
   + 从django/sqlite3迁移到mysql
 
-+ 环境准备
-  + 端口占用：5001
-  + 位于：``/home/pgms/PGMS/backend``
-  + 已被supervisor监听：``supervisorctl status``
-  + supervisor配置文件：``/etc/supervisord.conf``
-  + 目前出于开发模式
-
 + 如何更新代码：
   1. 推送到本仓库
   2. 在``/home/pgms/PGMS/backend``中执行``git pull``，由于当前处于开发模式，会自动启动最新的代码
