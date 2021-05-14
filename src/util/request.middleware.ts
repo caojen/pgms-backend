@@ -7,11 +7,13 @@ import { getIp } from './global.funtions';
 const logger = new Logger("Request");
 
 export function requestListening(req: Request, res: Response, next: any) {
-  logger.log(objectToLog({
-    method: req.method,
-    url: req.url,
-    ip: getIp(req)
-  }));
+  if(req.method !== 'OPTIONS') {
+    logger.log(objectToLog({
+      method: req.method,
+      url: req.url,
+      ip: getIp(req)
+    }));
+  }
   next();
 }
 
