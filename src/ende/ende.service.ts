@@ -23,7 +23,7 @@ export class EndeService {
   static encodeToDatabase(password: string): string {
     const salt = this.createNewToken(12);
     const iteration = 10000;
-    const hash = pbkdf2.pbkdf2Sync(password, salt, iteration, 32).toString();
+    const hash = pbkdf2.pbkdf2Sync(password, salt, iteration, 32).toString('base64');
 
     return `pbkdf2_sha256$${iteration}$${salt}$${hash}`;
   }
@@ -41,7 +41,7 @@ export class EndeService {
     }
     const iteration = parseInt(parts[1]);
     const salt = parts[2];
-    const password_hash = pbkdf2.pbkdf2Sync(password, salt, iteration, 32).toString();
+    const password_hash = pbkdf2.pbkdf2Sync(password, salt, iteration, 32).toString('base64');
     return password_hash === parts[3];
   }
 
