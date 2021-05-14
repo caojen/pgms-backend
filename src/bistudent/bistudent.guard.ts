@@ -17,11 +17,11 @@ export class BistudentCanUploadFile implements CanActivate {
     context: ExecutionContext
   ) {
     /*
-      只允许在stage_count <= 0时允许学生上传
+      只允许在stage_count < 0时允许学生上传
     */
 
     const config = await getConfigs(["current_stage"]);
-    if(config.current_stage.value <= 0) {
+    if(config.current_stage.value < 0) {
       return true;
     }
 
