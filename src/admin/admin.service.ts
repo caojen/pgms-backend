@@ -1209,7 +1209,6 @@ export class AdminService {
   }
 
   async changeBistudentInfo(id: number, info: any) {
-    console.log(id, info)
     const sql = `
       UPDATE bistudent
       SET name=?, recommended=?, score=?, graduation_university=?,
@@ -1233,19 +1232,15 @@ export class AdminService {
     const bistudent = (await this.dbQuery.queryDb(selectSql, [id]))[0];
 
     if (info.password) {
-      console.log(info.password)
       const password = EndeService.decodeFromHttp(info.password);
       const epassword = EndeService.encodeToDatabase(password);
-      console.log(epassword)
       const changePasswordSql = `
         UPDATE user
         SET password=?
         WHERE id=?
       `;
-      console.log(bistudent)
       await this.dbQuery.queryDb(changePasswordSql, [epassword, bistudent.uid]);
     }
-    console.log(bistudent)
     return {
       msg: '修改成功',
       bistudent
