@@ -259,7 +259,6 @@ export class TeacherService {
         }
       }
     }
-    console.log(res)
     return res;
   }
 
