@@ -1245,11 +1245,11 @@ export class AdminController {
   @Put('bichoice/all/teacher/password')
   @UseGuards(LoginRequired, BiChoiceAdminPermission)
   async resetAllBiTeachersPassword(@Body() body: {
-    password: string
+    pass: string
   }) {
-    const { password } = body;
-    const pass = EndeService.decodeFromHttp(password);
-    return await this.adminService.resetAllPasswordForTeachers(pass)
+    const { pass } = body;
+    const password = EndeService.decodeFromHttp(pass);
+    return await this.adminService.resetAllPasswordForTeachers(password);
   }
 
   @Post('bichoice/teacher')
