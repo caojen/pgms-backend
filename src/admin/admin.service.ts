@@ -1520,7 +1520,7 @@ export class AdminService {
     const selectedLectureSql = `
       SELECT lecture.title AS title, lecture.content AS content, lecture.start AS start, lecture.end AS end
       FROM lecture INNER JOIN lecture_position ON lecture.id=lecture_position.lid
-      WHERE lecture.start <= ?
+      WHERE subdate(lecture.start, interval 20 minute) <= ?
         AND lecture.end >= ?
         AND lecture_position.pid = ?;
     `;
