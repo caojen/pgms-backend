@@ -11,7 +11,7 @@
   "dev": {
     "driver": "mysql",
     "user": "root",
-    "password": "ppggmmss13331270",
+    "password": "MYSQL_PASSWORD",
     "port": 3306,
     "database": "pgms",
     "host": "localhost",
