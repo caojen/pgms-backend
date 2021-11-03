@@ -1399,8 +1399,9 @@ export class AdminService {
       const selected_students = JSON.parse(teacher.selected_students);
       // const students = [];
       let count = 0;
-      for (let j = 0; j < selected_students.length; j++) {
-        const group = selected_students[j];
+      const keys = Object.keys(selected_students)
+      for (let j = 0; j < keys.length; j++) {
+        const group = selected_students[keys[j]];
         count += group.length;
       //   students.push([]);
       //   for (let k = 0; k < group.length; k++) {
