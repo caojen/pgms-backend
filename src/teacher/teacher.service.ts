@@ -128,7 +128,7 @@ export class TeacherService {
     const bichoiceInfo = await this.getBiChoiceInfo();
     const current_stage = JSON.parse(bichoiceInfo.current_stage).value;
     const stage_count = JSON.parse(bichoiceInfo.stage_count).value;
-    if (current_stage <= 0) { return []; } // 老师还没开始时，不允许查看
+    if (current_stage < 0) { return []; } // 学生还没开始时，不允许查看
 
     // 查看老师的bichoice_config
     const biconfigSql = `
@@ -179,12 +179,14 @@ export class TeacherService {
     // 对于当前阶段的学生，统计enrols和degrees，但不减去:
     const current_enrols = {};
     const current_degrees = {};
-    const current_stage_students = selected_students[current_stage - 1] || [];
-    for (const index in current_stage_students) {
-      const student_id = current_stage_students[index];
-      const info = await this.bistudentService.getInfo(student_id);
-      info.enrol_id in current_enrols ? current_enrols[info.enrol_id] ++ : current_enrols[info.enrol_id] = 1;
-      info.degree_id in current_degrees ? current_degrees[info.degree_id] ++ : current_degrees[info.degree_id] = 1;
+    if(current_stage > 0) {
+      const current_stage_students = selected_students[current_stage - 1] || [];
+      for (const index in current_stage_students) {
+        const student_id = current_stage_students[index];
+        const info = await this.bistudentService.getInfo(student_id);
+        info.enrol_id in current_enrols ? current_enrols[info.enrol_id] ++ : current_enrols[info.enrol_id] = 1;
+        info.degree_id in current_degrees ? current_degrees[info.degree_id] ++ : current_degrees[info.degree_id] = 1;
+      }
     }
 
     // 判断当前还可以选择的学生的enrol和degree：
@@ -230,7 +232,7 @@ export class TeacherService {
     for (const index in students) {
       const student = students[index];
       student.selected_teachers = JSON.parse(student.selected_teachers);
-      for (let stage = current_stage - 1; stage < stage_count; stage++) {
+      for (let stage = current_stage - 1 >= 0 ? current_stage - 1 : 0; stage < stage_count; stage++) {
         if(res[stage] === undefined) { res[stage] = []; }
 
         if (student.selected_teachers[stage] === id) {
@@ -246,7 +248,8 @@ export class TeacherService {
             });
           } else {
             // 判断这个学生是不是被当前老师选择的
-            if(!!selected_students[current_stage - 1]
+            if(current_stage - 1 >= 0
+              && !!selected_students[current_stage - 1]
               && selected_students[current_stage - 1].indexOf(student.id) !== -1) {
                 // 是被当前老师选择的
                 res[current_stage-1].push({
