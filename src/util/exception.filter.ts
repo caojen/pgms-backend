@@ -1,12 +1,9 @@
 import { ExceptionFilter, Catch, ArgumentsHost, Logger, HttpException } from '@nestjs/common';
 import { Response, Request } from 'express';
-import * as database from '../../database.json';
 import * as global from "../../config.json";
 import * as mysql from 'mysql2/promise';
 import { getUserType } from './global.funtions';
 import { getIp } from './global.funtions';
-
-const config = database[global.env];
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -16,10 +13,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
   constructor() {
     this.executePool = mysql.createPool({
-      host: config.host,
-      user: config.user,
-      database: config.database,
-      password: config.password,
+      host: process.env["MYSQL_HOST"],
+      user: process.env["MYSQL_PORT"],
+      database: process.env["MYSQL_DATABASE"],
+      password: process.env["MYSQL_PASSWORD"],
       connectionLimit: 20,
       waitForConnections: true,
       queueLimit: 0
