@@ -10,9 +10,12 @@ https://github.com/expressjs/multer
 https://www.npmjs.com/package/request-promise-native
 */
   
-  static filesystem = "http://localhost";
-  static lookup = ":9333/dir/assign";
+  // static filesystem = "http://localhost";
+  // static lookup = ":9333/dir/assign";
 
+  static filesystem = process.env["FILE_SYSTEM"];
+  static lookup = process.env["FILE_SYSTEM_LOOKUP"];
+  
   private static async getUsablePortAndUri(): Promise<[string, string]> {
     const response = await requestAsync(`${this.filesystem}${this.lookup}`);
     const body = JSON.parse(response);
