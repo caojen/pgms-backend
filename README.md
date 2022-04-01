@@ -13,19 +13,17 @@
 
 + 项目启动：
   + ``npm install``
-  + ``npm run start:dev``(开发模式)
-  + ``npm run start:prod``(生产模式)
+  + ``npm run start:dev`
+  + ``npm run start:prod``
 
 + 数据库迁移
   + 从django/sqlite3迁移到mysql
 
 + 如何更新代码：
-  1. 推送到本仓库
-  2. 在``/home/pgms/PGMS/backend``中执行``git pull``，由于当前处于开发模式，会自动启动最新的代码
+  1. github仓库不是最新的，裸仓库位于``/home/pgms/PGMS/*``里面。
 
 + mysql.config:
   + 位于``database.json``
-  + 注意：json里面的``multipleStatements``只用于迁移，项目中不允许多条sql执行
 
 ## Issue
 
