@@ -1,17 +1,21 @@
 import { HttpException, Injectable, Logger } from '@nestjs/common';
-import * as database from '../../database.json';
 import * as global from '../../config.json';
 import * as mysql from 'mysql2/promise';
+import { exit } from 'process';
 
 @Injectable()
 export class QueryDbService {
-  private readonly config = database[global.env]
   constructor() {
+    if (!process.env["MYSQL_HOST"]) {
+      console.log("你似乎还没有指定MYSQL相关配置");
+      exit(1);
+    }
+
     this.selectedPool = mysql.createPool({
-      host: this.config.host,
-      user: this.config.user,
-      database: this.config.database,
-      password: this.config.password,
+      host: process.env["MYSQL_HOST"],
+      user: process.env["MYSQL_PORT"],
+      database: process.env["MYSQL_DATABASE"],
+      password: process.env["MYSQL_PASSWORD"],
       multipleStatements: false,
       connectionLimit: 20,
       waitForConnections: true,
@@ -19,10 +23,10 @@ export class QueryDbService {
     });
 
     this.executePool = mysql.createPool({
-      host: this.config.host,
-      user: this.config.user,
-      database: this.config.database,
-      password: this.config.password,
+      host: process.env["MYSQL_HOST"],
+      user: process.env["MYSQL_PORT"],
+      database: process.env["MYSQL_DATABASE"],
+      password: process.env["MYSQL_PASSWORD"],
       multipleStatements: false,
       connectionLimit: 20,
       waitForConnections: true,

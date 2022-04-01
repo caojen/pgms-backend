@@ -3,11 +3,12 @@ FROM node:14 as build
 RUN mkdir /workdir
 WORKDIR /workdir
 
+COPY ./package.json .
+COPY ./package-lock.json .
+
+RUN npm install
+
 COPY . .
+RUN npm run build
 
-RUN npm cache verify && \
-    npm install --registry=https://registry.npm.taobao.org --unsafe-perm \
-    && npm run doc:build \
-    && npm run build
-
-CMD npm start prod
+CMD ["node", "./dist/main.js"]
