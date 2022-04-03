@@ -22,20 +22,20 @@ async function bootstrap() {
   app.setGlobalPrefix(prefix);
   app.use(`${prefix}/doc`, express.static('doc'));
   // 允许跨域：
-  // app.use('/', function(req, res: express.Response, next) {
-  //   res.setHeader('Access-Control-Allow-Credentials', 'true');
-  //   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
-  //   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
-  //   res.setHeader('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
-  //   next();
-  // });
+  app.use('/', function(req: express.Request, res: express.Response, next) {
+    if(req.method.toLowerCase() === 'options') {
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+      res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
+      res.setHeader('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
+      res.setHeader('Access-Control-Max-Age', '6000');
 
-  if(!config.secure) {
-    app.enableCors({
-      origin: 'http://172.26.110.69:8081',
-      credentials: true
-    });
-  }
+      res.status(204);
+      res.end();
+    } else {
+      next();
+    }
+  });
 
   await app.listen(5100);
 }
