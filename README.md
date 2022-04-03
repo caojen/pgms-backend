@@ -85,7 +85,7 @@ npm run start:prod # 生产模式
 或者用docker：
 ```bash
 docker build . -t pgms-backend:latest
-docker run -it --name pgms-backend --network=host --rm pgms-backend:latest
+docker run -itd --name pgms-backend -p 5100:5100 --rm pgms-backend:latest
 ```
 
 启动后将会server将会监听5100端口。试试吧：
