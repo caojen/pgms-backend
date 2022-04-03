@@ -23,15 +23,17 @@ async function bootstrap() {
   app.use(`${prefix}/doc`, express.static('doc'));
   // 允许跨域：
   app.use('/', function(req: express.Request, res: express.Response, next) {
-    if(req.method.toLowerCase() === 'options') {
-      res.setHeader('Access-Control-Allow-Credentials', 'true');
-      res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
-      res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
-      res.setHeader('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
-      res.setHeader('Access-Control-Max-Age', '6000');
+    const origin = req.headers.origin;
 
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
+    res.setHeader('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
+    res.setHeader('Access-Control-Max-Age', '36000');
+
+    if (req.method.toLowerCase() === 'options') {
       res.status(204);
-      res.end();
+      res.end(); 
     } else {
       next();
     }

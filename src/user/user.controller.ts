@@ -52,7 +52,7 @@ export class UserController {
     } else {
       // set cookie:
       if(config.secure === false) {
-        res.setHeader("Set-Cookie", `token=${loginResult.token}; path=/;`);
+        res.setHeader("Set-Cookie", `token=${loginResult.token}; path=/; SameSite=None; Secure`);
       } else {
         res.setHeader("Set-Cookie", `token=${loginResult.token}; path=/; SameSite=None; Secure`);
       }
