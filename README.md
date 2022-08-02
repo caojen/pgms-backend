@@ -92,3 +92,23 @@ docker run -itd --name pgms-backend -p 5100:5100 --rm pgms-backend:latest
 ```
 curl http://127.0.0.1:5100
 ```
+
+## 数据初始化
+
+### 初始化默认头像
+默认头像存放在`static/default_image.jpeg`中，我们需要首先将它上传到文件服务中。
+```
+curl http://localhost:9333/dir/assign
+curl -F file=@static/default_image.jpeg http://127.19.0.3:8080
+```
+
+然后将得到的id插入到数据库的表中。
+
+### 双选全局变量
+请登录双选管理员账号，然后在“变量设置”中设置以下的键值对。请注意，这些键值对的key在程序里面是常量，没有这些常量可能就会报莫名其妙的500错误。
+```
+stage_count: 3        控制双选有多少个阶段，也代表学生能选多少个志愿老师
+current_stage: -1     控制当前阶段，特别地，-1表示未开始。学生只能在“未开始”阶段上传文件。0代表学生选择，[1,2,3...]代表老师选择阶段
+begin_time: 2022-08-01 00:00:00 当前阶段开始时间
+end_time: 2022-09-01 00:00:00   当前阶段结束时间
+```

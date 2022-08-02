@@ -1,7 +1,10 @@
 const pbkdf2 = require('pbkdf2');
 
-const hash = 'pbkdf2_sha256$36000$RyMIdWhTi3y7$roh+knYNRkNaZWKLrXudLDT+fGtDNnOjWvWBQlUOrl4=';
-const plain = 'ta123456';
+// const hash = 'pbkdf2_sha256$36000$RyMIdWhTi3y7$roh+knYNRkNaZWKLrXudLDT+fGtDNnOjWvWBQlUOrl4=';
+// const plain = 'ta123456';
+
+const hash = 'pbkdf2_sha256$10000$ddiffdkljgja$LA6BxOvc+EC/cOR6MV277MLr777GuY+15seMpUtcZzs=';
+const plain = 'ppggmmss13331270';
 
 const parts = hash.split('$');
 if(parts.length !== 4) {
