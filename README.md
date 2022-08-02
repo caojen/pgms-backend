@@ -17,7 +17,7 @@
 
 MYSQL Server怎么建起来请自行谷歌，如果害怕污染本地环境的话建议用docker做容器：
 ```bash
-docker run --name my-mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8.0
+docker run --name my-mysql -e MYSQL_ROOT_PASSWORD=123456 -d -p 3306:3306 mysql:8.0
 ```
 
 > 本地测试可以随便搞个简单的密码，生产环境的密码找相关负责人员拿。

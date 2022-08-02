@@ -23,10 +23,13 @@ async function bootstrap() {
   app.use(`${prefix}/doc`, express.static('doc'));
   // 允许跨域：
   app.use('/', function(req: express.Request, res: express.Response, next) {
+
     const origin = req.headers.origin;
 
     res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Origin', origin);
+    if (origin) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    }
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
     res.setHeader('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
     res.setHeader('Access-Control-Max-Age', '36000');
