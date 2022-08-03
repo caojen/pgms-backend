@@ -2,7 +2,7 @@
 
 > 考勤系统已经名存实亡，建议仅考虑双选功能。
 
-通过本README，你应该可以将后端搭建起来。在此之前提醒一句，务必随机应变，过程出错很有可能与环境或依赖版本有关，请善用github issue、google、stack overflow。实在解决不了的话，联系github@caojen，或你的上一个负责人员。
+通过本README，你应该可以将后端搭建起来。在此之前提醒一句，请随机应变，过程出错很有可能与环境或依赖版本有关，请善用github issue、google、stack overflow。实在解决不了的话，联系github@caojen，或你的上一个负责人员。
 
 ## 概述
 
